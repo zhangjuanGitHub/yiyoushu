@@ -44,6 +44,7 @@ module.exports = {
   configureWebpack: config => {
     const myConfig = {};
     if (process.env.NODE_ENV === "production") {
+      myConfig.externals = externals;
       myConfig.plugins = [];
       productionGzip &&
         myConfig.plugins.push(
@@ -71,8 +72,6 @@ module.exports = {
   chainWebpack: config => {
     // 自定义配置目录别名
     config.resolve.alias.set("@", resolve("src"));
-    // externals配置
-    config.externals(externals)
     // cdn预加载 将公共库采用CDN引入的方式减少包体积
     config.plugin('html').tap(args => {
       if (process.env.NODE_ENV === 'production') {
@@ -84,25 +83,33 @@ module.exports = {
       return args
     })
   },
-  lintOnSave: false,
-  productionSourceMap: false,
-  devServer: {
-    open: false,
-    port: 8081,
-    proxy: {
-      "/yys": {
-        // target: 'http://192.168.10.68:9998', // 志刚
-        // target: 'http://192.168.10.5:29998', // 安豪
-        // target: 'http://39.100.100.115', // 线上
-        // target: 'http://192.168.10.6:29998', // 李智
-        // target: "http://192.168.10.12:29998", // 东阳
-        target: "http://192.168.10.13:29998", // 坤明
-        changeOrigin: true,
-        ws: true, // 是否启用websockets
-        pathRewrite: {
-          "^/yys": "/yys"
-        }
+  css: {
+    loaderOptions: {
+      // 给 sass-loader 传递选项
+      sass: {
+        prependData: `@import "@/assets/scss/uniform.scss";`
       }
     }
-  }
+  },
+  lintOnSave: false,
+  productionSourceMap: false,
+  // devServer: {
+  //   open: false,
+  //   port: 8081,
+  //   proxy: {
+  //     "/yys": {
+  //       // target: 'http://192.168.10.68:9998', // 志刚
+  //       // target: 'http://192.168.10.5:29998', // 安豪
+  //       // target: 'http://39.100.100.115', // 线上
+  //       // target: 'http://192.168.10.6:29998', // 李智
+  //       // target: "http://192.168.10.12:29998", // 东阳
+  //       target: "http://192.168.10.13:29998", // 坤明
+  //       changeOrigin: true,
+  //       ws: true, // 是否启用websockets
+  //       pathRewrite: {
+  //         "^/yys": "/yys"
+  //       }
+  //     }
+  //   }
+  // }
 }

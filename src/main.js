@@ -4,15 +4,15 @@ import router from './router/router'
 import store from './store/store'
 import api from './api/api'
 import axios from 'axios'
-import ELEMENT from 'element-ui'
-Vue.use(ELEMENT)
+import ElementUI from 'element-ui'
+// import './assets/css/reset.css'
 
 Vue.config.productionTip = false
 Vue.prototype.$api = api
 Vue.prototype.$http = axios
+Vue.use(ElementUI)
 
 new Vue({
-  el: '#app',
   router,
   store,
   render: h => h(App)
