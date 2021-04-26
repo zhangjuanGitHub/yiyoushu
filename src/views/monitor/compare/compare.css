@@ -1,0 +1,131 @@
+.account-compare-wrap {
+  margin: 20px;
+}
+.account-compare-title {
+  margin: 10px 0;
+}
+.account-compare-title p:nth-child(1) {
+  font-size: 18px;
+  color: #151C29;
+}
+.account-compare-title p:nth-child(2) {
+  font-size: 14px;
+  color: #6B798E;
+  margin-left: 5px;
+}
+.search-mater-theme::before {
+  width: 4px;
+  height: 18px;
+  content: '';
+  float: left;
+  margin-right: 13px;
+  margin-top: 4px;
+  background: #498BFE;
+}
+.account-compare-main {
+  width: 100%;
+  margin-top: 20px;
+  background: #F7F8FA;
+}
+.add-compare-msg {
+  width: 100%;
+  height: 140px;
+  display: flex;
+  position: relative;
+}
+.add-right-btn {
+  width: 30px;
+  padding: 5px;
+  box-sizing: content-box;
+  text-align: center;
+  background: #409EFF;
+  cursor: pointer;
+  position: absolute;
+  right: -40px;
+  top: 15px;
+}
+.add-compare-range {
+  width: 185px;
+  border: 1px solid #97BDFE;
+}
+.add-compare-range .el-select,
+.add-compare-btn {
+  width: 120px;
+}
+.add-compare-range .el-form--inline .el-form-item {
+  margin-left: 10px;
+}
+.add-compare-account {
+  flex: 1;
+  display: flex;
+}
+.add-compare-account li {
+  width: 220px;
+  position: relative;
+  box-sizing: content-box;
+  border: 1px solid #97BDFE;
+}
+.add-compare-del {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  color: red;
+  font-size: 18px;
+  cursor: pointer;
+}
+.add-compare-ava {
+  margin-bottom: 15px;
+}
+.add-compare-ava>p {
+  font-size: 18px;
+}
+.compare-msg-ava img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.compare-msg-name p:nth-child(1) {
+  font-size: 16px;
+}
+.compare-msg-name p {
+  color: #151C29;
+}
+.add-compare-table .el-table {
+  margin-top: 0;
+}
+.compare-table-msg {
+  float: left;
+  padding: 20px 0;
+  box-sizing: content-box;
+  border: 1px solid #F7F8FA;
+}
+.compare-table-msg p {
+  color: #252934;
+  line-height: 24px;
+}
+.compare-table-msg p span {
+  margin-left: 5px;
+  color: #6B798E;
+}
+.compare-person .el-input {
+  margin-bottom: 15px;
+}
+.compare-company .el-select {
+  margin-left: 10px;
+}
+.com-company-box {
+  margin-top: 20px;
+  display: flex;
+}
+.company-boc-tree {
+  width: 280px;
+  background: coral;
+}
+.company-boc-table {
+  flex: 1;
+  background: cyan;
+}
+.company-boc-table .el-table {
+  margin-top: 0;
+}

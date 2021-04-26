@@ -103,6 +103,7 @@ section {
 }
 body {
   overflow: auto !important;
+  background-color: #EDEFF4;
   margin: 0 auto;
   padding: 0px !important;
   line-height: 1.5;

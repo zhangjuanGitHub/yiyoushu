@@ -3,8 +3,6 @@ import { Message, Loading } from 'element-ui'
 import store from '../store/store'
 import router from '../router/router'
 
-
-
 let loading = null
 let isPopMessage = true
 let needLoadingRequestCount = 0
@@ -51,16 +49,21 @@ const warningTip = msg => {
     })
   }
 }
+const toLogin = () => {
+  router.replace({
+    name: 'Login'
+  })
+}
 
 const errorHandle = (status, other) => {
   switch (status) {
     case 119:
       warningTip(other)
       break
-    // 401: 未登录状态，跳转登录页
     case 400:
       tip(other)
       break
+    // 401: 未登录状态，跳转登录页
     case 401:
       toLogin()
       break
@@ -73,7 +76,6 @@ const errorHandle = (status, other) => {
       break
     // 清除token并跳转登录页
     case 600:
-      // store.commit('mutations/prevUrlName', router.currentRoute.name)
       tip('登录过期，请重新登录')
       setTimeout(() => {
         toLogin()
@@ -82,6 +84,10 @@ const errorHandle = (status, other) => {
       break
     case 606:
       tip('您的账号在异地登录！')
+      setTimeout(() => {
+        toLogin()
+      }, 1000)
+      store.commit('user/userSignout')
       break
     case 700:
       tip('您没有相关操作权限！')
@@ -90,7 +96,6 @@ const errorHandle = (status, other) => {
       tip('系统异常，请稍后再试！')
   }
 }
-
 
 // 自定义实例
 if (process.env.NODE_ENV === 'development') {
@@ -118,10 +123,10 @@ instance.interceptors.request.use(
     // 但是即使token存在，也有可能token是过期的，所以在每次的请求头中携带token
     // 后台根据携带的token判断用户的登录情况，并返回给我们对应的状态码
     // 而后我们可以在响应拦截器中，根据状态码进行一些统一的操作。
-    if (router.currentRoute.name !== 'Login') {
+    if (router.currentRoute.name !== 'Login' && router.currentRoute.name !== 'Phone') {
       showFullScreenLoading()
     }
-    const token = store.state.user.token
+    const token = store.state.user.token ? store.state.user.token : sessionStorage.getItem('token')
     token && (config.headers.Authorization = token)
     return config
   },
