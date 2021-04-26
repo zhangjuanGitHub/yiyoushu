@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-02-05 15:58:04
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-02 17:06:17
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-04-19 09:36:47
 -->
 <template>
   <div class="center-wraper">
@@ -18,37 +18,45 @@
             <p class="add-down-tab">
               <span :class="{ 'is_active': isActive === 'link'}"
                     @click="changeActive('link')">推文链接</span>
-              <span :class="{ 'is_active': isActive === 'name'}"
-                    @click="changeActive('name')">账号名称</span>
+              <!-- <span :class="{ 'is_active': isActive === 'name'}"
+                    @click="changeActive('name')">账号名称</span> -->
             </p>
             <el-input class="add-down-input"
                       v-model="value"
+                      type="textarea"
+                      :autosize="{ minRows: 2, maxRows: 5}"
+                      resize="none"
                       placeholder="请输入待添加的公众号的微信推文链接"></el-input>
             <div>
-              <el-button type="primary" @click="addAccount">添加</el-button>
-              <el-button type="primary" @click="cancelAdd">取消</el-button>
+              <el-button type="primary"
+                         @click="addAccount">添加</el-button>
+              <el-button type="primary"
+                         @click="cancelAdd">取消</el-button>
             </div>
           </div>
           <div>
-            <img src="@/assets/images/search/add.png" alt="">
+            <img src="@/assets/images/search/add.png"
+                 alt="">
           </div>
         </div>
       </div>
       <el-dialog width="465px"
                  center
                  :visible.sync="dialogVisible"
+                 :close-on-click-modal='false'
                  :modal-append-to-body="false">
         <div class="flex-cloumn-cen">
-          <img src="@/assets/images/search/tip.png" alt="">
-          <p class="add-account-p">提交成功后，我们会在
-            <span>30</span>分钟以后返回该文章链接账号，请在
-            <span>30</span>分钟以后再次搜索此文章链接。</p>
+          <img src="@/assets/images/search/tip.png"
+               alt="">
+          <p class="add-account-p">提交成功， 我们会尽快通过该文章链接获取公众号数据信息，请您几分钟后在尝试搜索公众号。 如果一直未收录，请您点击右侧在线客服联系我们。
+          </p>
         </div>
-      <div slot="footer" class="dialog-footer add-account-tip">
-        <el-button type="primary">联系我们</el-button>
-        <el-button @click="dialogVisible = false">关闭</el-button>
-      </div>
-    </el-dialog>
+        <div slot="footer"
+             class="dialog-footer add-account-tip">
+          <!-- <el-button type="primary">联系我们</el-button> -->
+          <el-button @click="dialogVisible = false">知道了</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -69,7 +77,15 @@ export default {
       this.isActive = tab
     },
     addAccount () {
-      this.dialogVisible = true
+      if (this.value) {
+        this.$http.post(this.$api.collectAccount, { url: this.value })
+          .then(res => {
+            this.dialogVisible = true
+            this.value = ''
+          }).catch(() => { })
+      } else {
+        this.$message.warning('请填写要收录的公众号链接')
+      }
     },
     cancelAdd () {
       this.$router.go(-1)

@@ -19,26 +19,40 @@ const externals = {
   axios: 'axios',
   'element-ui': 'ELEMENT'
 }
+// js: [
+//   'https://cdn.bootcss.com/ajax/libs/vue/2.6.10/vue.min.js',
+//   'https://cdn.bootcss.com/ajax/libs/vue-router/3.0.3/vue-router.min.js',
+//   'https://cdn.bootcss.com/ajax/libs/vuex/3.0.1/vuex.min.js',
+//   'https://cdn.bootcss.com/ajax/libs/axios/0.21.1/axios.min.js',
+//   'https://cdn.bootcss.com/element-ui/2.15.0/index.js'
+//   // 'https://unpkg.com/element-ui@2.15.0/lib/index.js'
+// ]
 const cdn = {
   // 开发环境
   dev: {
-    css: ['https://cdn.bootcss.com/element-ui/2.15.0/theme-chalk/index.css'],
+    css: [
+      'https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.0/theme-chalk/index.min.css'
+    ],
     js: []
   },
   // 生产环境
   build: {
-    css: ['https://cdn.bootcss.com/element-ui/2.15.0/theme-chalk/index.css'],
+    css: [
+      'https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.0/theme-chalk/index.min.css'
+    ],
     js: [
-      'https://cdn.bootcss.com/vue/2.6.10/vue.min.js',
-      'https://cdn.bootcss.com/vue-router/3.0.3/vue-router.min.js',
-      'https://cdn.bootcss.com/vuex/3.0.1/vuex.min.js',
-      'https://cdn.bootcss.com/axios/0.21.1/axios.min.js',
-      'https://unpkg.com/element-ui@2.15.0/lib/index.js'
+      'https://cdn.bootcdn.net/ajax/libs/vue/2.6.10/vue.js',
+      'https://cdn.bootcdn.net/ajax/libs/vue-router/3.0.3/vue-router.min.js',
+      'https://cdn.bootcdn.net/ajax/libs/vuex/3.0.1/vuex.min.js',
+      'https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js',
+      'https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.0/index.min.js'
+      // 'https://unpkg.com/element-ui@2.15.0/lib/index.js'
     ]
   }
 }
 
 module.exports = {
+  outputDir: 'yiyoushu',
   // 打包为压缩文件Gzip
   configureWebpack: config => {
     const myConfig = {}
@@ -97,12 +111,11 @@ module.exports = {
     port: 8080,
     proxy: {
       '/yys': {
-        // target: 'http://192.168.10.68:9998', // 志刚
-        target: 'http://192.168.10.18:19001', // 安豪
-        // target: 'http://192.168.10.8', // 线上
-        // target: 'http://192.168.10.6:19001', // 李智
-        // target: 'http://192.168.10.19:19001', // 东阳
-        // target: 'http://192.168.10.17:19001', // 坤明
+        // target: 'http://192.168.10.9:19001', // 安豪
+        // target: 'http://47.93.1.52', // 线上
+        target: 'http://192.168.10.18:19001', // 李智
+        // target: 'http://192.168.10.13:19001', // 东阳
+        // target: 'http://192.168.10.16:19001', // 坤明
         changeOrigin: false,
         ws: true, // 是否启用websockets
         pathRewrite: {

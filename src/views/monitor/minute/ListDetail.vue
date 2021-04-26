@@ -2,15 +2,15 @@
  * @Author: MaiChao
  * @Date: 2021-03-12 14:10:32
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-17 14:48:48
+ * @LastEditTime: 2021-04-21 18:12:39
 -->
 <template>
   <div class="detail content-show">
     <div class="tabs-header flex-ali-center">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'AccountCompany' }">新媒体监测</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ name: 'Minutearticle' }">分钟级监测</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{name:'Minutelist'}">监测列表</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'MinuteArticle' }">分钟级监测</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name:'MinuteList' }">监测列表</el-breadcrumb-item>
         <el-breadcrumb-item>查看详情</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -18,34 +18,59 @@
       <div class="relation flex-ali-center">
         <div class="left-data flex-ali-center">
           <div class="header-img flex-ali-center">
-            <img :src="require('@/assets/images/home/ava.png')">
+            <img :src="articleData.oriHeadImg">
           </div>
           <div class="data-name">
-            <p class="name">京检在线</p>
-            <p class="detail">jingjianzaixian</p>
+            <p class="name">{{articleData.nickname}}</p>
+            <p class="detail">{{articleData.alias}}</p>
           </div>
         </div>
         <div class="right-data flex-ali-center">
           <div class="header-img flex-ali-center">
-            <img :src="require('@/assets/images/home/ava.png')">
+            <img :src="articleData.cover">
           </div>
           <div class="flex-ali-center">
-            <div class="lable-box">次条</div>
-            <div>河北 邢台南宫市内5地升为中风险地区</div>
-            <div class="click-span">粉丝留言 ></div>
+            <div class="lable-box" v-if="articleData.idx==='1'">头条</div>
+            <div class="lable-box" v-else>次条</div>
+            <div>{{articleData.title}}</div>
+            <div class="click-span cursor" @click="openUrl(articleData)">文章详情 ></div>
           </div>
         </div>
       </div>
       <div class="all-trend">
-        <div class="title-box flex-ali-center">
+        <div class="title-box flex-bwt-center">
           <div class="title">整体趋势图</div>
           <div class="tabs-button">
-            <span @click="tabsTrend('yuedu')"
-                  :class="isTrend==='yuedu'?'isActive':''">阅读数</span>
-            <span @click="tabsTrend('dianzan')"
-                  :class="isTrend==='dianzan'?'isActive':''">点赞数</span>
-            <span @click="tabsTrend('zaikan')"
-                  :class="isTrend==='zaikan'?'isActive':''">在看数</span>
+            <span @click="tabsTrend('readNum')"
+                  :class="charParams.historyName==='readNum'?'isActive':''">阅读数</span>
+            <span @click="tabsTrend('oldLikeNum')"
+                  :class="charParams.historyName==='oldLikeNum'?'isActive':''">点赞数</span>
+            <span @click="tabsTrend('likeNum')"
+                  :class="charParams.historyName==='likeNum'?'isActive':''">在看数</span>
+          </div>
+        </div>
+        <div class="bottom-tabs" v-if="charParams.historyName==='readNum'">
+          <div class="tabs-button">
+            <span @click="tabsNumber('total')"
+                  :class="charParams.dataType==='total'?'isActive':''">阅读总数</span>
+            <span @click="tabsNumber('increment')"
+                  :class="charParams.dataType==='increment'?'isActive':''">阅读增量</span>
+          </div>
+        </div>
+        <div class="bottom-tabs" v-if="charParams.historyName==='oldLikeNum'">
+          <div class="tabs-button">
+            <span @click="tabsNumber('total')"
+                  :class="charParams.dataType==='total'?'isActive':''">点赞总数</span>
+            <span @click="tabsNumber('increment')"
+                  :class="charParams.dataType==='increment'?'isActive':''">点赞增量</span>
+          </div>
+        </div>
+        <div class="bottom-tabs" v-if="charParams.historyName==='likeNum'">
+          <div class="tabs-button">
+            <span @click="tabsNumber('total')"
+                  :class="charParams.dataType==='total'?'isActive':''">在看总数</span>
+            <span @click="tabsNumber('increment')"
+                  :class="charParams.dataType==='increment'?'isActive':''">在看增量</span>
           </div>
         </div>
         <div id="line-charts"></div>
@@ -57,30 +82,30 @@
                     style="width: 100%"
                     border
                     :cell-style="{ textAlign: 'center' }">
-            <el-table-column prop="address"
+            <el-table-column prop="insertTime"
                              label="时间">
             </el-table-column>
-            <el-table-column prop="sumReadNum"
+            <el-table-column prop="readNum"
                              width="190"
                              label="总阅读量">
             </el-table-column>
-            <el-table-column prop="sumPointNum"
+            <el-table-column prop="incrReadNum"
                              label="阅读增量"
                              width="190">
             </el-table-column>
-            <el-table-column prop="influenceNum"
+            <el-table-column prop="oldLikeNum"
                              label="总点赞"
                              width="190">
             </el-table-column>
-            <el-table-column prop="livenessNum"
+            <el-table-column prop="incrOldLikeNum"
                              width="190"
                              label="点赞数增量">
             </el-table-column>
-            <el-table-column prop="sumOldLikeNum"
+            <el-table-column prop="likeNum"
                              label="总在看数"
                              width="190">
             </el-table-column>
-            <el-table-column prop="sumOldLikeNum"
+            <el-table-column prop="incrLikeNum"
                              label="在看数增量"
                              width="190">
             </el-table-column>
@@ -98,17 +123,33 @@ import echarts from 'echarts'
 export default {
   data () {
     return {
+      accountData: {},
+      articleData: {},
       total: 0,
-      isTrend: 'yuedu',
+      isTrend: 'readNum',
+      isNumber: 'total',
       tableData: [],
+      lineData: '',
+      charParams: {
+        id: '',
+        historyName: 'readNum',
+        dataType: 'total'
+      },
       pageSort: {
         pageNum: 1,
         pageSize: 10
       }
     }
   },
+  created () {
+    console.log(window.location)
+    this.charParams.id = this.$route.query.id
+  },
   mounted () {
+    // this.getAnalyseList()
+    this.getArticleList()
     this.lineCharts()
+    this.getTableList()
   },
   methods: {
     // 分页
@@ -117,173 +158,218 @@ export default {
       this.pageSort.pageNum = query.page
       this.getTableList()
     },
-    getTableList () { },
+    // 获取个人账号数据
+    getAnalyseList () {
+      this.$http.get(this.$api.getAccount, { params: { id: this.$route.query.id } })
+        .then(res => {
+          this.accountData = res.data.data
+        }).catch(() => { })
+    },
+    // 获取监测文章数据
+    getArticleList () {
+      this.$http.get(this.$api.getArticle, { params: { id: this.$route.query.id } })
+        .then(res => {
+          this.articleData = res.data.data
+        }).catch(() => { })
+    },
+    // 获取表格数据
+    getTableList () {
+      // commentCount: 62 评论
+      // id: 6
+      // incrCommentCount: 37 评论增量
+      // incrLikeNum: 18 在看增量
+      // incrOldLikeNum: 73 点赞增量
+      // incrReadNum: 1010 阅读增量
+      // insertTime: "2021-03-22 16:21:51" 时间
+      // likeNum: 49 在看
+      // oldLikeNum: 168 点赞
+      // readNum: 4695 阅读
+      let params = {
+        id: this.$route.query.id,
+        pageBean: {
+          pageSize: this.pageSort.pageSize,
+          pageNum: this.pageSort.pageNum
+        }
+      }
+      this.$http.post(this.$api.listArticleHistory, params)
+        .then(res => {
+          this.tableData = res.data.data.article
+          this.total = res.data.data.total
+        }).catch(() => { })
+    },
     // 趋势渠道切换
     tabsTrend (tabs) {
-      this.isTrend = tabs
+      this.charParams.historyName = tabs
+      this.lineCharts()
+    },
+    tabsNumber (tabs) {
+      this.charParams.dataType = tabs
+      this.lineCharts()
     },
     lineCharts () {
-      let myChart = echarts.init(document.getElementById('line-charts'))
-      let option = {
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            lineStyle: {
-              color: {
-                type: 'linear',
-                x: 0,
-                y: 0,
-                x2: 0,
-                y2: 1,
-                colorStops: [{
-                  offset: 0,
-                  color: 'rgba(0, 255, 233,0)'
-                }, {
-                  offset: 0.5,
-                  color: 'rgba(255, 255, 255,1)'
-                }, {
-                  offset: 1,
-                  color: 'rgba(0, 255, 233,0)'
-                }],
-                global: false
-              }
-            }
-          }
-        },
-        grid: {
-          top: '20%',
-          left: '5%',
-          right: '5%',
-          bottom: '5%'
-          // containLabel: true
-        },
-        legend: {
-          x: '85%',
-          top: '5%',
-          textStyle: {
-            color: '#90979c'
-          },
-          data: ['第2条']
-        },
-        xAxis: [{
-          type: 'category',
-          axisLine: {
-            show: true
-          },
-          splitArea: {
-            // show: true,
-            color: '#aaa',
-            lineStyle: {
-              color: '#f00'
-            }
-          },
-          axisLabel: {
-            show: false,
-            color: '#aaa'
-          },
-          splitLine: {
-            show: false
-          },
-          axisTick: {
-            show: false
-          },
-          boundaryGap: false,
-          data: ['A', 'B', 'C', 'D', 'E', 'F']
-
-        }],
-        yAxis: [{
-          type: 'value',
-          min: 0,
-          // max: 140,
-          splitNumber: 4,
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: 'rgba(255,255,255,0.1)'
-            }
-          },
-          axisLine: {
-            show: false
-          },
-          axisLabel: {
-            show: true,
-            margin: 20,
-            textStyle: {
-              color: '#aaa'
-
-            }
-          },
-          axisTick: {
-            show: false
-          }
-        }],
-        series: [
-          {
-            name: '第2条',
-            type: 'line',
-            // smooth: true, //是否平滑
-            showAllSymbol: true,
-            // symbol: 'image://./static/images/guang-circle.png',
-            symbol: 'circle',
-            symbolSize: 25,
-            lineStyle: {
-              normal: {
-                color: '#00ca95',
-                shadowColor: 'rgba(0, 0, 0, .3)',
-                shadowBlur: 0,
-                shadowOffsetY: 5,
-                shadowOffsetX: 5
-              }
-            },
-            label: {
-              show: true,
-              position: 'top',
-              textStyle: {
-                color: '#00ca95'
-              }
-            },
-
-            itemStyle: {
-              color: '#00ca95',
-              borderColor: '#fff',
-              borderWidth: 3,
-              shadowColor: 'rgba(0, 0, 0, .3)',
-              shadowBlur: 0,
-              shadowOffsetY: 2,
-              shadowOffsetX: 2
-            },
+      this.$http.post(this.$api.listArticleChart, this.charParams)
+        .then(res => {
+          let charData = res.data.data.data
+          let charTime = res.data.data.time
+          let myChart = echarts.init(document.getElementById('line-charts'))
+          let option = {
             tooltip: {
-              show: false
-            },
-            areaStyle: {
-              normal: {
-                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                  offset: 0,
-                  color: 'rgba(0,202,149,0.3)'
-                },
-                {
-                  offset: 1,
-                  color: 'rgba(0,202,149,0)'
+              trigger: 'axis',
+              axisPointer: {
+                type: 'shadow',
+                label: {
+                  show: true,
+                  backgroundColor: '#fff',
+                  color: '#556677',
+                  borderColor: 'rgba(0,0,0,0)',
+                  shadowColor: 'rgba(0,0,0,0)'
+
                 }
-                ], false),
-                shadowColor: 'rgba(0,202,149, 0.9)',
-                shadowBlur: 20
-              }
+              },
+              textStyle: {
+                color: '#5c6c7c'
+              },
+              extraCssText: 'box-shadow: 1px 0 2px 0 rgba(163,163,163,0.5)'
             },
-            data: [281, 398, 214, 179, 289, 356]
+            grid: {
+              top: '20%',
+              left: '5%',
+              right: '5%',
+              bottom: '5%'
+              // containLabel: true
+            },
+            legend: {
+              x: '55%',
+              top: '5%',
+              textStyle: {
+                color: '#90979c'
+              }
+              // data: ['第2条']
+            },
+            xAxis: [{
+              type: 'category',
+              axisLine: {
+                show: true
+              },
+              splitArea: {
+                // show: true,
+                color: '#aaa',
+                lineStyle: {
+                  color: '#f00'
+                }
+              },
+              axisLabel: {
+                show: false,
+                color: '#aaa'
+              },
+              splitLine: {
+                show: false
+              },
+              axisTick: {
+                show: false
+              },
+              boundaryGap: false,
+              data: charTime
+
+            }],
+            yAxis: [{
+              type: 'value',
+              min: 0,
+              minInterval: 1,
+              // max: 140,
+              splitNumber: 4,
+              splitLine: {
+                show: true,
+                lineStyle: {
+                  color: 'rgba(255,255,255,0.1)'
+                }
+              },
+              axisLine: {
+                show: false
+              },
+              axisLabel: {
+                show: true,
+                margin: 20,
+                textStyle: {
+                  color: '#aaa'
+
+                }
+              },
+              axisTick: {
+                show: false
+              }
+            }],
+            series: [
+              {
+                name: '',
+                type: 'line',
+                // smooth: true, //是否平滑
+                showAllSymbol: true,
+                // symbol: 'image://./static/images/guang-circle.png',
+                symbol: 'circle',
+                symbolSize: 15,
+                lineStyle: {
+                  normal: {
+                    color: '#00ca95',
+                    shadowColor: 'rgba(0, 0, 0, .3)',
+                    shadowBlur: 0,
+                    shadowOffsetY: 5,
+                    shadowOffsetX: 5
+                  }
+                },
+                label: {
+                  show: true,
+                  position: 'top',
+                  textStyle: {
+                    color: '#00ca95'
+                  }
+                },
+
+                itemStyle: {
+                  color: '#00ca95',
+                  borderColor: '#fff',
+                  borderWidth: 3,
+                  shadowColor: 'rgba(0, 0, 0, .3)',
+                  shadowBlur: 0,
+                  shadowOffsetY: 2,
+                  shadowOffsetX: 2
+                },
+                tooltip: {
+                  show: false
+                },
+                areaStyle: {
+                  normal: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: 'rgba(0,202,149,0.3)'
+                    },
+                    {
+                      offset: 1,
+                      color: 'rgba(0,202,149,0)'
+                    }
+                    ], false),
+                    shadowColor: 'rgba(0,202,149, 0.9)',
+                    shadowBlur: 20
+                  }
+                },
+                data: charData
+              }
+            ]
           }
-        ]
-      }
-      myChart.setOption(option)
-      window.addEventListener('resize', function () {
-        myChart.resize()
-      })
+          myChart.setOption(option)
+          window.addEventListener('resize', function () {
+            myChart.resize()
+          })
+        }).catch(() => { })
+    },
+    openUrl (item) {
+      window.open(item.url, '_black')
     }
   },
   components: {
   }
 }
-</script>s
+</script>
 <style>
 @import '../monitor.css';
 </style>
@@ -296,8 +382,8 @@ export default {
   max-width: 1400px;
   margin: 28px auto;
 }
-.header-img {
-  height: 58px;
+.header-img img {
+  max-height: 80px;
   margin-right: 20px;
 }
 .right-data .header-img {
@@ -305,9 +391,11 @@ export default {
   width: 100px;
   height: 58px;
   align-items: center;
+  margin-right: 10px;
 }
 .right-data .header-img img {
-  height: 58px;
+  max-width: 100%;
+  max-height: 58px;
   display: block;
   margin: 0 auto;
 }
@@ -327,6 +415,7 @@ export default {
   font-size: 12px;
   border: 1px solid #f79406;
   margin-right: 10px;
+  padding: 0 8px;
 }
 .click-span {
   color: #3b81fe;
@@ -334,6 +423,7 @@ export default {
 }
 .all-trend {
   padding: 60px 0;
+  position: relative;
 }
 .title {
   margin-right: 65px;
@@ -356,7 +446,8 @@ export default {
   cursor: pointer;
   font-weight: bold;
 }
-.tabs-button span:hover,.tabs-button span.isActive {
+.tabs-button span:hover,
+.tabs-button span.isActive {
   color: #409eff;
   border-color: #c6e2ff;
   background-color: #ecf5ff;
@@ -364,6 +455,11 @@ export default {
 #line-charts {
   width: 100%;
   height: 495px;
-  margin-top: 20px;
+  margin-top: 50px;
+}
+.bottom-tabs {
+  position: absolute;
+  right: 20px;
+  top: 100px;
 }
 </style>

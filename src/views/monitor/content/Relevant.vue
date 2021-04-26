@@ -1,8 +1,9 @@
 <!--
  * @Author: MaiChao
- * @Date: 2021-02-04 14:54:55
+ * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-09 19:55:37
+ * @LastEditTime: 2021-04-20 15:20:56
+ * 其他文章数量改为非涉检文章数量
 -->
 <template>
   <div class="relevant content-box">
@@ -10,27 +11,26 @@
       <span class="tabs-title"
             @click="tabsAll('Relevant')"
             :class="this.$route.name==='Relevant'?'isActive':''">微信</span>
-      <span class="tabs-title"
-            @click="tabsAll('')">微博</span>
+      <!-- <span class="tabs-title"
+            @click="tabsAll('')">微博</span> -->
     </div>
     <div class="wx-warp-box">
       <el-form :inline="true"
                ref="ruleForm"
                :model="ruleForm">
-        <el-form-item class="timeRange"
+        <el-form-item class="publishTime"
                       label="时间"
-                      prop="timeRange">
-          <el-date-picker
-              v-model="ruleForm.timeRange"
-              size="small"
-              type="daterange"
-              align="right"
-              unlink-panels
-              range-separator="至"
-              value-format="yyyy-MM-dd"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期">
-            </el-date-picker>
+                      prop="publishTime">
+          <el-date-picker v-model="ruleForm.publishTime"
+                          size="small"
+                          type="daterange"
+                          align="right"
+                          unlink-panels
+                          range-separator="至"
+                          value-format="yyyy-MM-dd"
+                          start-placeholder="开始日期"
+                          end-placeholder="结束日期">
+          </el-date-picker>
         </el-form-item>
         <el-form-item prop="keyword"
                       label="关键字">
@@ -58,26 +58,27 @@
       <div class="relevant-table">
         <el-table :data="tableData"
                   style="width: 100%"
-                  height="310"
+                  height="570"
                   border
                   :cell-style="{ textAlign: 'center' }"
                   :default-sort="{prop: 'date', order: 'descending'}">
-          <el-table-column label="序号"
+          <!-- <el-table-column label="序号"
                            width="80">
             <template slot-scope='scope'>
               <div>
                 {{scope.$index+1}}
               </div>
             </template>
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column prop="nickname"
-                           label="账号信息"
-                           width="250">
+                           label="账号信息">
             <template slot-scope='scope'>
-              <div class="account-infor flex-ali-center">
-                <img :src="scope.row.hd_head_img" alt="">
+              <div class="account-infor flex-ali-center cursor" @click="tabsCharts(scope.row)">
+                <img :src="scope.row.hd_head_img"
+                     alt="">
                 <div class="account-name">
-                  <p class="import-name" v-html='scope.row.nickname'></p>
+                  <p class="import-name"
+                     v-html='scope.row.nickname'></p>
                   <p>{{scope.row.alias}}</p>
                 </div>
               </div>
@@ -90,7 +91,7 @@
           </el-table-column>
           <el-table-column prop="procuratorialCountNum"
                            sortable
-                           label="涉检总数"
+                           label="涉检文章数量"
                            width="200">
             <template slot-scope='scope'>
               <div class="cursor"
@@ -99,17 +100,27 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="pictureNum"
+          <el-table-column prop="articleNotPertinenceNum"
                            sortable
-                           label="其他总数"
-                           width="200">
+                           label="非涉检文章数量">
+            <template slot-scope="scope">
+              <div class="cursor"
+                   @click="openInvolved(scope.row)">{{scope.row.articleNotPertinenceNum}}</div>
+            </template>
           </el-table-column>
-          <el-table-column prop="last_pubtime"
-                           label="截止时间">
+          <el-table-column prop="pictureNum"
+                           width="200"
+                           sortable
+                           label="其他文章数量">
+            <template slot-scope="scope">
+              <div class="cursor"
+                   @click="openInvolved(scope.row)">{{scope.row.pictureNum}}</div>
+            </template>
           </el-table-column>
         </el-table>
-        <set-page @pagingChange="pagingChange"
-                  :total="total" ref="child"></set-page>
+        <!-- <set-page @pagingChange="pagingChange"
+                  :total="total"
+                  ref="child"></set-page> -->
       </div>
     </div>
   </div>
@@ -120,38 +131,24 @@ import echarts from 'echarts'
 export default {
   data () {
     return {
-      total: 100,
+      // total: 0,
       ruleForm: {
         publishTime: [],
         keyword: '',
-        pageSize: 5,
-        pageNum: 1
+        pageSize: 10,
+        pageNum: 1,
+        bizList: []
+
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: []
     }
   },
   created () {
-    // const end = new Date()
-    // const start = new Date()
-    // start.setTime(start.getTime() - 3600 * 1000 * 24 * 30 * 6)
-    // this.ruleForm.publishTime[0] = this.formatDate(start)
-    // this.ruleForm.publishTime[1] = this.formatDate(end)
+    const end = new Date()
+    const start = new Date()
+    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+    this.ruleForm.publishTime[0] = this.formatDate(start)
+    this.ruleForm.publishTime[1] = this.formatDate(end)
   },
   methods: {
     formatDate (now) {
@@ -161,31 +158,36 @@ export default {
       return year + month + d
     },
     // 分页
-    pagingChange (query) {
-      this.ruleForm.pageSize = query.size
-      this.ruleForm.pageNum = query.page
-      this.getTableData()
-      this.drawLine()
-    },
+    // pagingChange (query) {
+    //   this.ruleForm.pageSize = query.size
+    //   this.ruleForm.pageNum = query.page
+    //   this.getTableData()
+    //   this.drawLine()
+    // },
     // 获取表格信息
     getTableData () {
       this.$http.post(this.$api.articlePertinence, this.ruleForm)
         .then(res => {
-          console.log(res.data.data)
           this.tableData = res.data.data.data
-          this.total = parseInt(res.data.data.count)
+          // this.total = parseInt(res.data.data.count)
         }).catch(() => { })
     },
     searchList () {
-      this.ruleForm.pageSize = 5
-      this.ruleForm.pageNum = 1
-      this.$refs.child.handleCurrentChange(1)
+      this.ruleForm.bizList = []
+      this.getTableData()
+      this.drawLine()
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
-      this.ruleForm.pageSize = 10
-      this.ruleForm.pageNum = 1
-      this.$refs.child.handleCurrentChange(1)
+      // this.ruleForm.pageSize = 10
+      this.ruleForm.bizList = []
+      this.getTableData()
+      this.drawLine()
+    },
+    tabsCharts (row) {
+      this.ruleForm.bizList = []
+      this.ruleForm.bizList.push(row.biz)
+      this.drawLine()
     },
     // 折线图
     drawLine () {
@@ -193,16 +195,13 @@ export default {
       let colorList = ['#9E87FF', '#73DDFF', '#fe9a8b', '#F56948', '#9E87FF']
       let time = []
       let articleCountNum = []
-      let pictureNum = []
-      // let params = {
-      //   publishTime: this.ruleForm.publishTime
-      // }
+      let procuratorialNum = []
       this.$http.post(this.$api.linePertinence, this.ruleForm)
         .then(res => {
           res.data.data.forEach(item => {
             time.push(item.time)
             articleCountNum.push(item.articleCountNum)
-            pictureNum.push(item.pictureNum)
+            procuratorialNum.push(item.procuratorialNum)
             let option = {
               backgroundColor: '#fff',
               title: {
@@ -356,30 +355,9 @@ export default {
                 splitLine: {
                   show: false
                 }
-              }, {
-                type: 'value',
-                position: 'right',
-                axisTick: {
-                  show: false
-                },
-                axisLabel: {
-                  textStyle: {
-                    color: '#556677'
-                  },
-                  formatter: '{value}'
-                },
-                axisLine: {
-                  show: true,
-                  lineStyle: {
-                    color: '#DCE2E8'
-                  }
-                },
-                splitLine: {
-                  show: false
-                }
               }],
               series: [{
-                name: '涉检文章数',
+                name: '文章总数',
                 type: 'line',
                 data: articleCountNum,
                 symbolSize: 1,
@@ -409,12 +387,43 @@ export default {
                   }
                 }
               },
+              // {
+              //   name: '其他文章数',
+              //   type: 'line',
+              //   data: picturelNum,
+              //   symbolSize: 1,
+              //   yAxisIndex: 0,
+              //   symbol: 'circle',
+              //   smooth: true,
+              //   showSymbol: false,
+              //   lineStyle: {
+              //     width: 5,
+              //     color: new echarts.graphic.LinearGradient(0, 0, 1, 0, [{
+              //       offset: 0,
+              //       color: '#d3f9f5'
+              //     },
+              //     {
+              //       offset: 1,
+              //       color: '#17ecd5'
+              //     }
+              //     ]),
+              //     shadowColor: 'rgba(23,236,813, 0.3)',
+              //     shadowBlur: 10,
+              //     shadowOffsetY: 20
+              //   },
+              //   itemStyle: {
+              //     normal: {
+              //       color: colorList[2],
+              //       borderColor: colorList[2]
+              //     }
+              //   }
+              // },
               {
-                name: '其他文章数',
+                name: '涉检文章数',
                 type: 'line',
-                data: pictureNum,
+                data: procuratorialNum,
                 symbolSize: 1,
-                yAxisIndex: 1,
+                yAxisIndex: 0,
                 symbol: 'circle',
                 smooth: true,
                 showSymbol: false,
@@ -475,14 +484,28 @@ export default {
 }
 .wx-warp-content {
   padding: 0 20px 20px 20px;
+  box-sizing: border-box;
 }
 #line-charts {
+  padding: 0 20px 20px 20px;
+  box-sizing: border-box;
   height: 300px;
 }
-.account-infor img{
+.account-infor img {
   height: 60px;
   width: 60px;
   margin-right: 20px;
 }
-
+.picture-num i {
+  margin-left: 5px;
+}
+.relevant-table {
+  width: 1100px;
+  margin: 0 auto;
+  padding-bottom: 20px;
+  box-sizing: border-box;
+}
+.import-name {
+  text-align: left;
+}
 </style>

@@ -3,7 +3,7 @@
  * @@Description:单位账号
  * @Date: 2021-02-26 10:45:47
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-16 11:02:35
+ * @LastEditTime: 2021-04-19 11:22:38
 -->
 <template>
   <div class="company">
@@ -64,38 +64,66 @@
                   :cell-style="{ textAlign: 'center' }"
                   :default-sort="{prop: 'date', order: 'descending'}">
           <el-table-column label="账号类型"
-                           width="180" prop="type">
+                           width="180" prop="accountType">
             <template slot-scope='scope'>
-              <div v-if="scope.row.type===1">
+              <div v-if="scope.row.accountType===1">
                 微信公众号
               </div>
-              <div v-if="scope.row.type===2">
+              <div v-if="scope.row.accountType===2">
                 微博
               </div>
             </template>
           </el-table-column>
           <el-table-column prop="accountName"
-                           label="账号名称"
-                           width="250">
+                           label="账号名称">
+            <template slot-scope='scope'>
+                <div class="account-infor flex-ali-center">
+                  <!-- <img :src="scope.row.headImage"
+                       alt=""> -->
+                  <el-image :src="scope.row.headImage">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </el-image>
+                  <div class="account-name">
+                    <p class="import-name"
+                       v-html='scope.row.accountName'></p>
+                  </div>
+                </div>
+              </template>
           </el-table-column>
           <el-table-column prop="accountCode"
                            label="账号ID"
-                           width="200">
+                           width="280">
           </el-table-column>
           <el-table-column prop="updateTime"
-                           label="添加时间" width="200">
+                           label="添加时间" width="250">
           </el-table-column>
-          <el-table-column label="操作">
+          <!-- <el-table-column label="操作" width="200">
             <template slot-scope='scope'>
               <div class="click-span" @click="deleteItem(scope.row)">
                 删除
               </div>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
     </div>
     <set-page @pagingChange="pagingChange"
                   :total="total"></set-page>
+    <el-dialog title="任务删除"
+                 :visible.sync="deleteTeam"
+                 :modal-append-to-body="false"
+                 :close-on-click-modal='false'
+                 width="30%"
+                 center>
+        <span class="dialog-span">您确定要执行此操作吗?</span>
+        <span slot="footer"
+              class="dialog-footer">
+          <el-button @click="overDelete">取 消</el-button>
+          <el-button type="primary"
+                     @click="deleteTeams">确 定</el-button>
+        </span>
+      </el-dialog>
   </div>
 </template>
 <script>
@@ -105,7 +133,9 @@ import { exportTable } from '@/lib/tools'
 export default {
   data () {
     return {
-      total: 100,
+      deleteTeam: false,
+      deleteId: '',
+      total: 0,
       ruleForm: {
         accountName: '',
         accountType: 1,
@@ -138,7 +168,21 @@ export default {
       this.ruleForm.pageNum = query.page
       this.getTableData()
     },
-    deleteItem (item) {},
+    // 删除弹框
+    deleteItem (item) {
+      this.deleteTeam = true
+      this.deleteId = item.id
+    },
+    // 确定删除
+    deleteTeams () {
+      this.deleteTeam = false
+      console.log(this.deleteId)
+    },
+    // 取消删除
+    overDelete () {
+      this.deleteTeam = false
+      this.deleteId = ''
+    },
     // 查询
     queryData () {
       this.ruleForm.pageSize = 10
@@ -174,5 +218,16 @@ export default {
 .company-table{
   padding: 20px 30px;
   box-sizing: border-box;
+}
+.account-infor {
+  width: 200px;
+  margin: 0 auto;
+}
+.account-infor .el-image {
+  height: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  margin-right: 20px;
+  border: 1px solid #eee;
 }
 </style>

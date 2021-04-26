@@ -1,19 +1,20 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-04 09:41:36
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-05 16:19:12
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-04-12 14:50:30
 -->
 <template>
+<!-- 页面中所有timeRange改为publishTime 04/12 -->
   <div class="content-search flex-bwt-center">
     <div>
       <el-form :inline="true"
                ref="ruleForm"
                :model="ruleForm">
-        <el-form-item class="timeRange"
+        <el-form-item class="publishTime"
                       label="时间"
-                      prop="timeRange">
-          <el-select v-model="ruleForm.timeRange"
+                      prop="publishTime">
+          <el-select v-model="ruleForm.publishTime"
                      size="small"
                      @change="changeValue"
                      placeholder="请选择">
@@ -57,7 +58,7 @@ export default {
   data () {
     return {
       ruleForm: {
-        timeRange: '1',
+        publishTime: '1',
         keyword: '',
         time: []
       }
@@ -67,23 +68,28 @@ export default {
     searchList () {
       this.$emit('getSearchList', this.ruleForm)
     },
+    getCalc (days) {
+      const now = new Date()
+      now.setTime(now.getTime() - 3600 * 1000 * 24 * days)
+      return now
+    },
     changeValue (val) {
-      const end = new Date()
-      const start = new Date()
-      if (val === '1') {
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+      let end = this.getCalc(1)
+      let start = ''
+      if (val === '3') {
+        start = this.getCalc(365)
       } else if (val === '2') {
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 180)
+        start = this.getCalc(180)
       } else {
-        start.setTime(start.getTime() - 3600 * 1000 * 24 * 365)
+        start = this.getCalc(30)
       }
       this.ruleForm.time[0] = timeFormat(start)
       this.ruleForm.time[1] = timeFormat(end)
     },
     resetForm (ruleForm) {
-      this.ruleForm.timeRange = '1'
+      this.ruleForm.publishTime = '1'
       this.ruleForm.keyword = ''
-      this.changeValue(1)
+      this.changeValue('1')
       this.$emit('getSearchList', this.ruleForm)
     },
     exportExcel () {

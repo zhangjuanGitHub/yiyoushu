@@ -3,7 +3,7 @@
  * @@Description:公众号收藏
  * @Date: 2021-02-26 10:46:48
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 17:31:25
+ * @LastEditTime: 2021-04-19 11:22:00
 -->
 <template>
   <div class="collection">
@@ -75,8 +75,22 @@
             </template>
           </el-table-column>
           <el-table-column prop="accountName"
-                           label="账号名称"
-                           width="250">
+                           label="账号名称">
+              <template slot-scope='scope'>
+                <div class="account-infor flex-ali-center">
+                  <!-- <img :src="scope.row.headImage"
+                       alt=""> -->
+                  <el-image :src="scope.row.headImage">
+                    <div slot="error" class="image-slot">
+                      <i class="el-icon-picture-outline"></i>
+                    </div>
+                  </el-image>
+                  <div class="account-name">
+                    <p class="import-name"
+                       v-html='scope.row.accountName'></p>
+                  </div>
+                </div>
+              </template>
           </el-table-column>
           <el-table-column prop="accountCode"
                            label="账号ID"
@@ -85,7 +99,8 @@
           <el-table-column prop="updateTime"
                            label="添加时间" width="200">
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作"
+                           width="250">
             <template slot-scope='scope'>
               <div class="click-span delete" @click="deleteItem(scope.row)">
                 删除
@@ -97,6 +112,7 @@
     <el-dialog title="回溯删除"
                  :visible.sync="deleteTeam"
                  :modal-append-to-body="false"
+                 :close-on-click-modal='false'
                  width="30%"
                  center>
         <span class="dialog-span">您确定要执行此操作吗?</span>
@@ -212,4 +228,16 @@ export default {
   padding: 20px 30px;
   box-sizing: border-box;
 }
+.account-infor {
+  width: 200px;
+  margin: 0 auto;
+}
+.account-infor .el-image {
+  height: 60px;
+  min-width: 60px;
+  max-width: 60px;
+  margin-right: 20px;
+  border: 1px solid #eee;
+}
+
 </style>

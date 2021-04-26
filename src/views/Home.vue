@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description: Home
  * @Date: 2021-01-28 11:10:50
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 11:48:05
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-22 17:11:45
 -->
 <template>
   <div class="home-wrap">
@@ -36,9 +36,9 @@
             <span class="right-tab cursor"
                   :class="{ 'hot_active': hotActive === 'wx'}"
                   @click="changeHotActive('wx')">微信</span>
-            <span class="right-tab cursor"
+            <!-- <span class="right-tab cursor"
                   :class="{ 'hot_active': hotActive === 'wb'}"
-                  @click="changeHotActive('wb')">微博</span>
+                  @click="changeHotActive('wb')">微博</span> -->
           </p>
           <p class="hot-up-right">
             <span class="show-reload cursor"
@@ -62,7 +62,7 @@
                   <!-- <el-avatar size="medium" :src="circleUrl"></el-avatar> -->
                   <p>{{item.nickname}}</p>
                 </div>
-                <p v-html="item.last_pubtime.slice(0, 10)"></p>
+                <p v-html="(item.last_pubtime || '').slice(0, 10)"></p>
                 <!-- <p>{{item.type}}</p> -->
               </div>
             </el-card>
@@ -89,9 +89,9 @@
                 <p class="you-down-title">开箱即用的数据产品</p>
                 <p class="you-down-intro">覆盖图文、短视频等多平台数据工具</p>
                 <div class="you-down-btn flex-bwt-center">
-                  <p>账号监测</p>
-                  <p>内容监测</p>
-                  <p>账号对比</p>
+                  <p @click="$router.push({ name: 'AccountCompany'})">账号监测</p>
+                  <p @click="$router.push({ name: 'Prescription'})">内容监测</p>
+                  <p @click="$router.push({ name: 'AccountCompare'})">账号对比</p>
                 </div>
               </div>
             </el-card>
@@ -102,8 +102,8 @@
                 <p class="you-down-title">面向开发的数据集成</p>
                 <p class="you-down-intro">提供深度定制的新媒体数据服务</p>
                 <div class="you-down-btn flex-bwt-center">
-                  <p>API列表</p>
-                  <p>数据定制</p>
+                  <p @click="$router.push({ name: 'GetToken'})">开放API</p>
+                  <p @click="$router.push({ name: 'Custom'})">数据定制</p>
                 </div>
               </div>
             </el-card>
@@ -114,8 +114,8 @@
                 <p class="you-down-title">多领域的权威榜单</p>
                 <p class="you-down-intro">提供多种行业领域的数据榜单</p>
                 <div class="you-down-btn flex-bwt-center">
-                  <p>微信榜单</p>
-                  <p>微博榜单</p>
+                  <p @click="$router.push({ name: 'Personal'})">行业榜单</p>
+                  <p @click="$router.push({ name: 'Official'})">政法榜单</p>
                 </div>
               </div>
             </el-card>
@@ -173,10 +173,8 @@
         </div>
         <div class="home-center-main">
           <p>智能融媒采集分析生产协作平台</p>
-          <p>具备高效稳定的新媒体数据采集与处理能力，可即时采集微信、微博、头条、
-            抖音等各类复杂新媒体数据资源，通过大数据分析挖掘涉检、涉政、涉法等文章属性，
-            分析其发文与账号属性关联程度，给账号考核提供数据帮助。系统提供多维度数据分析服务、
-            历史发文导出、分钟级监测、api接口等功能。支持第三方调用，
+          <p>具备高效稳定的新媒体数据采集与处理能力，可即时采集微信、微博、头条、抖音等各类复杂新媒体数据资源，通过大数据分析挖掘涉检、涉政、涉法等文章属性，
+            分析其发文与账号属性关联程度，给账号考核提供数据帮助。系统提供多维度数据分析服务、历史发文导出、分钟级监测、api接口等功能。支持第三方调用，
             为党政机关、媒体、企业、个人等客户提供“全、快、准”的大数据服务。</p>
           <!-- <p>查看更多 +</p> -->
         </div>
@@ -226,32 +224,38 @@
            data-aos-duration="1000">
         <div class="hot-up flex-bwt-center">
           <p class="flex-ali-center">
-            <span class="left-title">行业客户</span>
+            <span class="left-title">我们客户</span>
           </p>
           <p></p>
         </div>
         <div class="home-footer-main">
-          <div v-for="(item, index) of userList" :key="index">
+          <div v-for="(item, index) of 20" :key="index">
             <el-card shadow="hover"
                     :body-style="{ padding: '0px' }">
-                <img :src="item.url" alt="">
+                <img :src="require('@/assets/images/home/hang_'+index+'.png')" alt="">
             </el-card>
           </div>
         </div>
       </div>
     </div>
     <!-- 右侧在线客服 -->
-    <div class="home-right-fixed">
-      <div class="home-fixed-up flex-cloumn-all">
-        <i class="el-icon-service"></i>
-        <p>在线客服</p>
-      </div>
+    <!-- <div class="home-right-fixed">
+        <el-popover
+          placement="left"
+          width="300"
+          trigger="click">
+          <img class="kefu" src="@/assets/images/home/lianxikefu.png" alt="">
+          <div class="home-fixed-up flex-cloumn-all cursor" slot="reference">
+            <i class="el-icon-service"></i>
+            <p>在线客服</p>
+          </div>
+        </el-popover>
       <div class="home-fixed-down flex-cloumn-all">
         <i class="el-icon-question"></i>
         <p>帮助中心</p>
       </div>
       <el-backtop :right="1" :bottom="200" :visibility-height="10"></el-backtop>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -282,7 +286,7 @@ export default {
         autoplay: {
           delay: 3000,
           stopOnLastSlide: false,
-          disableOnInteraction: true
+          disableOnInteraction: false
         },
         effect: 'fade',
         speed: 2000
@@ -362,39 +366,6 @@ export default {
           imgIndex: 8,
           title: '年终汇报',
           msg: '通过各维度计算展示账号的全方面数据统计信息，为年终述职、运营报告等提供有力依据。'
-        }
-      ],
-      // 行业客户
-      userList: [
-        {
-          url: require('@/assets/images/home/user_1.png')
-        },
-        {
-          url: require('@/assets/images/home/hang_0.png')
-        },
-        {
-          url: require('@/assets/images/home/hang_1.jpg')
-        },
-        {
-          url: require('@/assets/images/home/hang_2.png')
-        },
-        {
-          url: require('@/assets/images/home/hang_3.png')
-        },
-        {
-          url: require('@/assets/images/home/hang_5.png')
-        },
-        {
-          url: require('@/assets/images/home/hang_6.png')
-        },
-        {
-          url: require('@/assets/images/home/hang_7.jpg')
-        },
-        {
-          url: require('@/assets/images/home/hang_8.png')
-        },
-        {
-          url: require('@/assets/images/home/hang_0.png')
         }
       ],
       searchApi: '',

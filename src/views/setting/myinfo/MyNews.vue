@@ -2,8 +2,8 @@
  * @Author: MaiChao
  * @@Description:我的消息
  * @Date: 2021-02-26 15:25:21
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-15 15:22:17
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-25 15:57:27
 -->
 <template>
   <div class="password">
@@ -14,6 +14,10 @@
       <div class="user-detail">
         <p> <span class="user-name">{{this.userInfo.nickName}}</span><span class="member">免费会员</span></p>
         <p class="user-id">账号ID:<span class="user-num">{{this.userInfo.wechatUserId}}</span></p>
+      </div>
+     <div class="login-phone"
+           v-if="userInfo.loginPhone">
+        <p>手机绑定:<span class="user-num">{{userInfo.loginPhone}}</span></p>
       </div>
     </div>
     <div class="password-content">
@@ -29,7 +33,8 @@
       </div>
       <div class="table-box">
         <div style="margin:20px 0">
-          <el-button @click="toggleSelection()" :disabled="multipleSelection.length<=0"
+          <el-button @click="toggleSelection()"
+                     :disabled="ids.length<=0"
                      size="small">标记已读</el-button>
         </div>
         <el-table :data="tableData"
@@ -42,22 +47,29 @@
           <el-table-column type="selection"
                            width="55">
           </el-table-column>
-          <el-table-column prop="address"
+          <el-table-column prop="messageTitle"
                            width="190"
                            label="消息标题">
           </el-table-column>
-          <el-table-column prop="sumReadNum"
+          <el-table-column prop="messageContent"
                            label="消息内容">
             <template slot-scope='scope'>
-              <div @click="openWeb(row)">{{scope.row.sumReadNum}}</div>
+              <div class="cursor"
+                   @click="routeOther(scope.row)">{{scope.row.messageContent}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="sumPointNum"
+          <el-table-column prop="readStatus"
                            label="是否已读"
                            width="190">
+            <template slot-scope='scope'>
+              <div class="delete"
+                   v-if="scope.row.readStatus===0">未读</div>
+              <div class="export"
+                   v-else>已读</div>
+            </template>
           </el-table-column>
-          <el-table-column prop="influenceNum"
-                           label="监测完成时间"
+          <el-table-column prop="createTime"
+                           label="消息发送时间"
                            width="190">
           </el-table-column>
         </el-table>
@@ -69,14 +81,14 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
       total: 0,
-      userInfo: '',
       isTrend: '',
       tableData: [],
-      multipleSelection: [],
+      ids: [],
       params: {
         messageType: '',
         messageTitle: '',
@@ -87,28 +99,41 @@ export default {
   },
   created () {
     this.$route.query.type ? this.isTrend = this.$route.query.type : this.isTrend = ''
-    this.geUserInfo()
     this.getTableList()
   },
   methods: {
+    routeOther (row) { // 1:账号分析,2:分钟级监测,3:账号回溯
+      if (row.messageType === 1) {
+        let routeName = row.extraParam === '1' ? 'WeekSearch' : 'MonthSearch'
+        this.openWeb(row, routeName, row.extraParam)
+      } else {
+        let routerName = row.messageType === 2 ? 'MinuteList' : row.messageType === 3 ? 'BackTrack' : ''
+        this.openWeb(row, routerName)
+      }
+    },
     handleSelectionChange (val) {
-      this.multipleSelection = val
+      this.ids = []
+      val.forEach(item => {
+        this.ids.push(item.id)
+      })
     },
     // 选中状态
     toggleSelection (rows) {
-      if (rows) {
-        rows.forEach(row => {
-          this.$refs.multipleTable.toggleRowSelection(row)
-        })
-      } else {
-        this.$refs.multipleTable.clearSelection()
+      let params = {
+        ids: this.ids
       }
-    },
-    // 获取 用户信息
-    geUserInfo () {
-      this.$http.get(this.$api.getUserInfo)
+      this.$http.post(this.$api.batchRead, params)
         .then(res => {
-          this.userInfo = res.data.data
+          if (res.data.code === 200) {
+            this.getTableList()
+            if (rows) {
+              rows.forEach(row => {
+                this.$refs.multipleTable.toggleRowSelection(row)
+              })
+            } else {
+              this.$refs.multipleTable.clearSelection()
+            }
+          }
         }).catch(() => { })
     },
     // 分页
@@ -125,11 +150,14 @@ export default {
         }).catch(() => { })
     },
     // 已读
-    openWeb (row) {
-      console.log(this.isTrend)
+    openWeb (row, routerName ,type) {
       this.$http.get(this.$api.messageRead, { params: { id: row.id } })
         .then(res => {
-          this.$router.push({ name: '', type: '' })
+          if (type) {
+            this.$router.push({ name: routerName, query: { type: type, tab: 'list' } })
+          } else {
+            this.$router.push({ name: routerName })
+          }
         }).catch(() => { })
     },
     // 切换展示区内容
@@ -140,7 +168,11 @@ export default {
       this.$refs.child.handleCurrentChange(1)
     }
   },
-  components: {}
+  computed: {
+    ...mapState({
+      userInfo: state => state.user.userInfo
+    })
+  }
 }
 </script>
 <style >
@@ -165,15 +197,11 @@ export default {
   margin-left: 20px;
   padding: 3px;
 }
-.user-id {
-  font-size: 14px;
-  color: #707277;
-}
 .password-content {
   margin-top: 35px;
   width: 100%;
   border-top: 1px solid #f7f8fa;
-  padding: 20px 0 35px 0px;
+  padding-top: 20px;
 }
 .tabs-button span {
   display: inline-block;

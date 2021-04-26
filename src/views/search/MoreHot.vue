@@ -2,16 +2,17 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-02-04 13:29:02
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-02 17:06:04
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-23 13:45:59
 -->
 <template>
   <div class="more-hot-wrap">
     <!-- 搜索框 -->
     <div class="home-up-wrap">
       <div class="home-up flex-ali-center">
-        <img src="@/assets/images/home/aside.png" alt="">
-        <div class="home-search-box flex-cloumn">
+        <img src="@/assets/images/login/yys.png" alt="">
+        <div class="home-search-box flex-cloumn"
+             v-if="accountActive">
           <div class="home-search-keyword flex-ali-center">
             <el-menu :default-active="accountActive"
                       mode="horizontal"
@@ -24,16 +25,27 @@
             </el-menu>
           </div>
           <div>
-            <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦" v-model="queryText">
+            <el-autocomplete v-model="queryText"
+                            v-if="accountActive === 'wx'"
+                            :fetch-suggestions="querySearch"
+                            placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                            :trigger-on-focus="false"
+                            @select="Searchkeyword">
+              <el-button type="primary" slot="append" icon="el-icon-search" @click="Searchkeyword"></el-button>
+            </el-autocomplete>
+            <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                      v-model="queryText"
+                      v-else-if="accountActive === 'article'">
               <el-button type="primary" slot="append" icon="el-icon-search" @click="Searchkeyword"></el-button>
             </el-input>
           </div>
         </div>
+        <div class="crumbs" v-else>热文</div>
       </div>
     </div>
     <div class="center-wraper">
       <div class="wraper">
-        <ul>
+        <ul v-if="isSearched">
           <li class="more-hot-li flex-ali-center" v-for="(item, index) of moreHotList" :key="index">
             <div class="more-cover-box">
               <img :src="item.cover" alt="封面" @click="targetUrl(item.url)">
@@ -58,6 +70,10 @@
             </div>
           </li>
         </ul>
+        <div v-else class="flex-cloumn-cen account-list-undefined">
+          <img src="@/assets/images/search/undefined.png" alt="">
+          <p>抱歉，没有找到关于“<span>{{queryText}}</span>”的结果。</p>
+        </div>
         <set-page @pagingChange="pagingChange"
                   :total="total"
                   ref="child"></set-page>
@@ -73,6 +89,7 @@ export default {
   data () {
     return {
       total: 0,
+      isSearched: true, // 是否查询到
       accountActive: '',
       queryText: '',
       moreHotList: [],
@@ -88,11 +105,31 @@ export default {
     },
     Searchkeyword () {
       if (this.accountActive === 'article') {
-        // this.$refs.child.handleCurrentChange(1)
-        this.$router.push({name: 'MoreHot', query: { type: this.accountActive, keyword: this.queryText}})
+        this.queryText = this.queryText.replace(/\s*/g, '')
+        if (this.queryText.length > 0 && this.queryText !== ' ') {
+          this.$router.push({name: 'MoreHot', query: { type: this.accountActive, keyword: this.queryText}})
+        } else {
+          this.$message.warning('请输入要搜索的关键字')
+        }
       } else if (this.accountActive === 'wx') {
         this.$router.push({name: 'AccountList', query: { type: this.accountActive, keyword: this.queryText}})
       }
+    },
+    // 搜索提示
+    querySearch (query, cb) {
+      let obj = {
+        searchSource: 1, // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
+        queryText: this.queryText
+      }
+      this.$http.post(this.$api.wxSearchTip, obj)
+        .then(res => {
+          let newRes = []
+          let result = res.data.data
+          for (let i = 0; i < result.length; i++) {
+            newRes.push({value: result[i]})
+          }
+          cb(newRes)
+        }).catch(() => {})
     },
     pagingChange (query) {
       this.ruleForm.pageSize = query.size
@@ -116,19 +153,24 @@ export default {
         .then(res => {
           this.moreHotList = res.data.data.article
           this.total = res.data.data.total
-        })
+        }).catch(() => {})
     },
     // 获取微信文章
     getWxAirticle () {
       let obj = {
-        keyword: this.queryText,
-        page: this.ruleForm.pageNum
-      }
-      this.$http.get(this.$api.getWxAirticle, { params: obj })
-        .then(res => {
-          this.moreHotList = res.data.data.article
-          this.total = res.data.data.total
-        })
+          keyword: this.queryText,
+          page: this.ruleForm.pageNum
+        }
+        this.$http.get(this.$api.getWxAirticle, { params: obj })
+          .then(res => {
+            if (res.data.data.article.length > 0) {
+              this.isSearched = true
+            } else {
+              this.isSearched = false
+            }
+            this.moreHotList = res.data.data.article
+            this.total = res.data.data.total
+          }).catch(() => {})
     },
     listenerSubmit (e) {
       if (e.keyCode === 13) {
@@ -193,6 +235,21 @@ export default {
 
   }
 }
+.crumbs {
+  color: #3b81fe;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+}
+.crumbs::before {
+  content: '';
+  display: block;
+  width: 5px;
+  height: 5px;
+  background-color: #3b81fe;
+  margin: 0 34px;
+  border-radius: 50%;
+}
 .more-hot-main>p:first-child {
   font-size: 24px;
   color: $title-color;
@@ -214,5 +271,16 @@ export default {
 }
 .more-hot-main>p:nth-child(2) {
   margin: 15px 0 30px;
+}
+.account-list-undefined {
+  img {
+    width: 457px;
+    height: 329px;
+    margin-top: 30px;
+  }
+  p {
+    margin-top: 55px;
+    color: $content-text-color;
+  }
 }
 </style>

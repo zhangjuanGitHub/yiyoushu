@@ -2,8 +2,7 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-01-28 11:13:04
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-16 15:51:57
+ * @LastEditors: zhangjuan
  */
 export default {
   login: '/front/login/pass', // post 密码登录
@@ -14,8 +13,11 @@ export default {
   // 首页
   getHotArticle: '/front/wechat/home/hotWechatArticle', // get 获取微信热文
   getWxAirticle: '/front/wechat/home/searchWechatArticle', // get 获取微信文章
+  startCollect: '/front/HomePage/wechatNotCollected', // post 申请采集该账号
   // 搜索微信账号相关信息
+  collectAccount: '/front/wechat/collectAccount', // post 收录公众号
   wxSearch: '/front/HomePage/queryWxAccount', // post 搜索微信账号
+  wxSearchTip: '/front/HomePage/association', // post 搜索框提示
   getWxAccount: '/front/HomePage/queryWxAccountById', // get 获取微信账号信息
   getSameAccount: '/front/HomePage/queryWxAccountByAuthInfo', // get 获取账号同主体账号
   getWxClass: '/front/HomePage/queryWxClassifyByBiz', // get 获取账号的文章类别
@@ -31,6 +33,7 @@ export default {
   getDomainAnalyse: '/front/HomePage/analysisOfDomainNames', // post 获取常用域名分析
   getThirtyHot: '/front/HomePage/hotTweets', // post 获取30天热门推文
   getNewestTw: '/front/HomePage/latestTweets', // post 获取最新推文
+  updateYime: '/front/HomePage/updateDataByTime', // get 更新数据
   getHTArticle: '/front/wechat/article/id', // get 获取当前文章信息
   getHTAction: '/front/HomePage/messageAnalysis', // post 获取历史推文文章详情
   getHTComment: '/front/HomePage/commentDetails', // post 获取历史推文文章评论
@@ -46,6 +49,7 @@ export default {
   addMonitor: '/front/monitor/weixin/addMonitorArticle', // 文章实时监测--添加文章监测
   delMonitor: '/front/monitor/weixin/delMonitorArticle', // 文章实时监测--删除文章
   listMonitor: '/front/monitor/weixin/findMonitorArticle', // 文章实时监测--文章列表展示
+  selectIdByBiz: '/front/monitor/weixin/selectIdByBiz', // 文章实时监测--通过文章biz获取id
   getBasicData: '/front/HomePage/basicDataStatistics', // post 基础数据统计-获取行为数据
   getReadTrend: '/front/HomePage/readingTrends', // post 获取阅读趋势折线图
   findInteractivityList: '/front/monitor/weixin/findInteractivityList', // 互动性监测--账号
@@ -54,6 +58,10 @@ export default {
   barChart: '/front/monitor/weixin/countSimilarityLocationChart', // 文章实时监测详情-- 柱状图
   comparisonContent: '/front/monitor/weixin/findComparisonContent', // 文章实时监测详情-- 文章内容对比
   findSimilarityChart: '/front/monitor/weixin/findSimilarityChart', // 文章实时监测详情--- 传播统计图
+  findByReprintChart: '/front/monitor/weixin/findByReprintChart', // 文章实时监测详情------折线图 被转载量分析
+  findByAuthTypeChart: '/front/monitor/weixin/findByAuthTypeChart', // 文章实时监测詳情 -- 柱状图 文章传播类型分析
+  findByTerritoryChart: '/front/monitor/weixin/findByTerritoryChart', // 文章实时监测詳情 -- 地图 文章传播地域分析
+  findByHistogramChart: '/front/monitor/weixin/findByHistogramChart', // 文章实时监测詳情 -- 柱状图 文章传播地域分析
   analyseList: '/front/analyse/weixin/findAccountAnalyseList', // 查询账号分析详情
   findArtileList: '/front/analyse/weixin/findArtileList', // 展示文章数据， 原创文章and转载文章 展示文章数据， 阅读数倒序
   // 个人中心
@@ -68,10 +76,14 @@ export default {
   verify: '/front/sys/user/qr/verify', // 验证微信
   getPhoneCode: '/front/sys/user/captcha', // 获取验证码
   sendSms: '/front/sys/user/sendSms', // 发送短信接口
+  getSmsCode: '/front/custom/sendSms', // 数据定制获取短信验证码
+  addCustom: '/front/custom/addCustom', // 提交数据定制
   bindPhone: '/front/sys/user/bindPhone', // 绑定手机号
+  unbindPhone: '/sys/user/unbindPhone', // 解绑手机号
   company: '/front/department/verify/submit', // 单位认证
   newsData: '/front/message/listData', // 消息列表
-  messageRead: '/front/message/read', // 读取消息更改状态
+  batchRead: '/front/message/batchRead', // 读取消息更改状态
+  messageRead: '/front/message/read', // 读取消息更改状态(单个)
   // 账号监测-zz
   getAccountCompany: '/front/monitor/weixin/findAccountData', // post 获取账号监测, 发布时效监测
   getSensitiveList: '/front/monitor/weixin/findErrorWord', // post 获取错敏监测列表
@@ -84,9 +96,56 @@ export default {
   addOneAnalyse: '/front/analyse/weixin/addAnalyseAccount', // post 添加账号分析
   getTaskList: '/front/analyse/weixin/findAnalyseAccount', // post 查询账号分析列表
   deleteTask: '/front/analyse/weixin/delAnalyseAccount', // post 删除任务
+  // 账号对比
+  startCompare: '/front/comparison/weixin/findComparison', // post 账号对比
+  departCompare: '/front/comparison/weixin/findUnitComparison', // post 单位对比
+  getCityList: '/front/comparison/weixin/findRegion', // get 获取地区列表
+  getTreeList: '/front/comparison/weixin/findDepartment', // post 根据市获取下级
+  getAccountList: '/front/comparison/weixin/findAccountByDepartment', // post 根据单位查账号信息
+  // 分钟级监测
+  getArticle: '/front/wechatActual/getArticle', // get 获取微信监测文章信息
+  searchUrl: '/front/wechatActual/searchUrl', // post 根据文章url获取信息
+  searchAccount: '/front/wechatActual/searchAccount', // post 根据名称搜索微信账号
+  saveArticle: '/front/wechatActual/saveArticle', // post 保存文章监测
+  saveAccount: '/front/wechatActual/saveAccount', // post 保存账号监测
+  updateArticle: '/front/wechatActual/updateArticle', // post 修改文章监测
+  updateAccount: '/front/wechatActual/updateAccount', // post 修改账号监测
+  listArticle: '/front/wechatActual/listArticle', // post 获取监测文章列表
+  deleteArticle: '/front/wechatActual/deleteArticle', // get 删除微信监测文章
+  deleteAccount: '/front/wechatActual/deleteAccount', // get 删除微信监测文章
+  listCount: '/front/wechatActual/listAccount', // post 获取监测账号列表
+  getAccount: '/front/wechatActual/getAccount', // get 获取微信检测账号信息
+  listArticleHistory: '/front/wechatActual/listArticleHistory', // post 获取文章行为数据列表
+  listArticleChart: '/front/wechatActual/listArticleHistoryChart', // post 获取文章行为数据列表
   // 账号回溯
+  getByUrlsss: '/front/review/wechat/accountUrls',
   getByUrl: '/front/review/wechat/account/url', // post 根据URL查询账号
-  getByKey: '/front/review/wechat/account/keyword', // post 根据keyword查询
+  getByKey: '/front/review/wechat/account/keyword', // post 根据账号查询
   getBySome: '/front/review/wechat/account/batch', // post 批量查询
   addBatchAcc: '/front/review/wechat/saveBatch', // post 批量添加回溯
+  // 榜单
+  getCollect: '/front/follow/account/listData', // 获取收藏列表
+  qyListData: '/front/wechat/ranking/qyListData', // 企业个人榜单
+  qyWechat: '/front/wechat/article/getQYWechatArticle', // 企业微信榜单
+  qyVideo: '/front/wechat/article/getQYWechatVideo', // 企业视频榜单
+  zfListData: '/front/wechat/ranking/zfListData', // 政府榜单
+  ZFWechat: '/front/wechat/article/getZFWechatArticle', // 政府文章榜单
+  zfVideo: '/front/wechat/article/getZFWechatVideo', // 政府视频榜单
+  addRanking: '/front/wechat/ranking/user/addRanking', // 创建/更新自定义榜单
+  userData: '/front/wechat/ranking/user/listData', // 自定义榜单列表
+  batchDelete: '/front/wechat/ranking/user/batchDelete', // 删除自定义榜单
+  updateDateDate: '/front/wechat/ranking/updateDateDate', // 榜单更新时间
+  rankArea: '/front/wechat/ranking/area', // 榜单地区
+  rankType: '/front/wechat/ranking/type', // 榜单类型
+  addAccount: '/front/follow/account/add', // 收藏榜单
+  bizAddRanking: '/front/wechat/ranking/user/item/bizAddRanking', // 添加公众号到指定自定义榜单
+  defineDeldte: '/front/follow/account/del', // 取消收藏
+  userListData: '/front/wechat/ranking/userListData', // 自定义榜单
+  userWechat: '/front/wechat/article/getUserWechatArticle', // 自定义文章榜单
+  userVideo: '/front/wechat/article/getUserWechatVideo', // 自定义视频榜单
+  itemDelete: '/front/wechat/ranking/user/item/delete', // 自定义移除单条公众号
+  // 文章类别新增
+  fourProsecution: '/front/HomePage/proportionOfArticleProcuratorial', // 根据biz查询该公众号文章四大检察占比
+  tenBusiness: '/front/HomePage/proportionOfArticleBusiness', // 根据biz查询该公众号文章十大业务占
+  checkSubscribe: '/front/wechatActual/checkSubscribe' // 判断账号是否被关注
 }

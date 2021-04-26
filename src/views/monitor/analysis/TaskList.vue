@@ -29,7 +29,7 @@
           <el-button size="small"
                      @click="resetForm">重置</el-button>
           <el-button size="small"
-                     type="info"
+                     type="danger"
                      v-if="!comfirmDel"
                      @click="goDelete">批量删除</el-button>
           <el-button size="small"
@@ -58,13 +58,13 @@
           </div>
           <div v-if="item.analyseScore > 0"
                class="cursor"
-               @click="toAnalyse(item.biz)">
+               @click="toAnalyse(item.id)">
             <el-progress type="circle"
-                       :width="40"
-                       :stroke-width="3"
-                       :format="format"
-                       :color="customColorMethod"
-                       :percentage="Number(item.analyseScore)"
+                         :width="40"
+                         :stroke-width="3"
+                         :format="format"
+                         :color="customColorMethod"
+                         :percentage="Number(item.analyseScore)"
                        ></el-progress>
           </div>
           <p v-else>处理中...</p>
@@ -91,7 +91,7 @@
                     layout="total, prev, pager, next, jumper"
                     :page-size="ruleForm.pageSize"
                     :current-page.sync="ruleForm.pageNum"
-                    :hide-on-single-page="total<=ruleForm.pageNum"
+                    :hide-on-single-page="total<=ruleForm.pageSize"
                     :total="total">
       </el-pagination>
     </div>
@@ -122,20 +122,24 @@ export default {
       this.getTaskList()
     },
     format (percentage) {
-      return percentage
+      return percentage + '分'
     },
-    customColorMethod(percentage) {
+    customColorMethod (percentage) {
       if (percentage < 30) {
-        return '#ff0000';
+        return '#ff0000'
       } else if (percentage < 70) {
-        return '#e6a23c';
+        return '#e6a23c'
       } else {
-        return '#67c23a';
+        return '#67c23a'
       }
     },
     // 跳转详情页
-    toAnalyse (biz) {
-      this.$router.push({ name: 'WeekDetail', query: { id: biz } })
+    toAnalyse (id) {
+      if (this.$route.name === 'MonthSearch') {
+        this.$router.push({ name: 'MonthDetail', query: { id: id } })
+      } else {
+        this.$router.push({ name: 'WeekDetail', query: { id: id } })
+      }
     },
     goDelete () {
       this.comfirmDel = true
@@ -144,7 +148,7 @@ export default {
     cancelDelete () {
       this.comfirmDel = false
     },
-    changeIsDel(item, index) {
+    changeIsDel (item, index) {
       this.$set(this.taskList, index, item)
     },
     // 确认删除

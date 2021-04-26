@@ -3,12 +3,12 @@
  * @@Description:文章既时监测
  * @Date: 2021-03-02 11:41:51
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-03 09:27:21
+ * @LastEditTime: 2021-04-15 18:57:52
 -->
 <template>
   <div class="minute-article">
     <div class="tabs-header">
-      文章既时监测
+      文章即时监测
     </div>
     <div class="header-img">
       <img :src="require('@/assets/images/monitor/minute.png')"
@@ -25,55 +25,63 @@
                  :label-position="labelPosition"
                  class="link-ruleForm">
           <el-form-item label="发文链接"
-                        prop="link" class="link-input">
-            <el-input v-model="ruleForm.link" placeholder="请输入发文链接"></el-input>
+                        prop="link"
+                        class="link-input">
+            <el-input v-model="ruleForm.link"
+                      placeholder="请输入发文链接"></el-input>
             <el-button type="primary"
-                       @click="queryLink()">查询</el-button>
+                       @click="queryLink('ruleForm')">查询</el-button>
           </el-form-item>
-          <div class="link-box flex-ali-center">
-            <div class="close el-icon-circle-close"></div>
+          <div class="link-box flex-ali-center"
+               v-if="Object.keys(this.articleData).length!==0">
+            <div class="close el-icon-circle-close"
+                 @click="deleteList()"></div>
             <div class="left-image">
-              <img :src="require('@/assets/images/home/ava.png')"
+              <img :src="articleData.oriHeadImg"
                    alt="">
             </div>
             <div class="right-detail">
               <div class="right-top">
-                <span class="name">京检在线</span>
-                <span class="send-time">日常发文时间段:</span>
-                <span class="send-detail">无发文规律</span>
+                <span class="name">{{articleData.nickname}}</span>
+                <span class="send-time">日常发文时间:</span>
+                <span class="send-detail">{{articleData.lastPubtime}}</span>
               </div>
               <div class="right-bottom">
-                <p>公众号的历史文章进行检测，筛选出进行检删除文章。</p>
+                <p>{{articleData.title}}</p>
               </div>
             </div>
           </div>
           <div class="link-tips">*输入内容后请先点击右侧查询按钮</div>
-          <el-form-item prop="time" class="link-time">
+          <el-form-item prop="time"
+                        class="link-time">
             <div class="name">监测时长</div>
             <div class="link-line">
-            <el-radio-group v-model="ruleForm.time">
-              <el-radio :label="1">1天</el-radio>
-              <el-radio :label="2">2天</el-radio>
-              <el-radio :label="3">3天</el-radio>
-              <el-radio :label="4">4天</el-radio>
-              <el-radio :label="5">5天</el-radio>
-              <el-radio :label="6">6天</el-radio>
-              <el-radio :label="7">7天</el-radio>
-            </el-radio-group>
-            <span class="click">自定义</span>
-            <el-select v-model="ruleForm.time" size="small">
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value" size="small">
-              </el-option>
-            </el-select>
+              <el-radio-group v-model="ruleForm.time">
+                <el-radio :label="1">1天</el-radio>
+                <el-radio :label="2">2天</el-radio>
+                <el-radio :label="3">3天</el-radio>
+                <el-radio :label="4">4天</el-radio>
+                <el-radio :label="5">5天</el-radio>
+                <el-radio :label="6">6天</el-radio>
+                <el-radio :label="7">7天</el-radio>
+              </el-radio-group>
+              <span class="click">自定义</span>
+              <el-select v-model="ruleForm.time"
+                         size="small">
+                <el-option v-for="item in options"
+                           :key="item.value"
+                           :label="item.label"
+                           :value="item.value"
+                           size="small">
+                </el-option>
+              </el-select>
             </div>
           </el-form-item>
-          <div class="bottom-tips">剩余监测次数为<span>2</span>次</div>
-          <div class="bottom-button"><el-button type="primary"
-                       @click="startAngle()">开始监测</el-button></div>
+          <!-- <div class="bottom-tips">剩余监测次数为<span>2</span>次</div> -->
+          <div class="bottom-button">
+            <el-button type="primary"
+                       @click="startAngle('ruleForm')">开始监测</el-button>
+          </div>
         </el-form>
       </div>
     </div>
@@ -83,12 +91,17 @@
 export default {
   data () {
     return {
+      articleData: {},
       labelPosition: 'left',
       ruleForm: {
         link: '',
         time: 1
       },
-      rules: {},
+      rules: {
+        link: [
+          { required: true, message: '请输入发文链接', trigger: 'blur' }
+        ]
+      },
       options: [{
         value: 1,
         label: '1天'
@@ -183,7 +196,52 @@ export default {
     }
   },
   methods: {
-    startAngle () {}
+    // 查询文章
+    queryLink (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          let params = {
+            url: this.ruleForm.link
+          }
+          this.$http.post(this.$api.searchUrl, params)
+            .then(res => {
+              if (res.data.data) {
+                this.articleData = res.data.data
+              } else {
+                this.$message.warning('无该数据,请通过客服联系我们!')
+              }
+            }).catch(() => { })
+        } else {
+          return false
+        }
+      })
+    },
+    // 开始监测
+    startAngle (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          this.articleData.dayCount = this.ruleForm.time
+          this.$http.post(this.$api.saveArticle, this.articleData)
+            .then(res => {
+              if (res.data.code === 200) {
+                this.$message.success('操作成功!')
+                this.articleData = {}
+                this.$router.push({ 'name': 'MinuteList' })
+                this.$refs[formName].resetFields()
+              }
+            }).catch(() => {
+              this.articleData = {}
+            })
+        } else {
+          return false
+        }
+      })
+    },
+    // 删除
+    deleteList () {
+      this.articleData = {}
+      this.ruleForm.link = ''
+    }
   }
 }
 </script>
@@ -256,27 +314,32 @@ export default {
   color: #707277;
   line-height: 30px;
 }
+.link-box .right-bottom p{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
 .link-tips {
   margin-left: 40px;
   font-size: 14px;
   color: #f79406;
   margin-bottom: 40px;
 }
-.link-time .name{
+.link-time .name {
   font-size: 14px;
   line-height: 25px;
   margin-left: -20px;
 }
-.bottom-tips{
+.bottom-tips {
   text-align: center;
   font-size: 16px;
   color: #252934;
   margin-top: 50px;
 }
-.bottom-tips span{
+.bottom-tips span {
   font-size: 24px;
 }
-.bottom-button{
+.bottom-button {
   text-align: center;
   margin: 24px 0px;
 }

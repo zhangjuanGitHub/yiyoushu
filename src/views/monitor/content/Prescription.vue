@@ -1,8 +1,8 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-04 14:54:55
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-02-04 15:14:21
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-25 16:01:44
 -->
 <template>
   <div class="interaction content-box">
@@ -72,7 +72,8 @@
           <el-table-column prop="address"
                            label="账号信息">
               <template slot-scope='scope'>
-              <div class="account-msg-box flex-ali-center">
+              <div class="account-msg-box flex-ali-center cursor"
+                   @click="$router.push({ name: 'HistoryTweets' , query: { id: scope.row.id } })">
                 <img :src="scope.row.hd_head_img" alt="">
                 <div class="account-msg">
                   <p class="lin-clamp-1" v-html="scope.row.nickname"></p>
@@ -108,8 +109,17 @@
           </el-table-column>
           <el-table-column prop="livenessNum"
                            sortable
-                           width="95"
+                           width="101"
                            label="活跃度">
+            <template slot="header">
+              <span>活跃度</span>
+              <el-tooltip class="item" effect="dark" content="根据月发文次数和发布情况计算得出活跃度" placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </template>
+            <template slot-scope="scope">
+              <p>{{scope.row.livenessNum}}</p>
+            </template>
           </el-table-column>
           <el-table-column prop="influenceNum"
                            label="影响力"
@@ -120,21 +130,24 @@
                            label="发布情况">
             <template slot-scope="scope">
               <div class="account-pro-box">
-                <el-progress :percentage="Number(((scope.row.dayNum/7)*100).toFixed(0)) >= 100 ? 100 : Number(((scope.row.dayNum/7)*100).toFixed(0))"
-                             :color="Number(scope.row.dayNum) < 3 ? '#67C23A' : (Number(scope.row.dayNum) < 6 ? '#E6A23C' : '#F56C6C')"
+                <el-progress :percentage="getPercentage(scope.row.dayNum)"
+                             :color="getPerColor(scope.row.dayNum)"
                              :show-text="false"></el-progress>
-                <p><span>{{scope.row.dayNum}}</span>天未更新</p>
+                <p><span>{{computedNum(scope.row.dayNum)}}</span></p>
               </div>
             </template>
           </el-table-column>
           <el-table-column prop="last_pubtime"
-                           label="发布时间"
-                           width="100">
+                           label="最后发布时间"
+                           width="105">
+            <template slot-scope="scope">
+              <p v-html="(scope.row.last_pubtime || '').slice(0, 10)"></p>
+            </template>
           </el-table-column>
         </el-table>
       </div>
-      <set-page @pagingChange="pagingChange"
-                :total="total" ref="child"></set-page>
+      <!-- <set-page @pagingChange="pagingChange"
+                :total="total" ref="child"></set-page> -->
     </div>
   </div>
 </template>
@@ -147,11 +160,11 @@ export default {
     return {
       activeTab: 'wx',
       pageBean: {
-        pageSort: {
-          pageNum: 1,
-          pageSize: 10
-        },
-        level: 2, // 单位为1，关注为2
+        // pageSort: {
+        //   pageNum: 1,
+        //   pageSize: 10
+        // },
+        level: 1, // 单位为1，关注为2
         publishTime: [],
         keyword: '',
         sortDirection: '',
@@ -159,6 +172,59 @@ export default {
       },
       tableData: [],
       total: 0
+    }
+  },
+  computed: {
+    computedNum () {
+      return function (params) {
+        let value
+        switch (params) {
+          case -1:
+            value = '长时间未更新'
+            break
+          case 0:
+            value = '今天更新'
+            break
+          case 1:
+            value = '昨天更新'
+            break
+          case 2:
+            value = '前天更新'
+            break
+          default:
+            value = params + '天未更新'
+            break
+        }
+        return value
+      }
+    },
+    getPercentage () {
+      return function (day) {
+        let calc = Number(Math.abs(((1 - (day / 7)) * 100).toFixed(0)))
+        let value
+        if (calc >= 100) {
+          value = 100
+        } else {
+          value = calc
+        }
+        return value
+      }
+    },
+    getPerColor () {
+      return function (day) {
+        let value
+        if (day === -1) {
+          value = '#F56C6C'
+        } else if (day < 3) {
+          value = '#67C23A'
+        } else if (day < 6) {
+          value = '#E6A23C'
+        } else {
+          value = '#F56C6C'
+        }
+        return value
+      // Number(scope.row.dayNum) < 3 ? '#67C23A' : (Number(scope.row.dayNum) < 6 ? '#E6A23C' : '#F56C6C')
+      }
     }
   },
   methods: {
@@ -176,27 +242,33 @@ export default {
     searchList () {
       this.tableData = []
       this.total = 0
-      this.$refs.child.handleCurrentChange(1)
+      // this.$refs.child.handleCurrentChange(1)
+      this.getAccountList()
     },
     resetForm () {
       this.tableData = []
       this.total = 0
       this.pageBean.keyword = ''
       this.pageBean.publishTime = []
-      this.$refs.child.handleCurrentChange(1)
+      // this.$refs.child.handleCurrentChange(1)
+      this.getAccountList()
     },
     // 获取账号列表
     getAccountList () {
       this.$http.post(this.$api.getAccountCompany, this.pageBean)
         .then(res => {
-          if (res.data.data.data.length > 0 ) {
+          if (res.data.data.data.length > 0) {
             this.total = Number(res.data.data.count)
             this.tableData = res.data.data.data
+            this.tableData.forEach(item => {
+              item.last_pubtime = item.last_pubtime.slice(0, 10)
+            })
           } else {
-            this.$message.warning('您还没有关注账号，请先关注账号')
+            let str = this.pageBean.keyword !== '' ? '您还没有关注相关账号' : '您还没有关注账号，请先关注账号'
+            this.$message.warning(str)
           }
         })
-    },
+    }
   },
   created () {
     this.getAccountList()

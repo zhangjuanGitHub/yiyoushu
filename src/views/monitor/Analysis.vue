@@ -1,3 +1,9 @@
+<!--
+ * @Author: zhangjuan
+ * @Date: 2021-03-17 19:18:56
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-09 13:34:08
+-->
 <template>
   <div class="account">
     <div class="flex-just-center account-show">
@@ -27,7 +33,7 @@ export default {
 <style scoped>
 .account-show {
   width: 1400px;
-  min-height: 1000px;
+  min-height: calc(100vh - 181px);
   margin: 0 auto;
   margin-bottom: 70px;
 }

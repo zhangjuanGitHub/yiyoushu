@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-01-29 14:17:11
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-04 17:42:02
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-19 14:05:28
 -->
 <template>
   <div class="search-material-wrap">
@@ -15,7 +15,7 @@
           <i class="el-icon-refresh cursor" @click="updateDataTime"></i></p>
         <div class="search-mater-time">
           <!-- <p>注册时间 <span>2019年07月17日</span></p> -->
-          <p>主体类型 <span>{{accountMsg.auth_type}}</span></p>
+          <p>主体类型 <span>{{getChinese(accountMsg.auth_type)}}</span></p>
         </div>
       </div>
     </div>
@@ -37,19 +37,23 @@
           <el-table-column  label="同主体公众号"
                             width="200">
             <template slot-scope="scope">
-              <div class="search-mater-table flex-all-center">
+              <div class="search-mater-table flex-ali-center cursor"
+                   @click="reToCurrent(scope.row.id)">
                 <img :src="scope.row.ori_head_img" alt="">
-                <p v-html="scope.row.nickname"></p>
+                <p v-html="scope.row.nickname" style="text-align: left"></p>
               </div>
             </template>
           </el-table-column>
           <el-table-column prop="alias"
                             label="微信号"
-                            width="170">
+                            width="200">
           </el-table-column>
           <el-table-column prop="auth_type"
                             label="类别"
                             width="120">
+            <template slot-scope="scope">
+              <p>{{getChinese(scope.row.auth_type)}}</p>
+            </template>
           </el-table-column>
           <el-table-column prop="city"
                             label="地区"
@@ -68,6 +72,7 @@
 </template>
 
 <script>
+
 import { mapState } from 'vuex'
 import { timeFormat, secondsFormat } from '@/lib/tools'
 export default {
@@ -82,8 +87,44 @@ export default {
       accountId: '',
       mainData: [],
       accountTotal: 0,
-      updateTime: '',
-      accountMsg: {}
+      updateTime: ''
+    }
+  },
+  computed: {
+    ...mapState({
+      accountMsg: state => state.mutations.accountMsg
+    }),
+    getChinese () {
+      return function (params) {
+        let value
+        switch (params) {
+          case 'government':
+            value = '政府'
+            break
+          case 'company':
+            value = '公司'
+            break
+          case 'media':
+            value = '媒体'
+            break
+          case 'person':
+            value = '个人'
+            break
+          case 'institution':
+            value = '大学'
+            break
+          case 'others':
+            value = '其他'
+            break
+          case 'person_business':
+            value = '个体工商户'
+            break
+          default:
+            value = params
+            break
+        }
+        return value
+      }
     }
   },
   methods: {
@@ -92,15 +133,9 @@ export default {
       this.ruleForm.pageNum = query.page
       console.log(query)
     },
-    getAccountMsg () {
-      this.$http.get(`${this.$api.getWxAccount}/${this.accountId}`)
-        .then(res => {
-          this.accountMsg = res.data.data[0]
-          this.getSameAccount()
-        }).catch(() => {})
-    },
     // 同主体账号
     getSameAccount () {
+      // console.log(this.accountMsg.auth_info)
       this.$http.get(`${this.$api.getSameAccount}/${this.accountMsg.auth_info}`)
         .then(res => {
           this.accountTotal = res.data.data.shift().total
@@ -115,14 +150,25 @@ export default {
     getCurrentTime () {
       const now = new Date()
       this.updateTime = timeFormat(now.getTime()) + ' ' + secondsFormat(now.getTime())
+    },
+    reToCurrent (id) {
+      this.$router.push({ name: 'AccountMaterial', query: { id: id } })
     }
   },
-  mounted () {
-    this.accountId = this.$route.query.id
-    this.getAccountMsg()
-    this.getCurrentTime()
+  watch: {
+    '$route' (to, from) {
+      if (to.query.id !== from.query.id) {
+        this.accountId = to.query.id
+        this.$emit('refreRoute', to.query.id)
+        // this.getSameAccount()
+      }
+    }
   },
-  computed: {}
+  created () {
+    this.accountId = this.$route.query.id
+    this.getSameAccount()
+    this.getCurrentTime()
+  }
 }
 </script>
 <style lang="scss" scoped>

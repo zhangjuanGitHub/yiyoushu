@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-17 19:26:30
+ * @LastEditTime: 2021-03-26 14:18:56
 -->
 <template>
   <div class="content-show article-detail flex-bwt-center">
@@ -31,7 +31,7 @@
       </div>
       <div class="account-table">
         <div>
-          <el-input placeholder="请输入关键词" v-model="this.ruleForm.keyword" size='small'>
+          <el-input placeholder="请输入关键词" v-model="ruleForm.keyword" size='small' clearable>
              <el-button slot="append" size='small' @click="searchTable">搜索</el-button>
           </el-input>
         </div>
@@ -44,7 +44,7 @@
                            label="标题"
                            width="360">
           </el-table-column>
-          <el-table-column prop="pubtime"
+          <el-table-column prop="create_time"
                            label="发布日期">
           </el-table-column>
           <el-table-column prop="mapping_score"
@@ -77,28 +77,7 @@ export default {
         pageSize: 5,
         pageNum: 1
       },
-      url: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
-      tableData: [{
-        date: '2016-05-02',
-        name: '88',
-        address: '河北 邢台南宫市内5地升为中风险地区'
-      }, {
-        date: '2016-05-04',
-        name: '88',
-        address: '河北 邢台南宫市内5地升为中风险地区'
-      }, {
-        date: '2016-05-01',
-        name: '88',
-        address: '河北 邢台南宫市内5地升为中风险地区'
-      }, {
-        date: '2016-05-03',
-        name: '88',
-        address: '河北 邢台南宫市内5地升为中风险地区'
-      }, {
-        date: '2016-05-03',
-        name: '88',
-        address: '河北 邢台南宫市内5地升为中风险地区'
-      }]
+      tableData: []
     }
   },
   mounted () {
@@ -124,8 +103,11 @@ export default {
       this.$http.post(this.$api.articleDetail, params)
         .then(res => {
           this.articleData = res.data.data.data[0]
-          console.log(this.articleData)
           let option = {
+            tooltip: {
+              trigger: 'item'
+              // 'formatter': '{a}<br/>{b}:{c}/月'
+            },
             title: {
               text: '涉检占比图',
               left: 'center',
@@ -139,7 +121,7 @@ export default {
               name: '圆',
               type: 'pie',
               radius: ['0%', '10%'],
-              center: ['30%', '50%'],
+              center: ['50%', '50%'],
               startAngle: 180,
               hoverAnimation: true,
               label: {
@@ -148,14 +130,17 @@ export default {
                 }
               },
               data: [{
-                value: '1000',
-                name: '圆',
+                value: '500',
+                name: '半圆',
                 label: {
                   show: false
-                },
+                }
+              },
+              {
+                value: '500',
                 itemStyle: {
                   normal: {
-                    color: '#ccc'
+                    color: 'transparent'
                   }
                 }
               }
@@ -163,10 +148,10 @@ export default {
             }, {
               name: '涉检占比图',
               type: 'pie',
-              radius: [37, 200],
+              radius: [37, 170],
               avoidLabelOverlap: false,
               startAngle: 0,
-              center: ['30%', '50%'],
+              center: ['50%', '50%'],
               roseType: 'area',
               selectedMode: 'single',
               label: {
@@ -210,18 +195,9 @@ export default {
                 }
 
               },
-              // {
-              //   value: 0,
-              //   name: '',
-              //   label: {
-              //     normal: {
-              //       show: false
-              //     }
-
-              //   }
-              // },
               {
                 value: this.articleData.picturePercentage,
+                // value: 30,
                 name: '其他',
                 itemStyle: {
                   normal: {
@@ -230,32 +206,25 @@ export default {
                 }
               },
               {
-                value: this.articleData.articleNotPertinenceNumPercentage,
-                name: '非涉检',
-                itemStyle: {
-                  norma: {
-                    color: '#BAC23B'
-                  }
-                }
-              },
-              {
                 value: this.articleData.procuratorialCountPercentage,
+                // value: 50,
                 name: '涉检类',
                 itemStyle: {
                   normal: {
                     color: '#F0BA34'
                   }
                 }
+              },
+              {
+                value: this.articleData.articleNotPertinenceNumPercentage,
+                // value: 40,
+                name: '非涉检',
+                itemStyle: {
+                  norma: {
+                    color: '#BAC23B'
+                  }
+                }
               }
-              // {
-              //   value: 1000 / 10,
-              //   itemStyle: {
-              //     normal: {
-              //       color: '#E97915'
-              //     }
-              //   }
-              // }
-
               ]
             }]
           }

@@ -2,15 +2,15 @@
  * @Author: zhangjuan
  * @Description: search
  * @Date: 2021-02-01 11:07:53
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-02 16:05:44
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-16 16:31:26
  */
 module.exports = [
   {
     path: '/search/morehot',
     name: 'MoreHot',
     meta: {
-      title: '更多热文'
+      title: '文章'
     },
     component: () => import('@/views/search/MoreHot')
   },
@@ -23,7 +23,7 @@ module.exports = [
     component: () => import('@/views/search/AccountList')
   },
   {
-    path: '/search/addaccount',
+    path: '/searched/addaccount',
     name: 'AddAccount',
     meta: {
       title: '添加账号'
@@ -31,15 +31,15 @@ module.exports = [
     component: () => import('@/views/search/AddAccount')
   },
   {
-    path: '/search/account/analyse',
+    path: '/searched/account/analyse',
     name: 'ArticleAnalyse',
     meta: {
-      title: '账号分析'
+      title: '文章分析'
     },
     component: () => import('@/views/search/account/ArticleAnalyse')
   },
   {
-    path: '/search/account/',
+    path: '/searched/account/',
     component: () => import('@/views/search/SearchBox'),
     children: [
       {

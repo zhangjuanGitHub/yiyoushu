@@ -29,6 +29,12 @@ html::-webkit-scrollbar {
 .cursor {
   cursor: pointer;
 }
+.text-underline {
+  text-decoration: underline;
+}
+.flex{
+  display: flex;
+}
 .flex-all-center {
   display: flex;
   justify-content: center;
@@ -83,7 +89,7 @@ html::-webkit-scrollbar {
 }
 .wraper, .account-wraper {
   width: 1400px;
-  min-height: 1000px;
+  min-height: calc(100vh - 181px);
   margin: 0 auto;
 }
 .wraper {
@@ -164,15 +170,25 @@ html::-webkit-scrollbar {
 }
 .color6{
   background-color: #626874;
-  }
-.add-compare-table .el-table td div {
-  box-sizing: content-box;
 }
-.sens-art-content .highlight-modi {
-  border: 2px solid #ff0000;
-  /* background: #ff0000; */
+.delete{
+  color: #F56C6C;
 }
-.sens-art-content .highlight-good {
-  border: 2px solid #E6A23C;
-  /* background: #E6A23C; */
+.warning{
+  color: #E6A23C;
+}
+.export{
+  color: #67C23A;
+}
+.primary{
+  color: #3B81FE;
+}
+.info{
+  color: #909399;
+}
+.text-center{
+  text-align: center;
+}
+.search-read-feature .el-progress--circle .el-progress__text{
+  display: block;
 }

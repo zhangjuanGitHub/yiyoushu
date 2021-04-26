@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-01-28 11:16:35
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-18 10:01:44
+ * @LastEditTime: 2021-04-19 09:57:37
  */
 module.exports = [
   {
@@ -17,7 +17,7 @@ module.exports = [
         path: 'company',
         name: 'AccountCompany',
         meta: {
-          title: '微信'
+          title: '微信账号监测'
         },
         component: () => import('@/views/monitor/account/AccountCompany')
       },
@@ -209,7 +209,7 @@ module.exports = [
         path: '/monitor/minute/minutearticle',
         name: 'MinuteArticle',
         meta: {
-          title: '文章既时监测'
+          title: '文章即时监测'
         },
         component: () => import('@/views/monitor/minute/MinuteArticle')
       },
@@ -261,5 +261,13 @@ module.exports = [
       title: '数据回溯'
     },
     component: () => import('@/views/monitor/MonitorBacktrack')
+  },
+  {
+    path: '/monitor/centersens',
+    name: 'CenterSensity',
+    meta: {
+      title: '错敏检查'
+    },
+    component: () => import('@/views/monitor/CenterSensity')
   }
 ]

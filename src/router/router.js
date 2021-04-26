@@ -61,17 +61,18 @@ const router = new Router({
     return { x: 0, y: 0 }
   }
 })
-// router.beforeEach((to, from, next) => {
-//   // meta title
-//   let routeWebsiteName = store.state.mutations.setWebSiteName
-//   if (to.meta.title) {
-//     if (to.meta.title === '首页') {
-//       document.title = routeWebsiteName || '易有数'
-//     } else {
-//       document.title = to.meta.title + '-' + routeWebsiteName || '易有数'
-//     }
-//   } else {
-//     document.title = routeWebsiteName || '易有数'
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  next()
+  // meta title
+  let routeWebsiteName = '行业新媒体数据监测-易有数'
+  if (to.meta.title) {
+    if (to.meta.title === '首页') {
+      document.title = routeWebsiteName
+    } else {
+      document.title = to.meta.title + '-' + routeWebsiteName
+    }
+  } else {
+    document.title = routeWebsiteName
+  }
+})
 export default router

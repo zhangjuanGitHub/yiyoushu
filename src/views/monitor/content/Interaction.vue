@@ -1,8 +1,9 @@
 <!--
  * @Author: MaiChao
- * @Date: 2021-02-04 14:54:55
+ * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-16 09:50:44
+ * @LastEditTime: 2021-04-14 17:22:01
+ * 时间参数修改为type ， 时间类别， 1   一周    2 一个月， 3 半年， 4 ，一年
 -->
 <template>
   <div class="interaction content-box">
@@ -10,17 +11,17 @@
       <span class="tabs-title"
             @click="tabsAll('Interaction')"
             :class="this.$route.name==='Interaction'?'isActive':''">微信</span>
-      <span class="tabs-title"
-            @click="tabsAll('')">微博</span>
+      <!-- <span class="tabs-title"
+            @click="tabsAll('')">微博</span> -->
     </div>
     <div class="wx-warp-box">
       <el-form :inline="true"
                ref="ruleForm"
                :model="ruleForm">
-        <el-form-item class="timeRange"
+        <el-form-item class="publishTime"
                       label="时间"
-                      prop="timeRange">
-          <el-date-picker v-model="ruleForm.timeRange"
+                      prop="publishTime">
+          <!-- <el-date-picker v-model="ruleForm.publishTime"
                           size="small"
                           type="daterange"
                           align="right"
@@ -29,7 +30,19 @@
                           value-format="yyyy-MM-dd"
                           start-placeholder="开始日期"
                           end-placeholder="结束日期">
-          </el-date-picker>
+          </el-date-picker> -->
+          <el-select v-model="ruleForm.type"
+                           placeholder="请选择"
+                           size="small">
+                  <el-option label="一周"
+                             :value="1"></el-option>
+                  <el-option label="一月"
+                             :value="2"></el-option>
+                  <el-option label="半年"
+                             :value="3"></el-option>
+                  <el-option label="一年"
+                             :value="4"></el-option>
+                </el-select>
         </el-form-item>
         <el-form-item prop="keyword"
                       label="关键字">
@@ -38,6 +51,12 @@
                     placeholder="请输入关键字"
                     class="search_key"></el-input>
         </el-form-item>
+        <el-form-item label="排序"
+                        prop="optionSort">
+            <el-cascader v-model="ruleForm.optionSort"
+                         :options="wxOptions"
+                         size="small"></el-cascader>
+          </el-form-item>
         <el-form-item>
           <el-button size="small"
                      @click="searchList"
@@ -54,7 +73,7 @@
         <div class="title">折线图走势</div>
         <div id="line-charts"></div>
       </div> -->
-      <div class="interaction-table">
+      <!-- <div class="interaction-table">
         <el-table :data="tableData"
                   style="width: 100%"
                   border
@@ -75,7 +94,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="articleCountNum"
+          <el-table-column prop="articleNum"
                            label="文章总数"
                            sortable
                            width="200">
@@ -91,45 +110,177 @@
         <set-page @pagingChange="pagingChange"
                   :total="total"
                   ref="child"></set-page>
+      </div> -->
+      <div class="interaction-table">
+        <el-table :data="tableData"
+                  style="width: 100%"
+                  border
+                  :cell-style="{ textAlign: 'center' }"
+                  :default-sort="{prop: 'date', order: 'descending'}">
+          <el-table-column prop="nickname"
+                           label="账号信息">
+            <template slot-scope='scope'>
+              <div class="account-infor flex-ali-center">
+                <img :src="scope.row.hd_head_img"
+                     alt="">
+                <div class="account-name">
+                  <p class="import-name"
+                     v-html='scope.row.nickname'></p>
+                  <p>{{scope.row.alias}}</p>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="articleSum"
+                           label="文章总数"
+                           width="180">
+          </el-table-column>
+          <el-table-column prop="readSum"
+                           label="阅读总数" width="135">
+          </el-table-column>
+          <el-table-column prop="oldLikeSum"
+                           label="点赞总数" width="135">
+          </el-table-column>
+          <el-table-column prop="likeSum"
+                           label="在看总数" width="135">
+          </el-table-column>
+          <el-table-column prop="commentSum"
+                           label="评论总数" width="135">
+          </el-table-column>
+          <el-table-column prop="interactivityNum"
+                           label="互动指数" width="135">
+              <template slot="header">
+              <el-tooltip class="item cursor" effect="dark" content="互动指数解析" placement="top">
+                <div class="picture-num">互动指数<i class="el-icon-question"></i></div>
+              </el-tooltip>
+            </template>
+             <template slot-scope="scope">
+              <div>{{scope.row.interactivityNum}}</div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <set-page @pagingChange="pagingChange"
+                  :total="total"
+                  ref="child"></set-page>
       </div>
     </div>
   </div>
 </template>
 <script>
 // import echarts from 'echarts'
+const getSort = new Map()
+  .set('interUp', 'asc')
+  .set('interDo', 'desc') // 互动指数
+  .set('readUp', 'asc')
+  .set('readDo', 'desc') // 阅读数
+  .set('oldLikeUp', 'asc')
+  .set('oldLikeDo', 'desc') // 点赞数
+  .set('likeUp', 'asc')
+  .set('likeDo', 'desc') // 在看数
+  .set('articleUp', 'asc')
+  .set('articleDo', 'desc') // 文章
 export default {
   data () {
     return {
-      total: 100,
+      total: 0,
       ruleForm: {
-        publishTime: [],
+        type: 1,
         keyword: '',
         pageSize: 10,
-        pageNum: 1
+        pageNum: 1,
+        optionSort: ['interactivityNum', 'interDo'],
+        sortDirection: 'desc', // 排序顺序 asc 或者desc
+        sortField: 'interactivityNum' // 排序方式 文章数articleSum，阅读数readSum，再看数LikeSum ，点赞数oldLikeSum 互动指数，interactivityNum
       },
-      tableData: [{
-      }]
+      wxOptions: [
+        {
+          value: 'interactivityNum',
+          label: '互动指数',
+          children: [{
+            value: 'interUp',
+            label: '正序'
+          }, {
+            value: 'interDo',
+            label: '倒序'
+          }]
+        },
+        {
+          value: 'readSum',
+          label: '阅读数',
+          children: [{
+            value: 'readUp',
+            label: '正序'
+          }, {
+            value: 'readDo',
+            label: '倒序'
+          }]
+        },
+        {
+          value: 'LikeSum',
+          label: '在看数',
+          children: [{
+            value: 'likeUp',
+            label: '正序'
+          }, {
+            value: 'likeDo',
+            label: '倒序'
+          }]
+        },
+        {
+          value: 'articleSum',
+          label: '文章数',
+          children: [{
+            value: 'articleUp',
+            label: '正序'
+          }, {
+            value: 'articleDo',
+            label: '倒序'
+          }]
+        },
+        {
+          value: 'oldLikeSum',
+          label: '点赞数',
+          children: [{
+            value: 'oldLikeUp',
+            label: '正序'
+          }, {
+            value: 'oldLikeDo',
+            label: '倒序'
+          }]
+        }
+      ],
+      tableData: []
     }
   },
+  created () {
+    this.getTableData()
+  },
   methods: {
+    formatDate (now) {
+      var year = now.getFullYear() + '-'
+      var month = (now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1) + '-'
+      var d = (now.getDate() < 10 ? '0' + now.getDate() : now.getDate())
+      return year + month + d
+    },
     // 分页
     pagingChange (query) {
       this.ruleForm.pageSize = query.size
       this.ruleForm.pageNum = query.page
       this.getTableData()
-      this.drawLine()
+      // this.drawLine()
     },
     // 获取表格信息
     getTableData () {
+      this.ruleForm.sortDirection = getSort.get(this.ruleForm.optionSort[1])
+      this.ruleForm.sortField = this.ruleForm.optionSort[0]
       this.$http.post(this.$api.findInteractivityList, this.ruleForm)
         .then(res => {
-          console.log(res.data.data)
-          this.tableData = res.data.data
+          this.tableData = res.data.data.data
           this.total = parseInt(res.data.data.count)
         }).catch(() => { })
     },
     searchList () {
-      this.ruleForm.pageSize = 5
+      this.ruleForm.pageSize = 10
       this.ruleForm.pageNum = 1
       this.$refs.child.handleCurrentChange(1)
     },
@@ -147,9 +298,6 @@ export default {
       console.log(row)
       this.$router.push({ name: 'RelevantDetail' })
     }
-  },
-  created () {
-    this.getTableData()
   }
 }
 </script>
@@ -162,6 +310,9 @@ export default {
   display: flex;
   align-items: center;
   padding: 20px 30px;
+}
+.import-name {
+  text-align: left;
 }
 .wx-warp-content {
   padding: 0 20px;

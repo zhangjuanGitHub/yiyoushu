@@ -1,9 +1,9 @@
 <!--
  * @Author: zhangjuan
- * @Description: 
+ * @Description:
  * @Date: 2021-01-29 14:20:21
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-04 18:23:17
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-23 10:53:40
 -->
 <template>
   <div class="search-material-wrap">
@@ -12,17 +12,17 @@
       <p class="search-read-r">统计近30天内的推文，数据更新于<span>{{updateTime}}</span></p>
     </div>
     <div class="search-read-about flex-ali-center">
-      <p>{{useAbout.readNum}},</p>
       <span>使用阅读原文推文篇数</span>
+      <p>{{useAbout.readNum}}</p>
+      <span>使用占比</span>
+      <p>{{useAbout.percentage}}%</p>
       <el-progress type="circle"
                    :width="30"
                    :stroke-width="2"
                    :show-text="false"
                    :percentage="useAbout.percentage"></el-progress>
-      <p>{{useAbout.percentage}}%,</p>
-      <span>使用占比</span>
-      <p>{{useAbout.webNum}},</p>
       <span>使用域名数</span>
+      <p>{{useAbout.webNum}}</p>
       <div class="search-about-scroll">
         <div class="search-about-domain">
           <ul id="domain" :style="{ top: doaminTop + 'px' }">
@@ -104,8 +104,8 @@
               <div class="search-read-table flex-bwt-center"
                     v-for="(item, index) of props.row.list" :key="index">
                 <p v-html="item.title"
-                   @click="targetUrl(item.url)"
-                   class="search-read-title lin-clamp-1"> 
+                   @click="toTarget(item.id)"
+                   class="search-read-title lin-clamp-1">
                     <!-- <span class="search-read-tt" v-if="index === 0">头条</span>
                     <span class="search-read-tt" v-else-if="index === 1">次条</span>
                     <span class="search-read-tt" v-else>{{index + 1}}条</span> -->
@@ -127,6 +127,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { timeFormat, secondsFormat } from '@/lib/tools'
 export default {
   name: 'search',
@@ -135,7 +136,6 @@ export default {
     return {
       readActive: '',
       domainData: [],
-      accountMsg: {},
       useAbout: {
         webUrl: [],
         webNum: 0,
@@ -153,14 +153,15 @@ export default {
   methods: {
     format (percentage, index) {
       return () => {
-        if (index === 0) {
-          return `${((percentage/this.featureTotal)*100).toFixed(0)}%` +'\n' + '头条'
-        } else if (index === 1) {
-          return `${((percentage/this.featureTotal)*100).toFixed(0)}%` +'\n' +  '次条'
-        } else {
-          return `${((percentage/this.featureTotal)*100).toFixed(0)}%` +'\n' + `${index + 1}` + '条'
-        }
-    	}
+        return `${((percentage / this.featureTotal) * 100).toFixed(0)}%`
+        // if (index === 0) {
+        //   return `${((percentage/this.featureTotal)*100).toFixed(0)}%` + '\n' + '头条'
+        // } else if (index === 1) {
+        //   return `${((percentage/this.featureTotal)*100).toFixed(0)}%` + '\n' + '次条'
+        // } else {
+        //   return `${((percentage/this.featureTotal)*100).toFixed(0)}%` + '\n' + `${index + 1}` + '条'
+        // }
+      }
     },
     changeReadTab (tab) {
       this.readActive = tab
@@ -170,25 +171,29 @@ export default {
     targetUrl (url) {
       window.open(url)
     },
+    toTarget (id) {
+      let route = this.$router.resolve({ name: 'ArticleAnalyse', query: { accountId: this.accountId, articleId: id } })
+      window.open(route.href, '_blank')
+    },
     // 滚动
     getScrollDomain () {
       this.scrollDomain = setInterval(() => {
-        if (Math.abs(this.doaminTop) === (this.useAbout.webUrl.length - 1) *40) {
+        if (Math.abs(this.doaminTop) === (this.useAbout.webUrl.length - 1) * 40) {
           this.doaminTop = 0
         } else {
           this.doaminTop -= 40
         }
-      }, 2000)
+      }, 3000)
     },
     // 获取使用概况
     getAbout () {
-      this.$http.post(this.$api.getUseAbout, { biz: this.accountMsg.biz})
+      this.$http.post(this.$api.getUseAbout, { biz: this.accountMsg.biz })
         .then(res => {
           this.useAbout.webNum = res.data.data.webNum
           this.useAbout.readNum = res.data.data.value
-          this.useAbout.percentage = res.data.data.percentage * 100
+          this.useAbout.percentage = Number(res.data.data.percentage)
           this.useAbout.webUrl = res.data.data.webUrl
-          this.oftenUseUrl = res.data.data.webUrl.slice(0,6)
+          this.oftenUseUrl = res.data.data.webUrl.slice(0, 6)
           this.readActive = this.useAbout.webUrl[0]
           this.getScrollDomain()
           this.getDomain()
@@ -196,7 +201,7 @@ export default {
     },
     // 获取使用特征
     getFeature () {
-      this.$http.post(this.$api.getUseFeature, { biz: this.accountMsg.biz})
+      this.$http.post(this.$api.getUseFeature, { biz: this.accountMsg.biz })
         .then(res => {
           let data = res.data.data
           let color = ['#2EBDFF', '#47E8CF', '#E4C849', '#FFA531', '#EF753D']
@@ -208,19 +213,11 @@ export default {
     },
     // 获取常用域名
     getDomain () {
-      this.$http.post(this.$api.getDomainAnalyse, { biz: this.accountMsg.biz, url: this.readActive})
+      this.$http.post(this.$api.getDomainAnalyse, { biz: this.accountMsg.biz, url: this.readActive })
         .then(res => {
           let data = res.data.data
           data.url = this.readActive
           this.domainData.push(data)
-        }).catch(() => {})
-    },
-    getAccountMsg () {
-      this.$http.get(`${this.$api.getWxAccount}/${this.accountId}`)
-        .then(res => {
-          this.accountMsg = res.data.data[0]
-          this.getAbout()
-          this.getFeature()
         }).catch(() => {})
     },
     // 获取当前时间
@@ -231,7 +228,8 @@ export default {
   },
   created () {
     this.accountId = this.$route.query.id
-    this.getAccountMsg()
+    this.getAbout()
+    this.getFeature()
     this.getCurrentTime()
   },
   mounted () {
@@ -239,6 +237,11 @@ export default {
   },
   destroyed () {
     clearInterval(this.scrollDomain)
+  },
+  computed: {
+    ...mapState({
+      accountMsg: state => state.mutations.accountMsg
+    })
   }
 }
 </script>

@@ -1,15 +1,15 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-22 15:10:18
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-17 14:45:53
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-23 17:14:49
 -->
 <template>
   <div class="detail content-show">
     <div class="tabs-header flex-ali-center ">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'AccountCompany' }">新媒体监测</el-breadcrumb-item>
-          <el-breadcrumb-item :to="{ name: '/' }">月分析</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'MonthSearch', query: { type: '2' } }">月分析</el-breadcrumb-item>
         <el-breadcrumb-item>诊断历史</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -166,16 +166,17 @@ export default {
   methods: {
     // 获取个人||echarts数据
     getAnalyseList () {
-      this.$http.get(this.$api.analyseList, { params: { id: 1 } })
+      this.$http.get(this.$api.analyseList, { params: { id: this.ids } })
         .then(res => {
           this.userData = res.data.data.account // 用户数据
           this.charsData = res.data.data.chart // 图表数据
+          this.$refs.seventh.getArticleTime(this.charsData) // 违规详情 小程序列表
           this.firstData = JSON.parse(this.charsData.accountScoreJson) // 首行数据
-          console.log(this.firstData)
           this.listData = JSON.parse(this.charsData.articleDataJson) // 数据模块
           this.params.publishTime = this.userData.publishTime // 时间
           this.params.biz = this.userData.biz // 公众号标识id
           this.findArtileList()
+          this.pieCharts()
           this.$refs.third.getArticleData(this.charsData) // 小时统计
           this.$refs.third.getArticleTime(this.charsData) // 时间统计
           this.$refs.fourth.getArticleTime(this.charsData) // 发文热词
@@ -183,13 +184,14 @@ export default {
           this.$refs.fifth.getArticleData(this.charsData) // 调用文章类别分析
           this.$refs.sixth.getArticleData(this.charsData) // 留言数据
           this.$refs.sixth.getArticleTime(this.charsData) // 留言词云
-          this.$refs.seventh.getData(this.charsData) // 违规详情 小程序列表
-          this.pieCharts()
         }).catch(() => { })
     },
     // 获取表格数据
     findArtileList (id) {
       this.params.isOrigin = id
+      this.params.publishTime[0] = this.userData.startDate
+      this.params.publishTime[1] = this.userData.endDate
+      this.tableData = []
       this.tableData = []
       this.$http.post(this.$api.findArtileList, this.params)
         .then(res => {

@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description: home-search-account
  * @Date: 2021-01-29 13:57:27
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-04 10:36:38
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-19 15:36:26
 -->
 <template>
   <div class="center-wraper">
@@ -60,7 +60,7 @@
           <p>
             <i class="el-icon-s-order"></i>
             <span class="left-class-label">易有数分类：</span>
-            <span class="left-class-cont">{{accountMsg.type}}</span>
+            <span class="left-class-cont">{{accountMsg.function_type}}</span>
           </p>
           <p class="lin-clamp-1">
             <i class="el-icon-s-management"></i>
@@ -71,6 +71,13 @@
             <i class="el-icon-s-data"></i>
             <span class="left-class-label">纳入易有数样本库：</span>
             <span class="left-class-cont">{{insertTime}}</span>
+          </p>
+          <div v-if="accountMsg.is_collect !== 1"
+               class="search-slider"></div>
+          <p v-if="accountMsg.is_collect !== 1">
+            <span class="left-class-label">该账号暂未采集监控</span>
+            <span class="left-class-caiji cursor"
+                  @click="submitGather">申请采集</span>
           </p>
         </div>
       </div>
@@ -91,7 +98,7 @@
             </li>
             <li :class="{ 'tab_active': tabActive === 'original'}"
                 @click="$router.push({ name: 'ReadOriginal' , query: { id: accountId } })">
-              阅读原文
+              阅读原文分析
             </li>
             <li :class="{ 'tab_active': tabActive === 'data'}"
                 @click="$router.push({ name: 'BasicData' , query: { id: accountId } })">
@@ -101,13 +108,13 @@
                 @click="$router.push({ name: 'HistoryTweets' , query: { id: accountId } })">
               历史推文
             </li>
-            <li :class="{ 'tab_active': tabActive === 'backtrack'}"
+            <!-- <li :class="{ 'tab_active': tabActive === 'backtrack'}"
                 @click="$router.push({ name: 'DataBacktrack' , query: { id: accountId } })">
               公众号数据回溯
-            </li>
+            </li> -->
           </ul>
         </div>
-        <router-view></router-view>
+        <router-view @refreRoute="refreRoute" v-if="this.accountMsg.biz" ref="child"></router-view>
       </div>
     </div>
   </div>
@@ -127,6 +134,18 @@ export default {
     }
   },
   methods: {
+    // 申请采集
+    submitGather () {
+      console.log(22222)
+      let obj = {
+        nickname: this.accountMsg.nickname,
+        biz: this.accountMsg.biz
+      }
+      this.$http.post(this.$api.startCollect,  obj)
+        .then(res => {
+          this.$message.success('添加成功，等待审核！')
+        })
+    },
     // 收藏和取消收藏
     submitCollect (isCollect) {
       this.$set(this.accountMsg, 'is_follow', isCollect)
@@ -155,8 +174,20 @@ export default {
       this.$http.get(`${this.$api.getWxAccount}/${this.accountId}`)
         .then(res => {
           this.accountMsg = res.data.data[0]
+          let accountInfo = {
+            biz: this.accountMsg.biz,
+            auth_info: this.accountMsg.auth_info,
+            function_type: this.accountMsg.function_type,
+            auth_type: this.accountMsg.auth_type
+          }
+          this.$store.commit('mutations/getAccountInfo', accountInfo)
           this.insertTime = res.data.data[0].inserttime.slice(0, 10)
         }).catch(() => {})
+    },
+    refreRoute (id) {
+      this.accountId = id
+      this.getAccountMsg()
+      this.$refs.child.getSameAccount()
     }
   },
   created () {

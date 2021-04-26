@@ -1,9 +1,9 @@
 <!--
  * @Author: zhangjuan
- * @Description: 
+ * @Description:
  * @Date: 2021-03-02 15:43:39
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-03 10:00:03
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-19 11:46:53
 -->
 <template>
   <div class="center-wraper">
@@ -11,7 +11,7 @@
       <div class="search-analyse-up">
         <div class="nav-breadcrumb flex-ali-center">
           <el-breadcrumb separator-class="el-icon-arrow-right">
-            <el-breadcrumb-item :to="{ name: 'HistoryTweets', query: { id: this.accountId} }">历史推文</el-breadcrumb-item>
+            <!-- <el-breadcrumb-item :to="{ name: 'HistoryTweets', query: { id: this.accountId} }">历史推文</el-breadcrumb-item> -->
             <el-breadcrumb-item :to="{ name: 'ArticleAnalyse' }">文章分析</el-breadcrumb-item>
           </el-breadcrumb>
         </div>
@@ -41,13 +41,19 @@
         </div>
         <div class="search-analyse-main flex-bwt-center">
           <div class="search-analyse-all">
-            <div class="search-material-up flex-ali-center">
-              <p class="search-mater-theme">传播情况分析</p>
-              <!-- <p class="search-analyse-des">
-                <i class="el-icon-refresh cursor"></i>
-                <span>数据更新时间：</span>
-                <span>2021-01-17 05:44:24</span>
-              </p> -->
+            <div class="search-material-up flex-bwt-center">
+              <div class="flex-ali-center">
+                <p class="search-mater-theme">传播情况分析</p>
+                <p class="search-analyse-des">
+                  <span>数据更新时间：</span>
+                  <span>{{articleMsg.update_time}}</span>
+                </p>
+              </div>
+              <p class="search-analyse-icon cursor"
+                 @click="updateData">
+                <i class="el-icon-refresh"></i>
+                <span>更新数据</span>
+              </p>
             </div>
             <div class="search-analyse-act">
               <div class=" flex-bwt-center">
@@ -82,8 +88,11 @@
               </div>
               <div class="search-slider"></div>
               <div class="search-act-line">
-                <p>文章类型：<span>{{articleMsg.classify_val}}</span></p>
-                <p class="lin-clamp-1 cursor">原文链接：<span @click="targetUrl(articleMsg.url)">{{articleMsg.url}}</span></p>
+                <p>文章类型：
+                  <span>{{articleMsg.classify_val}}</span></p>
+                <p class="lin-clamp-1 cursor">原文链接：
+                  <span @click="targetUrl(articleMsg.url)"
+                        v-html="(articleMsg.url || '').slice(0, 65) + '...'">{{}}</span></p>
               </div>
               <div class="search-slider"></div>
             </div>
@@ -145,7 +154,7 @@
                                width="180"
                                show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <div class="search-mater-table flex-all-center">
+                  <div class="search-mater-table flex-ali-center">
                     <img :src="scope.row.head_picture" alt="">
                     <p v-html="scope.row.nickname"></p>
                   </div>
@@ -233,15 +242,22 @@ export default {
     },
     format (num, percentage) {
       return () => {
-        return  `${num}` + '\n' + `${percentage}%`
+        return `${num}` + '\n' + `${percentage}%`
     	}
+    },
+    // 更新数据
+    updateData () {
+      this.$http.get(`${this.$api.updateYime}/${this.articleMsg.sn}`)
+        .then(res => {
+          this.$message.success('更新成功，稍后再来查看')
+        }).catch(() => {})
     },
     // 获取留言
     getWords () {
       this.$http.post(this.$api.getHTAction, { sn: this.articleMsg.sn })
         .then(res => {
           this.wordMsg = res.data.data
-        })
+        }).catch(() => {})
     },
     // 获取评论
     getComments () {
@@ -252,18 +268,18 @@ export default {
           pageNum: this.pageBean.pageNum
         }
       }
-      this.$http.post(this.$api.getHTComment, obj )
+      this.$http.post(this.$api.getHTComment, obj)
         .then(res => {
           this.pinglunData = res.data.data.list
           this.total = res.data.data.total
-        })
+        }).catch(() => {})
     },
     // 获取内容
     getContents () {
       this.$http.post(this.$api.getHTContent, { articleId: this.articleId })
         .then(res => {
           this.contentMsg = res.data.data
-        })
+        }).catch(() => {})
     },
     getHTArticle () {
       this.$http.get(this.$api.getHTArticle, { params: { id: this.articleId } })
@@ -273,7 +289,7 @@ export default {
           this.getContents()
           this.getComments()
           this.getWords()
-        })
+        }).catch(() => {})
     }
   },
   created () {

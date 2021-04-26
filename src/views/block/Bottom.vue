@@ -2,12 +2,13 @@
  * @Author: zhangjuan
  * @Description: Bottom
  * @Date: 2021-01-28 17:24:17
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-02-22 14:13:12
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-12 10:45:40
 -->
 <template>
-  <div class="bottom-wrap" v-if="routeName != 'Login'">
-    <div class="bottom-container">
+  <div class="bottom-wrap">
+    <div class="bottom-container"
+         v-if="routeName === 'Home'">
       <div class="bottom-main flex-bwt-center">
         <div class="bottom-left flex-bwt">
           <img src="@/assets/images/home/kefu.png" alt="">
@@ -47,14 +48,19 @@
             <li class="bottom-right-centent">法律声明</li>
             <li class="bottom-right-centent">执法和监管查询</li> -->
           </ul>
-          <div class="bottom-code flex-cloumn">
-            <p class="bottom-right-title text-center">关注易有数</p>
+          <ul class="bottom-code">
+            <li class="bottom-right-title text-center">关注易有数</li>
             <img :src="codeUrl" alt="">
-          </div>
+          </ul>
         </div>
       </div>
     </div>
-    <div class="bottom-footer flex-all-center">
+    <div class="bottom-footer flex-all-center"
+         v-if="routeName === 'Home'">
+      <p>© 2021 yiyoushu.com , All Rights Reserved 京ICP备2021001757号-2</p>
+    </div>
+    <div class="bottom-footer flex-all-center bottom-fixed"
+         v-if="routeName !== 'Login' && routeName !== 'Home'">
       <p>© 2021 yiyoushu.com , All Rights Reserved 京ICP备2021001757号-2</p>
     </div>
   </div>

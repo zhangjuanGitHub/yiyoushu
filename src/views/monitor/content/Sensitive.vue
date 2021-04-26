@@ -1,8 +1,8 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-04 14:54:55
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-02-05 13:50:17
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-08 19:35:21
 -->
 <template>
   <div class="interaction content-box">
@@ -71,7 +71,7 @@
           <el-table-column label="标题"
                             prop="title">
             <template slot-scope="scope">
-              <p class="cursor"
+              <p class="cursor text-underline"
                   @click="targetDes(scope.row.article_id)" v-html="scope.row.title"></p>
             </template>
           </el-table-column>
@@ -79,7 +79,7 @@
                             width="200"
                             show-overflow-tooltip>
             <template slot-scope="scope">
-              <div class="pub-account-msg flex-all-center cursor"
+              <div class="pub-account-msg flex-all-center cursor text-underline"
                     @click="targetAnalyse(scope.row.biz)">
                 <img :src="scope.row.ori_head_img" alt="">
                 <p v-html="scope.row.nickname"></p>
@@ -150,11 +150,19 @@ export default {
     },
     // 去详情
     targetDes (articleId) {
-      this.$router.push({ name: 'SensitiveArticle', query: { articleId: articleId } })
+      let route = this.$router.resolve({
+        name: 'SensitiveArticle',
+        query: { articleId: articleId }
+      })
+      window.open(route.href, '_blank')
     },
     // 去账号分析
     targetAnalyse (item) {
-      this.$router.push({ name: 'SensitiveAnalyse', query: { id: item } })
+      let route = this.$router.resolve({
+        name: 'SensitiveAnalyse',
+        query: { id: item }
+      })
+      window.open(route.href, '_blank')
     },
     // 筛选
     searchList () {
@@ -172,7 +180,7 @@ export default {
     getAccountList () {
       this.$http.post(this.$api.getSensitiveList, this.ruleForm)
         .then(res => {
-          this.total =res.data.data.count
+          this.total = res.data.data.count
           this.accountList = res.data.data.list
         })
     },
@@ -184,7 +192,7 @@ export default {
     // 计算周期
     calcCycle () {
       let end = this.calcDate(1)
-      let start = this.calcDate(this.valueTime === '1' ? 7 : 30 )
+      let start = this.calcDate(this.valueTime === '1' ? 7 : 30)
       this.ruleForm.publishTime[0] = timeFormat(start)
       this.ruleForm.publishTime[1] = timeFormat(end)
     }

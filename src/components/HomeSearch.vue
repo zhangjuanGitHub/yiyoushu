@@ -2,13 +2,13 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-02-03 17:18:48
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-03 13:55:01
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-23 13:42:37
 -->
 <template>
   <div class="home-up-wrap">
     <div class="home-up flex-ali-center">
-      <img src="@/assets/images/home/aside.png" alt="">
+      <img src="@/assets/images/login/yys.png" alt="">
       <div class="home-search-box flex-cloumn">
         <div class="home-search-keyword flex-ali-center">
           <el-menu :default-active="accountActive"
@@ -22,7 +22,17 @@
           </el-menu>
         </div>
         <div>
-          <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦" v-model="keyword">
+          <el-autocomplete v-model="keyword"
+                           v-if="accountActive === 'wx'"
+                          :fetch-suggestions="querySearch"
+                          placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                          :trigger-on-focus="false"
+                          @select="submitSearch">
+            <el-button type="primary" slot="append" icon="el-icon-search" @click="submitSearch"></el-button>
+          </el-autocomplete>
+          <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                    v-model="keyword"
+                    v-else-if="accountActive === 'article'">
             <el-button type="primary" slot="append" icon="el-icon-search" @click="submitSearch"></el-button>
           </el-input>
         </div>
@@ -38,22 +48,43 @@ export default {
   data () {
     return {
       accountActive: 'wx',
-      keyword: ''
+      keyword: '',
+      state2: ''
     }
   },
   methods: {
     handleSelect (type) {
       this.accountActive = type
     },
-    submitSearch () {
+    querySearch (query, cb) {
       let obj = {
-        accountActive: this.accountActive,
-        keyword: this.keyword
+        searchSource: 1, // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
+        queryText: this.keyword
       }
-      this.$emit('accountSearch', obj)
+      this.$http.post(this.$api.wxSearchTip, obj)
+        .then(res => {
+          let newRes = []
+          let result = res.data.data
+          for (let i = 0; i < result.length; i++) {
+            newRes.push({value: result[i]})
+          }
+          cb(newRes)
+        }).catch(() => {})
+    },
+    submitSearch () {
+      this.keyword = this.keyword.replace(/\s*/g, '')
+      if (this.keyword.length > 0 && this.keyword !== ' ') {
+        let obj = {
+          accountActive: this.accountActive,
+          keyword: this.keyword
+        }
+        this.$emit('accountSearch', obj)
+      } else {
+        this.$message.warning('请输入要搜索的关键字')
+      }
     },
     listenerSubmit (e) {
-      if (e.keyCode === 13 && this.keyword != '') {
+      if (e.keyCode === 13 && this.keyword !== '') {
         this.submitSearch()
       }
     }

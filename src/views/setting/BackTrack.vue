@@ -2,14 +2,14 @@
  * @Author: MaiChao
  * @Description: 账号回溯
  * @Date: 2021-02-26 09:42:59
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 17:21:52
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-20 16:13:18
 -->
 <template>
   <div class="back-track">
     <div class="back-track-header">
       <div class="img-box flex-ali-center">
-        <img src="@/assets/images/home/aside.png"
+        <img src="@/assets/images/login/yys.png"
              alt="">
         <div class="crumbs">个人中心</div>
       </div>
@@ -27,22 +27,22 @@
                     style="width: 100%">
             <el-table-column prop="nickname"
                              label="账号回溯"
-                             width="220">
+                             show-overflow-tooltip>
             </el-table-column>
             <el-table-column prop="name"
                              label="状态"
-                             width="300">
+                             width="200">
               <template slot-scope='scope'>
                 <div class="delete"
                      v-if="scope.row.reviewStatus===-1">回溯异常</div>
                 <div class="info"
-                     v-if="scope.row.reviewStatus===0">等待回溯</div>
+                     v-else-if="scope.row.reviewStatus===0">等待回溯</div>
                 <div class="primary"
-                     v-if="scope.row.reviewStatus===1">正在采集</div>
+                     v-else-if="scope.row.reviewStatus===1">正在补充</div>
                 <div class="warning"
-                     v-if="scope.row.reviewStatus===2">采集完成</div>
+                     v-else-if="scope.row.reviewStatus===2">正在回溯</div>
                 <div class="export"
-                     v-if="scope.row.reviewStatus===3">回溯完成</div>
+                     v-else-if="scope.row.reviewStatus===3">回溯完成</div>
               </template>
             </el-table-column>
             <el-table-column prop="startDate"
@@ -53,7 +53,8 @@
                              label="添加时间"
                              width="300">
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作"
+                             width="140">
               <template slot-scope='scope'>
                 <div class="flex-ali-center">
                   <span class="click-span export"
@@ -75,6 +76,7 @@
         <el-dialog title="回溯删除"
                  :visible.sync="deleteTeam"
                  :modal-append-to-body="false"
+                 :close-on-click-modal='false'
                  width="30%"
                  center>
         <span class="dialog-span">您确定要执行此操作吗?</span>
@@ -96,7 +98,7 @@ import vMenu from '@/views/setting/components/Menu'
 export default {
   data () {
     return {
-      total: 100,
+      total: 0,
       deleteTeam: false,
       deleteId: '',
       ruleForm: {
@@ -148,8 +150,12 @@ export default {
       this.ids = ''
     },
     exportItem (item) {
-      // console.log(process.env.NODE_ENV)
-      process.env.NODE_ENV === 'development' ? window.location.href = process.env.VUE_APP_BASE_URL + this.$api.wxExport + '?id=' + item.id : window.location.href = window.g.baseUrl + this.$api.wxExport + '?id=' + item.id
+      let token = this.$store.state.user.token
+      if (process.env.NODE_ENV === 'development') {
+        window.location.href = process.env.VUE_APP_BASE_URL + this.$api.wxExport + '?id=' + item.id + '&authCode=' + token
+      } else {
+        window.location.href = window.g.baseUrl + this.$api.wxExport + '?id=' + item.id + '&authCode=' + token
+      }
     }
   },
   components: {
@@ -161,6 +167,9 @@ export default {
 @import './setting.css';
 </style>
 <style scoped>
+.back-track {
+  min-height: calc(100vh - 111px);
+}
 .back-track-header {
   background-color: #fff;
 }
@@ -168,6 +177,9 @@ export default {
   width: 1400px;
   height: 117px;
   margin: 0 auto;
+}
+.img-box>img {
+  width: 170px;
 }
 .crumbs {
   color: #3b81fe;
@@ -187,7 +199,7 @@ export default {
 .back-track-right {
   width: 1212px;
   background-color: #fff;
-  margin: 30px 0 20px 20px;
+  margin: 30px 0 100px 20px;
 }
 .back-teack-table {
   padding: 20px;

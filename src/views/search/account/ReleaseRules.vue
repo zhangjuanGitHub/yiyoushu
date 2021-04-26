@@ -2,25 +2,28 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-01-29 14:19:45
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-04 14:41:04
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-20 11:48:05
 -->
 <template>
   <div class="search-material-wrap">
+    <div>
+      <span style="color: orange">近一个月该账号发布规律</span>
+    </div>
     <div class="search-material-up">
       <p class="search-mater-theme">发布频次</p>
     </div>
     <div class="search-rules-num flex-bwt-center">
       <div id="myRules" class="search-num-echarts"></div>
       <div class="search-read-about flex-ali-center">
-        <p>{{releaseFrequency.count}},</p>
         <span>总推文</span>
-        <p>{{releaseFrequency.averageTweet}},</p>
+        <p>{{releaseFrequency.count}}</p>
         <span>平均每次推文</span>
-        <p>{{releaseFrequency.pushTimes}},</p>
+        <p>{{releaseFrequency.averageTweet}}</p>
         <span>推送次数</span>
-        <p>{{releaseFrequency.dailyAveragePush}},</p>
+        <p>{{releaseFrequency.pushTimes}}</p>
         <span>日均推送</span>
+        <p>{{releaseFrequency.dailyAveragePush}}</p>
       </div>
     </div>
     <div class="search-material-up">
@@ -42,14 +45,15 @@
         </ul>
       </div>
       <div class="search-fenbu-list">
+        <p>头条阅读数 Top9</p>
         <ul>
             <li v-for="(item, index) of readArticleData" :key="index">
               <el-tooltip class="item" effect="light" placement="bottom"
                           :content="item.title"
                           v-if="item.title.length > 19">
-                <p v-html="item.title" class="lin-clamp-1" @click="targetUrl(item.url)"></p>
+                <p v-html="item.title" class="lin-clamp-1" @click="targetUrl(item.id)"></p>
               </el-tooltip>
-              <p v-else v-html="item.title" @click="targetUrl(item.url)"></p>
+              <p v-else v-html="item.title" @click="targetUrl(item.id)"></p>
             </li>
         </ul>
       </div>
@@ -71,8 +75,8 @@
     </div>
     <div class="search-rules-cont flex-ali-center">
       <div class="search-read-about flex-ali-center">
-        <p>{{original.originNum}},</p>
         <span>原创篇数</span>
+        <p>{{original.originNum}}</p>
       </div>
       <div class="search-cont-pro">
         <div class="search-pro-tool" :style="{ left: `calc(${original.percentage}% - 92px)`}">原创占比<span>{{original.percentage}}</span>%
@@ -85,18 +89,19 @@
       <p class="search-mater-theme">互动留言</p>
     </div>
     <div class="search-read-about flex-ali-center">
-      <p>{{leave.messagesNum}},</p>
       <span>含留言篇数</span>
-      <p>{{leave.messagesCount}},</p>
+      <p>{{leave.messagesNum}}</p>
       <span>留言总条数</span>
-      <el-progress type="circle" :percentage="leave.repliesNum" :width="30" :stroke-width="2" :show-text="false"></el-progress>
-      <p>{{leave.repliesNum}}%,</p>
+      <p>{{leave.messagesCount}}</p>
       <span>作者回复率</span>
+      <p>{{leave.repliesNum}}%</p>
+      <el-progress type="circle" :percentage="leave.repliesNum" :width="30" :stroke-width="2" :show-text="false"></el-progress>
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 // 引入基本模板
 let echarts = require('echarts/lib/echarts')
 // 引入折线图组件
@@ -111,7 +116,6 @@ export default {
   components: {},
   data () {
     return {
-      accountMsg: {},
       releaseFrequency: {
         dailyAveragePush: 0, // 日均推送
         pushTimes: 0, // 推送次数
@@ -136,8 +140,9 @@ export default {
     format (percentage) {
       return '原创占比' + `${percentage}%`
     },
-    targetUrl (url) {
-      window.open(url)
+    targetUrl (id) {
+      let route = this.$router.resolve({ name: 'ArticleAnalyse', query: { accountId: this.accountId, articleId: id } })
+      window.open(route.href, '_blank')
     },
     // 饼图
     drawPie () {
@@ -200,7 +205,7 @@ export default {
               }
             ]
           })
-      }).catch(() => {})
+        }).catch(() => {})
     },
     // 发文趋势和内容创作
     drawBar () {
@@ -208,7 +213,7 @@ export default {
         .then(res => {
           this.original.time = res.data.data.time
           this.original.originNum = res.data.data.originNum
-          this.original.percentage = res.data.data.percentage * 100
+          this.original.percentage = Number(res.data.data.percentage) || 0
           let myBar = echarts.init(document.getElementById('myBar'))
           myBar.setOption({
             xAxis: {
@@ -260,7 +265,7 @@ export default {
     getLiuYan () {
       this.$http.post(this.$api.getLeaveMessage, { biz: this.accountMsg.biz})
         .then(res => {
-          this.leave.repliesNum = res.data.data.repliesNum * 100
+          this.leave.repliesNum = Number(res.data.data.repliesNum)
           this.leave.messagesCount = res.data.data.messagesCount
           this.leave.messagesNum = res.data.data.messagesNum
         }).catch(() => {})
@@ -282,25 +287,21 @@ export default {
             this.readData.push({ num: value[i], range: newRange[i], color: color[i] })
           }
         }).catch(() => {})
-    },
-    getAccountMsg () {
-      this.$http.get(`${this.$api.getWxAccount}/${this.accountId}`)
-        .then(res => {
-          this.accountMsg = res.data.data[0]
-          this.drawBar()
-          this.drawPie()
-          this.getLiuYan()
-          this.getReadArticle()
-        }).catch(() => {})
     }
   },
   mounted () {
-    // this.drawPie()
-    // this.drawBar()
+    this.drawBar()
+    this.drawPie()
+    this.getLiuYan()
+    this.getReadArticle()
   },
   created () {
     this.accountId = this.$route.query.id
-    this.getAccountMsg()
+  },
+  computed: {
+    ...mapState({
+      accountMsg: state => state.mutations.accountMsg
+    })
   }
 }
 </script>

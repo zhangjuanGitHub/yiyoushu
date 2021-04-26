@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-18 15:34:11
+ * @LastEditTime: 2021-04-22 16:07:47
 -->
 <template>
   <div class="contents">
@@ -11,14 +11,14 @@
         <span class="tabs-title"
               @click="tabsAll('wx', 1)"
               :class="this.activeTab==='wx'?'isActive':''">微信榜单</span>
-        <span class="tabs-title"
+        <!-- <span class="tabs-title"
               @click="tabsAll('wb', 2)"
-              :class="this.activeTab==='wb'?'isActive':''">微博榜单</span>
+              :class="this.activeTab==='wb'?'isActive':''">微博榜单</span> -->
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
       <div class="conts-box">
-        <div class="title-time">省域 <span>2021-01-31</span> 排行总榜</div>
+        <div class="title-time">省域 <span>{{ruleForm.date}}</span> 排行总榜</div>
         <div class="from-box">
           <el-form :inline="true"
                    ref="ruleForm"
@@ -29,47 +29,55 @@
                                 size='small' @change="openOther(ruleForm.types)">
                   <el-radio-button label="1">公众号</el-radio-button>
                   <el-radio-button label="2">文章</el-radio-button>
-                  <el-radio-button label="3">视屏</el-radio-button>
+                  <el-radio-button label="3">视频</el-radio-button>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item prop="date"
-                            label="时间"
-                            class="date-box">
-                <el-date-picker v-model="ruleForm.date"
-                                size='small'
-                                type="daterange"
-                                range-separator="至"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                                value-format="yyyy-MM-dd">
-                </el-date-picker>
+              <el-form-item label="时间"
+                            class="date-box area">
+                <el-input placeholder="请输入内容" v-if="ruleForm.rankingType===1"
+                          v-model="ruleForm.date"
+                          :disabled="true" size='small' class="date-time">
+                </el-input>
+                <el-select v-model="ruleForm.date" v-else
+                           placeholder="请选择"
+                           size='small'>
+                  <el-option v-for="item in dateOption"
+                             :key="item.value"
+                             :label="item.label"
+                             :value="item.value">
+                  </el-option>
+                </el-select>
               </el-form-item>
-              <el-form-item class="explain-box" label="职能">
+              <el-form-item class="explain-box" label="职能" prop="functionType">
                 <!-- <el-button size="small"
                            @click="explain()">数据榜单说明</el-button> -->
-                <el-select v-model="ruleForm.function" placeholder="职能" size='small'>
-                  <el-option label="区域一" value="shanghai"></el-option>
-                  <el-option label="区域二" value="beijing"></el-option>
+                <el-select v-model="ruleForm.functionType"  size='small'>
+                  <el-option label="检察" value="检察"></el-option>
+                  <el-option label="政法委" value="政法委"></el-option>
+                  <el-option label="公安" value="公安"></el-option>
+                  <el-option label="法院" value="法院"></el-option>
+                  <el-option label="司法" value="司法"></el-option>
                 </el-select>
               </el-form-item>
             </div>
             <div class="flex-ali-center">
-              <el-form-item prop="time">
-                <el-radio-group v-model="ruleForm.time"
-                                size='small'>
-                  <el-radio-button label="日榜"></el-radio-button>
-                  <el-radio-button label="周榜"></el-radio-button>
-                  <el-radio-button label="月榜"></el-radio-button>
+              <el-form-item >
+                <el-radio-group v-model="ruleForm.rankingType"
+                                size='small'
+                                @change='getDateOption'>
+                  <el-radio-button :label="1">日榜</el-radio-button>
+                  <el-radio-button :label="2">周榜</el-radio-button>
+                  <el-radio-button :label="3">月榜</el-radio-button>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item prop="messageType"
-                            label="地区"
-                            class="messageType">
+              <el-form-item prop="districts"
+                            label="地区" class="area">
                 <el-cascader size="small"
                              :options="options"
                              :show-all-levels="false"
-                             v-model="ruleForm.messageType"
-                             placeholder="请选择类型"></el-cascader>
+                             :props="{ checkStrictly: true }"
+                             v-model="ruleForm.districts"
+                             placeholder="请选择地区"></el-cascader>
               </el-form-item>
               <el-form-item>
                 <el-button size="small"
@@ -85,28 +93,28 @@
           </el-form>
         </div>
         <div class="quick-click flex-bwt-center">
-          <div class="click-box color1 flex-arr-center cursor">
+          <div class="click-box color1 flex-arr-center cursor" @click="searchType(0)">
             <div class="flex-arr-center">
               <img class="click-image"
                    :src="require('@/assets/images/assess/05.png')">
               <span class="click-name">地方排行榜</span>
             </div>
           </div>
-          <div class="click-box color2 flex-arr-center cursor">
+          <div class="click-box color2 flex-arr-center cursor" @click="searchType(1)">
             <div class="flex-arr-center">
               <img class="click-image"
                    :src="require('@/assets/images/assess/06.png')">
               <span class="click-name">省级排行榜</span>
             </div>
           </div>
-          <div class="click-box color3 flex-arr-center cursor">
+          <div class="click-box color3 flex-arr-center cursor" @click="searchType(2)">
             <div class="flex-arr-center">
               <img class="click-image"
                    :src="require('@/assets/images/assess/07.png')">
               <span class="click-name">分州市排行榜</span>
             </div>
           </div>
-          <div class="click-box color6 flex-arr-center cursor">
+          <div class="click-box color6 flex-arr-center cursor" @click="searchType(3)">
             <div class="flex-arr-center">
               <img class="click-image"
                    :src="require('@/assets/images/assess/08.png')">
@@ -116,10 +124,11 @@
         </div>
         <div class="table-box">
           <el-table :data="tableData"
+                    id="wx-monitor"
                     style="width: 100%"
                     :cell-style="{ textAlign: 'center' }"
                     :default-sort="{prop: 'date', order: 'descending'}">
-            <el-table-column prop="articleCountNum"
+            <!-- <el-table-column prop="articleCountNum"
                              label="排名"
                              width="50">
               <template slot-scope='scope'>
@@ -127,70 +136,119 @@
                   {{scope.$index+1}}
                 </div>
               </template>
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column prop="nickname"
-                             label="公众号">
+                             label="微信名称">
               <template slot-scope='scope'>
                 <div class="account-infor flex-ali-center">
-                  <img :src="scope.row.hd_head_img"
+                  <img :src="scope.row.cover"
                        alt="">
                   <div class="account-name">
-                    <p class="import-name"
+                    <p class="import-name lin-clamp-1"
                        v-html='scope.row.nickname'></p>
                     <p>{{scope.row.alias}}</p>
                   </div>
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="articleCountNum"
-                             label="总发布次数"
-                             width="110">
+            <!-- <el-table-column prop="alias"
+                             label="微信号"
+                             width="100">
+            </el-table-column> -->
+            <el-table-column prop="pubCount"
+                             label="发布次数"
+                             width="60">
             </el-table-column>
-            <el-table-column prop="articleCountNum"
-                             label="文章数"
-                             width="110">
+            <el-table-column prop="numCount"
+                             label="文章总数"
+                             width="60">
             </el-table-column>
-            <el-table-column prop="last_pubtime"
+            <!-- <el-table-column prop="exponent" v-if="ruleForm.functionType==='检察'"
+                             label="涉检总数"
+                             width="60">
+            </el-table-column> -->
+            <el-table-column prop="readNumCount"
                              label="总阅读数"
-                             width="110">
+                             width="78">
             </el-table-column>
-            <el-table-column prop="last_pubtime"
+            <el-table-column prop="oldLikeNumCount"
                              label="总点赞数"
-                             width="110">
+                             width="78">
             </el-table-column>
-            <el-table-column prop="last_pubtime"
+            <el-table-column prop="likeNumCount"
                              label="总在看数"
-                             width="110">
+                             width="78">
             </el-table-column>
-            <el-table-column prop="last_pubtime"
-                             label="头条阅读数"
-                             width="110">
+            <el-table-column prop="maxReadNum"
+                             label="最高阅读数"
+                             width="70">
             </el-table-column>
-            <el-table-column prop="last_pubtime"
-                             label="头条点赞数"
-                             width="110">
+            <el-table-column prop="maxOldLikeNum"
+                             label="最高点赞数"
+                             width="70">
             </el-table-column>
-            <el-table-column prop="last_pubtime"
-                             label="头条在看数"
-                             width="110">
+            <el-table-column prop="firstReadNumCount"
+                             label="头条总阅读数"
+                             width="70">
+            </el-table-column>
+            <el-table-column prop="firstOldLikeNumCount"
+                             label="头条总点赞数"
+                             width="70">
+            </el-table-column>
+            <el-table-column prop="firstLikeNumCount"
+                             label="头条总在看数"
+                             width="70">
+            </el-table-column>
+            <el-table-column prop="isOriginCount"
+                             label="原创"
+                             width="70">
+            </el-table-column>
+            <el-table-column prop="functionType"
+                             label="职能"
+                             width="70">
+            </el-table-column>
+            <el-table-column prop="unitName"
+                             label="单位名称"
+                             width="120">
+            </el-table-column>
+            <el-table-column prop="totalScore"
+                             label="总分"
+                             width="90">
             </el-table-column>
             <el-table-column prop="last_pubtime"
                              label="操作"
-                             width="90">
-              <template>
+                             width="70">
+              <template slot-scope='scope'>
                 <div class="operate flex-arr-center">
-                  <span class="el-icon-star-off collect cursor"></span>
-                  <span class="el-icon-circle-plus-outline addto cursor"></span>
+                  <span v-if="scope.row.isFollow" class="el-icon-star-on collect cursor" @click="deleteList(scope.row)"></span>
+                  <span v-else class="el-icon-star-off collect cursor" @click="addList(scope.row)"></span>
+                  <span class="el-icon-circle-plus-outline addto cursor"
+                        @click="addUser(scope.row)"></span>
                 </div>
               </template>
             </el-table-column>
           </el-table>
+        </div>
+                <div class="keepon" v-if="!dataShow">
+          无更多数据
+        </div>
+        <div v-else>
+          <div class="keepon"
+               v-if="!pageShow">
+            <span class="click-span"
+                  @click="loadMore">点击加载更多</span>
+          </div>
+          <div class="keepon"
+               v-else>
+            <p>当前权限只可加载 <span>{{limitCount}}</span>条数据,需要更多权限请点击 <span class="click-span">扩展权限</span></p>
+          </div>
         </div>
       </div>
     </div>
     <el-dialog title="公众号添加"
                :visible.sync="addApply"
                width="65%"
+               :close-on-click-modal='false'
                class="add-apply">
       <div class="apply-box">
         <div class="tabs-header">
@@ -219,7 +277,7 @@
                         <div class="flex-arr-center alone cursor"
                              v-for="(item,index) in data1"
                              :key="index"
-                             @click="shuttle(item,index)">
+                             @dblclick="shuttle(item,index)">
                           <span>{{item.name}}</span>
                           <span>{{item.account}}</span>
                         </div>
@@ -235,7 +293,7 @@
                         <div class="flex-arr-center alone cursor"
                              v-for="(item,index) in data2"
                              :key="index"
-                             @click="unShuttle(item,index)">
+                             @dblclick="unShuttle(item,index)">
                           <span>{{item.name}}</span>
                           <span>{{item.account}}</span>
                         </div>
@@ -279,6 +337,7 @@
     <el-dialog title="榜单申请"
                :visible.sync="dialogVisible"
                width="30%"
+               :close-on-click-modal='false'
                :before-close="offDialog">
       <span> 您的申请已经提交，请您耐心等待榜单持有者的审核。</span>
       <span slot="footer"
@@ -286,13 +345,54 @@
         <el-button @click="offDialog">关闭</el-button>
       </span>
     </el-dialog>
+    <el-dialog :title="addDelete"
+               :visible.sync="addShow"
+               width="30%"
+               :close-on-click-modal='false'
+               :before-close="offDialog">
+      <span> 确定执行此操作?</span>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="defineAdd" v-if="addDelete==='添加收藏'">确定</el-button>
+        <el-button @click="defineDeldte" v-if="addDelete==='取消收藏'">确定</el-button>
+        <el-button @click="offAdd">关闭</el-button>
+      </span>
+    </el-dialog>
+    <el-dialog title="我的榜单列表"
+               :visible.sync="addUserShow"
+               width="30%"
+               :close-on-click-modal='false'
+               :before-close="offAddUser" class="addUser">
+      <div class="radio-box">
+        <el-radio-group v-model="rankingUserId">
+          <el-radio  v-for="item in addData" :key="item.id" :label="item.id">{{item.rankTitle}}</el-radio>
+        </el-radio-group>
+      </div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="openUser">新建榜单</el-button>
+        <el-button @click="defineUser" type="primary">确认添加</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
-
+import { exportTable } from '@/lib/tools'
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 export default {
   data () {
     return {
+      limitCount: '', // 限制个数
+      dataShow: false,
+      pageShow: false, // 页面条数限制
+      addUserShow: false,
+      addDelete: '',
+      account: '', // 收藏biz
+      accountName: '', // 账号名称
+      type: '1', // 1：微信公众号
+      addShow: false, // 收藏弹框
+      total: 0,
       data1: [{
         name: '自治区人民检察院1',
         account: 'renmenjianchayuan'
@@ -308,83 +408,249 @@ export default {
       dialogVisible: false,
       addApply: false,
       activeTab: 'wx',
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则'
-        }, {
-          value: 'daohang',
-          label: '导航'
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }, {
-            value: 'typography',
-            label: 'Typography 字体'
-          }, {
-            value: 'icon',
-            label: 'Icon 图标'
-          }, {
-            value: 'button',
-            label: 'Button 按钮'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form'
-        }, {
-          value: 'data',
-          label: 'Data'
-        }, {
-          value: 'notice',
-          label: 'Notice'
-        }, {
-          value: 'navigation',
-          label: 'Navigation'
-        }, {
-          value: 'others',
-          label: 'Others'
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }],
+      options: [],
+      dateOption: [
+      ],
       ruleForm: {
         types: '1',
-        date: [],
-        time: '日榜',
-        function: '',
-        messageType: ''
+        rankingType: 1, // 榜单类型 1：日榜 2：周榜 3：月榜
+        date: '', // 时间
+        functionType: '', // 职能
+        districts: [], // 地区
+        unitLevel: '',
+        pageNum: 1,
+        pageSize: 10
       },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }]
+      tableData: [],
+      addData: [],
+      bizArray: [],
+      bizName: [],
+      rankingUserId: '',
+      form: {
+        pageNum: 1,
+        pageSize: 10
+      }
     }
   },
+  created () {
+    this.getNewDate()
+    this.rankType()
+  },
   methods: {
+    // 加载更多
+    loadMore () {
+      this.ruleForm.pageNum++
+      this.geListData()
+    },
+    // 初始化表格
+    restTable () {
+      this.tableData = []
+      this.ruleForm.pageNum = 1
+      this.geListData()
+    },
+    // 获取自定义榜单列表
+    getCustList () {
+      this.$http.post(this.$api.userData, this.form)
+        .then(res => {
+          this.addData = res.data.data.content
+          // this.total = res.data.data.totalElements
+        }).catch(() => { })
+    },
+    // 添加到自定义榜单弹框
+    addUser (row) {
+      this.bizName.push(row.nickname)
+      this.bizArray.push(row.biz)
+      this.getCustList()
+      this.addUserShow = true
+    },
+    // 新建跳转自定义榜单新建页面
+    openUser () {
+      this.$router.push({ name: 'Customize' })
+    },
+    // 确认添加自定义榜单
+    defineUser () {
+      if (this.rankingUserId) {
+        let params = {
+          bizArray: this.bizArray,
+          bizName: this.bizName,
+          rankingUserId: this.rankingUserId
+        }
+        this.$http.post(this.$api.bizAddRanking, params)
+          .then(res => {
+            if (res.data.code === 200) {
+              this.$message.success('操作成功!')
+              this.offAddUser()
+              this.openUser()
+            }
+          })
+          .catch(() => { })
+      } else {
+        this.$message.warning('请选择添加的榜单!')
+      }
+    },
+    offAddUser () {
+      this.bizName = []
+      this.bizArray = []
+      this.rankingUserId = ''
+      this.addUserShow = false
+    },
+    // 添加收藏弹框
+    addList (row) {
+      this.addDelete = '添加收藏'
+      this.account = row.biz
+      this.accountName = row.nickname
+      this.addShow = true
+    },
+    // 删除收藏弹框
+    deleteList (row) {
+      this.addDelete = '取消收藏'
+      this.account = row.biz
+      this.addShow = true
+    },
+    // 确定添加
+    defineAdd () {
+      this.$http.get(this.$api.addAccount, { params: { account: this.account, accountName: this.accountName, type: this.type } })
+        .then(res => {
+          if (res.data.code === 200) {
+            this.$message.success('操作成功!')
+            this.restTable()
+            this.addShow = false
+          }
+        })
+        .catch(() => { })
+    },
+    // 取消收藏
+    defineDeldte () {
+      this.$http.get(this.$api.defineDeldte, { params: { account: this.account, type: this.type } })
+        .then(res => {
+          if (res.data.code === 200) {
+            this.$message.success('操作成功!')
+            this.restTable()
+            this.addShow = false
+          }
+        })
+        .catch(() => { })
+    },
+    // 关闭弹框
+    offAdd () {
+      this.addShow = false
+    },
+    // 获取地区数据
+    rankType () {
+      this.$http.get(this.$api.rankArea)
+        .then(res => {
+          if (res.data.code === 200) {
+            this.options = res.data.data
+          }
+        })
+        .catch(() => { })
+    },
+    // 日/月*周类型切换
+    getDateOption () {
+      // var time = new Date(this.updateDate)
+      if (this.ruleForm.rankingType === 1) {
+        this.ruleForm.date = this.updateDate
+        this.dateOption = []
+        let obj = {
+          value: this.updateDate,
+          label: this.updateDate
+        }
+        this.dateOption.push(obj)
+      } else if (this.ruleForm.rankingType === 2) {
+        this.dateOption = []
+        for (let i = 1; i <= 4; i++) {
+          let s1 = this.getWeek(i)
+          let obj = {
+            value: s1,
+            label: s1
+          }
+          this.dateOption.push(obj)
+        }
+        this.ruleForm.date = this.dateOption[0].value
+      } else if (this.ruleForm.rankingType === 3) {
+        this.dateOption = []
+        for (let i = 0; i < 4; i++) {
+          let s1 = this.getMounth(i)
+          let obj = {
+            value: s1,
+            label: s1
+          }
+          this.dateOption.push(obj)
+        }
+        this.ruleForm.date = this.dateOption[0].value
+      }
+      this.restTable()
+    },
+    // 获取周
+    getWeek (i) {
+      // 获取上周时间
+      let myDate = new Date(new Date(this.updateDate).getTime() + 24 * 3600 * 1000 - 7 * 24 * 3600 * 1000 * i)
+      let day = myDate.getDay()
+      let time = myDate.getDate() - day + (day === 0 ? -6 : 1)
+      let startTime = new Date(myDate.setDate(time))
+      let startYear = startTime.getFullYear()
+      let startMonth = startTime.getMonth() + 1
+      if (startMonth < 0) {
+        startMonth = 12 + startMonth
+        startYear = startYear - 1
+      } else if (startMonth === 0) {
+        startMonth = 12
+        startYear = startYear - 1
+      }
+      let startData = startTime.getDate()
+      startMonth = startMonth < 10 ? '0' + startMonth : startMonth
+      startData = startData < 10 ? '0' + startData : startData
+      let startDateTime =
+        startYear + '-' + startMonth + '-' + startData
+      let endTime = new Date(myDate.setDate(time + 6))
+      let endYear = endTime.getFullYear()
+      let endData = endTime.getDate()
+      let endMonth = endData >= 6 ? endTime.getMonth() + 1 : endTime.getMonth() + 2
+      // let endMonth = endTime.getMonth() + 1
+      if (endMonth < 0) {
+        endMonth = 12 + endMonth
+        endYear = endYear - 1
+      } else if (endMonth === 0) {
+        endMonth = 12
+        endYear = endYear - 1
+      }
+      endMonth = endMonth < 10 ? '0' + endMonth : endMonth
+      endData = endData < 10 ? '0' + endData : endData
+      let endDateTime =
+        endYear + '-' + endMonth + '-' + endData
+      return startDateTime + '~' + endDateTime
+    },
+    // 获取月
+    getMounth (i) {
+      // 获取上个月时间
+      let nowdays = new Date(new Date(this.updateDate).getTime() + 24 * 3600 * 1000)
+      let year = nowdays.getFullYear()
+      let month = nowdays.getMonth() - i
+      if (month < 0) {
+        month = 12 + month
+        year = year - 1
+      } else if (month === 0) {
+        month = 12
+        year = year - 1
+      }
+      month = month < 10 ? '0' + month : month
+      let yDate = new Date(year, month, 0)
+      let startDateTime = year + '-' + month + '-01' // 上个月第一天
+      let endDateTime = year + '-' + month + '-' + yDate.getDate() // 上个月最后一天
+      return startDateTime + '~' + endDateTime
+    },
+    // 获取时间参数
+    getNewDate () {
+      this.$http.get(this.$api.updateDateDate)
+        .then(res => {
+          if (res.data.code === 200) {
+            this.updateDate = res.data.data
+            this.getDateOption()
+          }
+        })
+        .catch(() => { })
+    },
+    // 公众号添加tabs切换
     handleClick (tab, event) {
       console.log(tab, event)
     },
@@ -396,9 +662,43 @@ export default {
     openCust () {
       this.$router.push({ name: 'Customize' })
     },
+    // 获取表格数据
+    geListData () {
+      this.ruleForm.functionType = this.ruleForm.functionType.toString()
+      this.$http.post(this.$api.zfListData, this.ruleForm)
+        .then(res => {
+          if (res.data.data.content.length > 0) {
+            this.tableData.push(...res.data.data.content)
+            this.limitCount = res.data.data.limitCount
+            if (res.data.data.content.length < 10) {
+              this.dataShow = false
+            } else {
+              this.dataShow = true
+            }
+            if (this.limitCount === 0) {
+              this.pageShow = false
+            } else {
+              if (this.tableData.length >= this.limitCount) {
+                this.pageShow = true
+              } else {
+                this.pageShow = false
+              }
+            }
+          } else {
+            this.dataShow = false
+          }
+        })
+        .catch(() => { })
+    },
     // 筛选
     searchList () {
-      console.log(this.ruleForm)
+      this.restTable()
+      // this.geListData()
+    },
+    searchType (id) {
+      this.ruleForm.districts = []
+      this.ruleForm.unitLevel = id
+      this.restTable()
     },
     // 添加公众号
     shuttle (item, index) {
@@ -425,7 +725,6 @@ export default {
     // 提交申请
     upApply () {
       this.remarks = this.preText(this.textarea)
-      console.log(this.remarks)
       this.dialogVisible = true
     },
     // 关闭
@@ -439,18 +738,24 @@ export default {
     // 重置
     resetForm (formName) {
       this.$refs[formName].resetFields()
+      this.restTable()
     },
     // 导出
-    exportBox () { },
+    exportBox () {
+      var time = new Date()
+      // 程序计时的月从0开始取值后+1
+      var m = time.getMonth() + 1
+      var t = time.getFullYear() + '-' + m + '-' + this.ruleForm.date
+      let fileName = '省域微信公众号' + t + '总榜'
+      var table = XLSX.utils.table_to_book(document.querySelector('#wx-monitor'))
+      exportTable(XLSX, FileSaver, table, fileName)
+    },
     // 说明
     explain () { },
     openOther (type) {
-      let url = type === '1' ? 'Personal' : type === '2' ? 'PercinArticle' : 'Personal'
+      let url = type === '1' ? 'Official' : type === '2' ? 'OfficialArticle' : 'OfficialVideo'
       this.$router.push({ name: url })
     }
-  },
-  created () {
-
   }
 }
 </script>
@@ -507,7 +812,7 @@ export default {
   margin-left: 15px;
 }
 .account-infor {
-  width: 200px;
+  // width: 200px;
   margin: 0 auto;
 }
 .account-infor img {
@@ -520,6 +825,7 @@ export default {
 }
 .collect {
   color: #3b82fe;
+  line-height: 24px;
 }
 .addto {
   color: #f89408;
@@ -552,4 +858,12 @@ export default {
 .tip-span {
   color: red;
 }
+.radio-box .el-radio{
+  margin-bottom: 10px;
+}
+.addUser .dialog-footer{
+  display: block;
+  text-align: center;
+}
+
 </style>

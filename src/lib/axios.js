@@ -3,8 +3,6 @@ import { Message, Loading } from 'element-ui'
 import store from '../store/store'
 import router from '../router/router'
 
-let loading = null
-let isPopMessage = true
 let needLoadingRequestCount = 0
 export function showFullScreenLoading () {
   if (!needLoadingRequestCount) {
@@ -12,14 +10,21 @@ export function showFullScreenLoading () {
   }
   needLoadingRequestCount++
 }
-export function hideFullScreenLoading () {
+export function tryHideFullScreenLoading () {
   if (needLoadingRequestCount <= 0) return
   needLoadingRequestCount--
   if (!needLoadingRequestCount) {
     endLoading()
   }
 }
-
+let loading = null
+let isPopMessage = true
+// const setTime = () => {
+//   tryHideFullScreenLoading()
+//   setTimeout(() => {
+//     tryHideFullScreenLoading()
+//   }, 1000)
+// }
 function startLoading () {
   loading = Loading.service({
     lock: true,
@@ -35,7 +40,7 @@ const tip = msg => {
   if (isPopMessage) {
     Message.error({
       message: msg,
-      duration: 1000,
+      duration: 2000,
       forbidClick: true
     })
   }
@@ -44,7 +49,7 @@ const warningTip = msg => {
   if (isPopMessage) {
     Message.warning({
       message: msg,
-      duration: 1000,
+      duration: 2000,
       forbidClick: true
     })
   }
@@ -102,6 +107,7 @@ if (process.env.NODE_ENV === 'development') {
   var instance = axios.create({
     baseURL: process.env.VUE_APP_BASE_URL,
     withCredentials: true,
+    // timeout: 1000 * 15,
     headers: {
       'Content-Type': 'application/json'
     }
@@ -110,6 +116,7 @@ if (process.env.NODE_ENV === 'development') {
   instance = axios.create({
     baseURL: window.g.baseUrl,
     withCredentials: true,
+    // timeout: 1000 * 15,
     headers: {
       'Content-Type': 'application/json'
     }
@@ -135,7 +142,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
   // 请求成功
   res => {
-    hideFullScreenLoading()
+    tryHideFullScreenLoading()
     if (res.status === 200 && res.data.code === 200) {
       isPopMessage = true
       return Promise.resolve(res)
@@ -147,7 +154,7 @@ instance.interceptors.response.use(
   },
   // 请求失败
   error => {
-    hideFullScreenLoading()
+    tryHideFullScreenLoading()
     const { response } = error
     errorHandle(response.status || response, response.data.message)
     isPopMessage = true

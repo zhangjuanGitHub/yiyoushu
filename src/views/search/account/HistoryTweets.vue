@@ -1,9 +1,9 @@
 <!--
  * @Author: zhangjuan
- * @Description: 
+ * @Description:
  * @Date: 2021-01-29 14:21:49
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-02 17:05:38
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-16 16:30:22
 -->
 <template>
   <div class="search-material-wrap">
@@ -15,8 +15,8 @@
             @click="changeHistoryTab('hot')">30天热门推文</p>
       </div>
       <div class="flex-ali-center">
-        <p class="search-his-pp">数据更新时间：<span>{{updateTime}}</span></p>
-        <p class="search-his-ii" @click="updateDataTT"><i class="el-icon-refresh cursor"></i>更新数据</p>
+        <!-- <p class="search-his-pp">数据更新时间：<span>{{updateTime}}</span></p>
+        <p class="search-his-ii" @click="updateDataTT"><i class="el-icon-refresh cursor"></i>更新数据</p> -->
       </div>
     </div>
     <!-- 最新推文 -->
@@ -76,6 +76,7 @@
                 <p>在看：</p><p v-html="i.like_num > 100000 ? '10万+' : i.like_num"></p>
                 <img src="@/assets/images/home/data_4.png" alt="">
                 <p>留言：</p><p v-html="i.comment_count > 100000 ? '10万+' : i.comment_count"></p>
+                <p class="search-his-ii" @click="updateDataTT(i.sn)"><i class="el-icon-refresh cursor"></i>更新数据</p>
               </div>
             </div>
           </div>
@@ -110,6 +111,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { timeFormat, secondsFormat } from '@/lib/tools'
 export default {
   name: 'search',
@@ -129,8 +131,7 @@ export default {
       },
       historyList: [],
       thityList: [],
-      accountMsg: {},
-      updateTime: ''
+      // accountMsg: {}
     }
   },
   methods: {
@@ -140,11 +141,9 @@ export default {
       if (tab === 'hot') {
         this.isHot = true
         this.getThirtyTw()
-        this.getCurrentTime()
       } else {
         this.isHot = false
         this.getNewestTw()
-        this.getCurrentTime()
       }
     },
     // 重置
@@ -153,22 +152,8 @@ export default {
     searchList () {},
     // 详情
     toAnalyse (item) {
-      // let obj = {
-      //   type: item.classify_val,
-      //   idx: item.idx,
-      //   sn: item.sn,
-      //   title: item.title,
-      //   url: item.url,
-      //   articleId: item.id,
-      //   update_time: item.update_time,
-      //   nickname: this.accountMsg.nickname,
-      //   alias: this.accountMsg.alias,
-      //   headUrl: this.accountMsg.ori_head_img,
-      //   id: this.accountId
-      // }
-      this.$router.push({ name: 'ArticleAnalyse', query: { accountId: this.accountId, articleId: item.id } })
-      // const {href} = this.$router.resolve({ name: 'ArticleAnalyse', params: { obj: obj } })
-      // window.open(href, '_blank')
+      let route = this.$router.resolve({ name: 'ArticleAnalyse', query: { accountId: this.accountId, articleId: item.id } })
+      window.open(route.href, '_blank')
     },
     // 单选框筛选
     selectRadio () {},
@@ -183,41 +168,31 @@ export default {
       this.$http.post(this.$api.getNewestTw, obj)
         .then(res => {
           this.historyList = res.data.data
-        })
+        }).catch(() => {})
     },
     // 30天热门推文
     getThirtyTw () {
       this.$http.post(this.$api.getThirtyHot, { biz: this.accountMsg.biz })
         .then(res => {
           this.thityList = res.data.data
-        })
-    },
-    getAccountMsg () {
-      this.$http.get(`${this.$api.getWxAccount}/${this.accountId}`)
-        .then(res => {
-          this.accountMsg = res.data.data[0]
-          this.getNewestTw()
         }).catch(() => {})
     },
     // 更新数据
-    updateDataTT () {
-      this.getCurrentTime()
-      if (this.isHot) {
-        this.getThirtyTw()
-      } else {
-        this.getNewestTw()
-      }
-    },
-    // 获取当前时间
-    getCurrentTime () {
-      const now = new Date()
-      this.updateTime = timeFormat(now.getTime()) + ' ' + secondsFormat(now.getTime())
+    updateDataTT (sn) {
+      this.$http.get(`${this.$api.updateYime}/${sn}`)
+        .then(res => {
+          this.$message.success('更新成功，稍后再来查看')
+        }).catch(() => {})
     }
   },
   created () {
     this.accountId = this.$route.query.id
-    this.getAccountMsg()
-    this.getCurrentTime()
+    this.getNewestTw()
+  },
+  computed: {
+    ...mapState({
+      accountMsg: state => state.mutations.accountMsg
+    })
   }
 }
 </script>

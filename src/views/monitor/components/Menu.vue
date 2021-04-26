@@ -1,8 +1,8 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-04 09:41:36
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 15:24:21
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-12 14:07:34
 -->
 <template>
   <div class="monitor-menu">
@@ -10,7 +10,7 @@
              @select="handleSelect"
              :unique-opened="true"
              active-text-color="#3B81FE"
-             class="el-menu-vertical-demo hotnews-box">
+             class="el-menu-vertical-demo">
       <el-submenu index="Account">
         <template slot="title">
           <div class="title-box">
@@ -41,9 +41,9 @@
         <!-- <el-menu-item index="Spread">
           <div class="padding50">传播分析</div>
         </el-menu-item> -->
-        <el-menu-item index="Realtime">
+        <!-- <el-menu-item index="Realtime">
           <div class="padding50">文章实时监测</div>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-menu-item index="Relevant">
           <div class="padding50">相关性分析</div>
         </el-menu-item>
@@ -92,19 +92,30 @@
         <el-menu-item index="MinuteAccount">
           <div class="padding50">账号预约监测</div>
         </el-menu-item>
-        <el-menu-item index="MinuteAll">
+        <!-- <el-menu-item index="MinuteAll">
           <div class="padding50">批量预约监测</div>
-        </el-menu-item>
+        </el-menu-item> -->
         <el-menu-item index="MinuteList">
           <div class="padding50">监测列表</div>
         </el-menu-item>
       </el-submenu>
-      <el-menu-item index="MonitorBacktrack">
-        <div class="title-box">
-          <i class="el-icon-help"></i>
-          <span slot="title">数据回溯</span>
-        </div>
-      </el-menu-item>
+      <el-submenu index="6">
+        <template slot="title">
+          <div class="title-box">
+            <i class="el-icon-help"></i>
+            <span slot="title">数据智能中心</span>
+          </div>
+        </template>
+         <el-menu-item index="Realtime">
+          <div class="padding50">文章传播计算</div>
+        </el-menu-item>
+        <el-menu-item index="MonitorBacktrack">
+          <div class="padding50">数据回溯</div>
+        </el-menu-item>
+        <el-menu-item index="CenterSensity">
+          <div class="padding50">错敏检查</div>
+        </el-menu-item>
+      </el-submenu>
     </el-menu>
   </div>
 </template>
@@ -119,7 +130,7 @@ export default {
   methods: {
     handleSelect (key, keypush) {
       if (key === 'WeekSearch' || key === 'MonthSearch') {
-        this.$router.push({ name: key, query: { type: key === 'WeekSearch' ? 1 : 2 } })
+        this.$router.push({ name: key, query: { type: key === 'WeekSearch' ? '1' : '2' } })
       } else {
         this.$router.push({ name: key })
       }
@@ -146,7 +157,7 @@ export default {
   }
 }
 </script>
-<style scoped lang="scss">
+<style scoped>
 @import '../monitor.css';
 </style>
 <style scoped>

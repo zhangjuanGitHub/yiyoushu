@@ -1,10 +1,15 @@
 <template>
   <div class="login-wrap flex-all-center">
+    <div class="header">
+      <img src="@/assets/images/login/yys.png"
+           alt=""
+           class="cursor"
+           @click="$router.push({ name: 'Home'})">
+    </div>
     <div class="login-main">
-      <div class="login-logo-box">
-        <img src="@/assets/images/home/yiyoushu.png"
+      <div class="login-bg">
+        <img src="@/assets/images/login/loginBG.png"
              alt="">
-        <p>易标智旗下产品</p>
       </div>
       <div class="login-info-box">
         <div class="login-right-coner">
@@ -47,7 +52,12 @@
              class="login-info-main flex-cloumn-cen">
           <p class="login-info-title">扫码登录</p>
           <div class="login-code-box">
+            <div class="flex-all-center login-code-loading"
+                 v-if="!codeUrl">
+              <i class="el-icon-loading" style="color: #3B81FE"></i>
+            </div>
             <img :src="codeUrl"
+                 v-if="codeUrl"
                  alt="">
             <div v-if="timeOut"
                  class="login-timeout flex-all-center">
@@ -58,11 +68,17 @@
         </div>
       </div>
     </div>
+    <div class="bottom">
+      <div>
+        <p class="phone">客服热线:010-88321270 周一至周日 9:00-18:00</p>
+        <p class="icp">© 2021 yiyoushu.com , All Rights Reserved 京ICP备2021001757号-2</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+// import { mapState } from 'vuex'
 import md5 from 'js-md5'
 export default {
   name: 'login',
@@ -95,6 +111,7 @@ export default {
     changeLoginFunc () {
       if (!this.showCode) {
         this.timeOut = false
+        this.codeUrl = ''
         this.getCode()
       } else {
         this.getCookie()
@@ -117,7 +134,8 @@ export default {
             .then(res => {
               this.$store.commit('user/userToken', res.data.data) // 用户信息
               sessionStorage.setItem(`token`, res.data.data)
-              this.$router.push({ name: 'Home' })
+              this.geUserInfo()
+              this.$router.replace({ name: 'Home' })
               this.$message.success('登录成功！')
               this.isLoading = false
             }).catch(() => {
@@ -126,6 +144,14 @@ export default {
             })
         }
       })
+    },
+    // 获取 用户信息
+    geUserInfo () {
+      this.$http.get(this.$api.getUserInfo)
+        .then(res => {
+          this.$store.commit('user/userInfo', res.data.data) // 用户详情
+          sessionStorage.setItem(`userinfo`, res.data.data)
+        }).catch(() => { })
     },
     setCookies (c_name, c_pwd, saveDays) {
       var now = new Date() // 获取时间
@@ -170,8 +196,8 @@ export default {
           }, 60000)
           this.isLogin = setInterval(() => {
             this.sendIsLogin()
-          }, 1000)
-        })
+          }, 2000)
+        }).catch(() => { })
     },
     // 扫码登录
     sendIsLogin () {
@@ -180,11 +206,12 @@ export default {
           if (res.data.data !== null) {
             this.$store.commit('user/userToken', res.data.data) // 用户信息
             sessionStorage.setItem(`token`, res.data.data)
+            this.geUserInfo()
             clearInterval(this.isLogin)
-            this.$router.push({ name: 'Home' })
+            this.$router.replace({ name: 'Home' })
             this.$message.success('登录成功！')
           }
-        })
+        }).catch(() => { })
     }
   },
   mounted () {
@@ -192,6 +219,7 @@ export default {
     window.addEventListener('keydown', this.listenerSubmit)
   },
   destroyed () {
+    clearInterval(this.isLogin)
     window.removeEventListener('keydown', this.listenerSubmit, false)
   }
 }
@@ -209,14 +237,16 @@ export default {
   top: 0;
   right: 0;
   bottom: 0;
-  background-image: url('../../assets/images/login/login.jpg');
-  background-repeat: no-repeat;
-  background-position: top left;
-  background-size: 100% 100%;
+  background-color: #010437;
+  // background-image: url('../../assets/images/login/login.jpg');
+  // background-repeat: no-repeat;
+  // background-position: top left;
+  // background-size: 100% 100%;
 }
 .login-main {
-  width: 90%;
-  height: 85%;
+  width: 70%;
+  display: flex;
+  justify-content: space-around;
 }
 .login-logo-box {
   width: 160px;
@@ -230,9 +260,9 @@ export default {
 .login-info-box {
   width: 425px;
   height: 475px;
-  float: right;
-  margin-right: 250px;
-  margin-top: 50px;
+  // float: right;
+  // margin-right: 250px;
+  // margin-top: 50px;
   border-radius: 5px;
   background: $white-text-color;
   .login-right-coner {
@@ -253,9 +283,12 @@ export default {
       height: 196px;
       margin: 20px auto;
       position: relative;
-      img {
+      img, .login-code-loading {
         width: 100%;
         height: 100%;
+      }
+      i {
+        font-size: 30px;
       }
     }
     .login-timeout {
@@ -307,6 +340,44 @@ export default {
     width: 100%;
     height: 50px;
     font-size: 20px;
+  }
+}
+.header {
+  position: absolute;
+  background-color: #fff;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 70px;
+  line-height: 70px;
+  img {
+    width: 155px;
+    margin-left: 60px;
+    vertical-align: middle;
+  }
+}
+.bottom {
+  position: absolute;
+  background-color: #fff;
+  bottom: 0px;
+  left: 0px;
+  width: 100%;
+  height: 136px;
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  .phone {
+    font-size: 14px;
+    font-weight: 400;
+    color: #0e122b;
+    line-height: 36px;
+  }
+  .icp {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6b798e;
+    line-height: 36px;
   }
 }
 </style>

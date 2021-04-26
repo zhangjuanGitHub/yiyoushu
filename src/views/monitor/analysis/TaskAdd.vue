@@ -48,6 +48,7 @@
     <!-- 提示 -->
     <el-dialog :visible.sync="tipVisible"
                :modal-append-to-body="false"
+               :close-on-click-modal='false'
                center
                @close="cancelSearch"
                width="37%">
@@ -57,7 +58,7 @@
         <p class="add-dialog-pp">正在诊断中，本次诊断预计耗时10-15分钟，您可以在<span @click="toTab">【任务列表】</span>中查看详情</p>
       </div>
       <div slot="footer">
-        <el-button type="success" @click="cancelSearch">知道了</el-button>
+        <el-button type="success" @click="toTab">知道了</el-button>
       </div>
     </el-dialog>
   </div>
@@ -104,27 +105,33 @@ export default {
     },
     // 开始分析
     startAnalyse () {
-      let obj = {
-        biz: this.selectItem.biz,
-        username: this.selectItem.alias,
-        nickname: this.selectItem.nickname,
-        hdHeadImg: this.selectItem.hd_head_img,
-        province: this.selectItem.province,
-        startDate: this.cycle[0],
-        endDate: this.cycle[1],
-        dateType: this.type
+      if (this.selectItem.biz) {
+        let obj = {
+          biz: this.selectItem.biz,
+          username: this.selectItem.alias,
+          nickname: this.selectItem.nickname,
+          hdHeadImg: this.selectItem.hd_head_img,
+          province: this.selectItem.province,
+          startDate: this.cycle[0],
+          endDate: this.cycle[1],
+          dateType: this.type
+        }
+        this.$http.post(this.$api.addOneAnalyse, obj)
+          .then(res => {
+            if (res.data.message === '已存在' && res.data.code === 200) {
+              let str = this.type === '1' ? '您已添加过该账号进行周分析了' : '您已添加过该账号进行月分析了'
+              this.$message.warning(str)
+            } else {
+              this.tipVisible = true
+            }
+          }).catch(() => {})
+      } else {
+        this.$message.warning('请选择一个账号进行分析')
       }
-      this.$http.post(this.$api.addOneAnalyse, obj)
-        .then(res => {
-          if (res.data.message === '已存在' && res.data.code === 200) {
-            let str = this.type === '1' ? '您已添加过该账号进行周分析了' : '您已添加过该账号进行月分析了'
-            this.$message.warning(str)
-          } else {
-            this.tipVisible = true
-          }
-        }).catch(() => {})
     },
     toTab () {
+      this.queryText = ''
+      this.addList = []
       this.tipVisible = false
       this.$emit('changeTab', 'list')
     },
@@ -142,7 +149,7 @@ export default {
         queryText: this.queryText,
         pageBean: {
           pageSize: this.pageBean.pageSize,
-          pageNum: (this.pageBean.pageNum - 1 ) * this.pageBean.pageSize + 1
+          pageNum: (this.pageBean.pageNum - 1) * this.pageBean.pageSize + 1
         },
         range: 1
       }
@@ -159,10 +166,13 @@ export default {
     },
     // 搜索账号列表
     submitSearch () {
-      this.addRecord()
-      this.$refs.child ? this.$refs.child.handleCurrentChange(1) : this.searchQuery()
+      if (this.queryText) {
+        this.addRecord()
+        this.$refs.child ? this.$refs.child.handleCurrentChange(1) : this.searchQuery()
+      } else {
+        this.$message.warning('请输入搜索内容')
+      }
       // this.record.push(this.queryText)
-      
     },
     // 获取搜索记录
     getRecord () {
@@ -192,7 +202,7 @@ export default {
     // 计算周期
     calcCycle () {
       let end = this.calcDate(1)
-      let start = this.calcDate(this.type === '1' ? 7 : 30 )
+      let start = this.calcDate(this.type === '1' ? 7 : 30)
       this.cycle[0] = timeFormat(start)
       this.cycle[1] = timeFormat(end)
     },
@@ -203,7 +213,7 @@ export default {
     }
   },
   created () {
-    this.type = this.$route.query.type
+    this.type = JSON.stringify(this.$route.query.type)
     this.getRecord()
     this.calcCycle()
   },

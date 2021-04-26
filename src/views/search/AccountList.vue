@@ -2,15 +2,15 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-02-01 10:31:23
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-09 17:44:11
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-23 13:45:12
 -->
 <template>
   <div class="account-list-wrap">
     <!-- 搜索框 -->
     <div class="home-up-wrap">
       <div class="home-up flex-ali-center">
-        <img src="@/assets/images/home/aside.png" alt="">
+        <img src="@/assets/images/login/yys.png" alt="">
         <div class="home-search-box flex-cloumn">
           <div class="home-search-keyword flex-ali-center">
             <el-menu :default-active="accountActive"
@@ -24,7 +24,17 @@
             </el-menu>
           </div>
           <div>
-            <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦" v-model="queryText">
+            <el-autocomplete v-model="queryText"
+                            v-if="accountActive === 'wx'"
+                            :fetch-suggestions="querySearch"
+                            placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                            :trigger-on-focus="false"
+                            @select="Searchkeyword">
+              <el-button type="primary" slot="append" icon="el-icon-search" @click="Searchkeyword"></el-button>
+            </el-autocomplete>
+            <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                      v-model="queryText"
+                      v-else-if="accountActive === 'article'">
               <el-button type="primary" slot="append" icon="el-icon-search" @click="Searchkeyword"></el-button>
             </el-input>
           </div>
@@ -37,8 +47,8 @@
           <div>
             <p>
               范围：
-              <span :class="{ 'sort_active': rangeActive === null}"
-                    @click="changeRangeActive(null)">全部</span>
+              <!-- <span :class="{ 'sort_active': rangeActive === null}"
+                    @click="changeRangeActive(null)">全部</span> -->
               <span :class="{ 'sort_active': rangeActive === 1 }"
                     @click="changeRangeActive(1)">名称</span>
               <span :class="{ 'sort_active': rangeActive === 2 }"
@@ -100,7 +110,7 @@
                     </div>
                   </div>
                   <div class="flex-ali-center" style="margin-bottom: 10px">
-                    <p class="account-list-num">微信号：<span>{{item.alias}}</span></p>
+                    <p class="account-list-num">微信号：<span v-html="item.alias"></span></p>
                     <p class="account-list-num" v-if="item.auth_info">认证主体：
                       <i class="el-icon-circle-check"></i><span v-html="item.auth_info"></span></p>
                   </div>
@@ -139,7 +149,7 @@ export default {
   components: {},
   data () {
     return {
-      rangeActive: null,
+      rangeActive: 1,
       sortActive: 'all',
       isSearched: true,
       accountList: [],
@@ -166,12 +176,31 @@ export default {
     },
     Searchkeyword () {
       if (this.accountActive === 'wx') {
-        // this.rangeActive = null
-        // this.$refs.child.handleCurrentChange(1)
-        this.$router.push({ path: '/search/accountlist', query: { type: this.accountActive, keyword: this.queryText } })
+        this.queryText = this.queryText.replace(/\s*/g, '')
+        if (this.queryText.length > 0 && this.queryText !== ' ') {
+          this.$router.push({ name: 'AccountList', query: { type: this.accountActive, keyword: this.queryText } })
+        } else {
+          this.$message.warning('请输入要搜索的关键字')
+        }
       } else if (this.accountActive === 'article') {
         this.$router.push({ name: 'MoreHot', query: { type: this.accountActive, keyword: this.queryText } })
       }
+    },
+    // 搜索提示
+    querySearch (query, cb) {
+      let obj = {
+        searchSource: 1, // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
+        queryText: this.queryText
+      }
+      this.$http.post(this.$api.wxSearchTip, obj)
+        .then(res => {
+          let newRes = []
+          let result = res.data.data
+          for (let i = 0; i < result.length; i++) {
+            newRes.push({value: result[i]})
+          }
+          cb(newRes)
+        }).catch(() => {})
     },
     // 搜索账号列表
     submitSearch () {
@@ -180,7 +209,7 @@ export default {
         queryText: this.queryText,
         pageBean: {
           pageSize: this.pageBean.pageSize,
-          pageNum: (this.pageBean.pageNum - 1 ) * this.pageBean.pageSize + 1
+          pageNum: (this.pageBean.pageNum - 1) * this.pageBean.pageSize + 1
         },
         range: this.rangeActive
       }
@@ -189,12 +218,12 @@ export default {
           if (res.data.data.length > 1) {
             this.isSearched = true
             this.result = this.queryText
-            this.total = res.data.data.shift()
             this.accountList = res.data.data
           } else {
             this.result = this.queryText
             this.isSearched = false
           }
+          this.total = res.data.data.shift()
         }).catch(() => {})
     },
     // 收藏和取消收藏
@@ -223,7 +252,7 @@ export default {
     },
     changeRangeActive (tab) {
       this.rangeActive = tab
-      this.submitSearch()
+      this.$refs.child.handleCurrentChange(1)
     },
     changeSortActive (tab) {
       this.sortActive = tab
@@ -236,10 +265,10 @@ export default {
   },
   watch: {
     '$route' (to, from) {
-      if(to.query.keyword != from.query.keyword){
+      if (to.query.keyword !== from.query.keyword) {
         this.queryText = to.query.keyword
-        this.rangeActive = null
-        this.$refs.child.handleCurrentChange(1)
+        this.rangeActive = 1
+        this.$refs.child ? this.$refs.child.handleCurrentChange(1) : this.submitSearch()
       }
     }
   },

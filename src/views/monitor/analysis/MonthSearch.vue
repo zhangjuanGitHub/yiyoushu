@@ -1,3 +1,9 @@
+<!--
+ * @Author: zhangjuan
+ * @Date: 2021-03-17 19:18:56
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-20 15:32:46
+-->
 <template>
   <div class="interaction content-box">
     <div class="tabs-header">
@@ -29,7 +35,11 @@ export default {
       this.activeTab = tab
     }
   },
-  created () {}
+  created () {
+    if (this.$route.query.tab) {
+      this.activeTab = this.$route.query.tab
+    }
+  }
 }
 </script>
 <style scoped>

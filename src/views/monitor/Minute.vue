@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-25 15:36:41
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 11:53:08
+ * @LastEditTime: 2021-04-19 15:56:07
 -->
 <template>
   <div class="minute">
@@ -31,7 +31,7 @@ export default {
 <style scoped>
 .minute-menu {
   width: 1400px;
-  min-height: 1000px;
+  min-height: calc(100vh - 181px);
   margin: 0 auto;
   margin-bottom: 70px;
 }
@@ -42,6 +42,7 @@ export default {
   margin-top: 20px;
   border: 1px solid #ccc;
   background-color: #fff;
+  position: relative;
 }
 .menu-warp{
   width: 15%;

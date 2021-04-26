@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-23 15:01:05
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-17 11:32:09
+ * @LastEditTime: 2021-04-14 15:31:18
 -->
 <template>
   <div class="flex-bwt-center">
@@ -50,7 +50,7 @@ export default {
     }
   },
   methods: {
-    getArticleData (data) {
+    getArticleTime (data) {
       let jsonObj = JSON.parse(data.commentChartJson)
       this.analysis.commentNum = jsonObj.commentNum
       this.analysis.likeCountNum = jsonObj.likeCountNum
@@ -190,57 +190,73 @@ export default {
         myChart.resize()
       })
     },
-    getArticleTime (data) {
-      let jsonObj = JSON.parse(data.commentHotChartJson)
-      let myChart = echarts.init(document.getElementById('article-word2'))
-      let option = {
-        tooltip: {
-          show: true
-        },
-        series: [{
-          type: 'wordCloud',
-          gridSize: 1,
-          sizeRange: [12, 55],
-          rotationRange: [-45, 0, 45, 90],
-          // maskImage: this.image,
-          textStyle: {
-            normal: {
-              color: function () {
-                return 'rgb(' +
+    getArticleData (data) {
+      let jsonObj2 = JSON.parse(data.commentHotChartJson)
+      if (jsonObj2.listData.length > 0) {
+        let myChart2 = echarts.init(document.getElementById('article-word2'))
+        let wordOption = {
+          tooltip: {
+            show: true
+          },
+          series: [{
+            type: 'wordCloud',
+            gridSize: 1,
+            sizeRange: [12, 55],
+            rotationRange: [-45, 0, 45, 90],
+            // maskImage: this.image,
+            textStyle: {
+              normal: {
+                color: function () {
+                  return 'rgb(' +
                   Math.round(Math.random() * 255) +
                   ', ' + Math.round(Math.random() * 255) +
                   ', ' + Math.round(Math.random() * 255) + ')'
+                }
               }
-            }
-          },
-          left: 'center',
-          top: 'center',
-          // width: '96%',
-          // height: '100%',
-          right: null,
-          bottom: null,
-          // width: 300,
-          // height: 200,
-          // top: 20,
-          data: jsonObj.listData
-        }]
+            },
+            left: 'center',
+            top: 'center',
+            // width: '96%',
+            // height: '100%',
+            right: null,
+            bottom: null,
+            // width: 300,
+            // height: 200,
+            // top: 20,
+            data: jsonObj2.listData
+          // data: [{
+          //   value: 50,
+          //   name: '视频'
+          // },
+          // {
+          //   value: 55,
+          //   name: '纯文字'
+          // },
+          // {
+          //   value: 55,
+          //   name: '图文'
+          // }]
+          }]
+        }
+        myChart2.setOption(wordOption)
+        window.addEventListener('resize', function () {
+          myChart2.resize()
+        })
+      } else {
+        var html = '<div><span  style="position: absolute;width:100%;top: 40%;display:block;text-align:center;color:#868686; font-size: 20px;">暂无数据</span></div>'
+        document.getElementById('article-word2').innerHTML = html
+        document.getElementById('article-word2').removeAttribute('_echarts_instance_')
       }
-      myChart.setOption(option)
-      window.addEventListener('resize', function () {
-        myChart.resize()
-      })
     }
   },
   mounted () {
-    // this.getArticleData()
-    // this.getArticleTime()
   }
 }
 </script>
 <style scoped>
 .pie-left,
 .pie-right {
-  width: 685px;
+  width: 670px;
   min-height: 426px;
 }
 #language-type{
@@ -250,6 +266,7 @@ export default {
 #article-word2 {
   width: 100%;
   height: 423px;
+  position: relative;
 }
 .title {
   font-size: 18px;

@@ -1,9 +1,9 @@
 <!--
  * @Author: zhangjuan
- * @Description: 
+ * @Description:
  * @Date: 2021-01-29 14:22:59
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-03 10:42:20
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-04-08 16:39:00
 -->
 <template>
   <div class="search-material-wrap flex-cloumn-all">
@@ -52,6 +52,7 @@
     <el-dialog width="400px"
                 center
                 :visible.sync="dialogVisible"
+                :close-on-click-modal='false'
                 :modal-append-to-body="false">
       <div class="search-back-dialog flex-cloumn-all">
         <p class="search-dialog-title">您的请求已成功提交!</p>
@@ -79,23 +80,27 @@ export default {
   },
   methods: {
     submitDataTrack () {
-      let obj = {
-        biz: this.accountMsg.biz,
-        alias: this.accountMsg.alias,
-        nickname: this.accountMsg.nickname,
-        startDate: this.timeValue[0],
-        endDate: this.timeValue[1]
+      if (this.timeValue[0]) {
+        let obj = {
+          biz: this.accountMsg.biz,
+          alias: this.accountMsg.alias,
+          nickname: this.accountMsg.nickname,
+          startDate: this.timeValue[0],
+          endDate: this.timeValue[1]
+        }
+        this.$http.post(this.$api.submitTrack, obj)
+          .then(res => {
+            this.dialogVisible = true
+          }).catch(() => {})
+      } else {
+        this.$message.warning('请选择要采集的时间段')
       }
-      this.$http.post(this.$api.submitTrack, obj)
-        .then(res => {
-          this.dialogVisible = true
-        })
     },
     getAccountMsg () {
       this.$http.get(`${this.$api.getWxAccount}/${this.accountId}`)
         .then(res => {
           this.accountMsg = res.data.data[0]
-          this.backData.push({name:this.accountMsg.nickname, wx:this.accountMsg.alias })
+          this.backData.push({ name: this.accountMsg.nickname, wx: this.accountMsg.alias })
         }).catch(() => {})
     }
   },

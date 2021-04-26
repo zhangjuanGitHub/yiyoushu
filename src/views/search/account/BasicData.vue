@@ -1,9 +1,9 @@
 <!--
  * @Author: zhangjuan
- * @Description: 
+ * @Description:
  * @Date: 2021-01-29 14:21:05
- * @LastEditors: Please set LastEditors
- * @LastEditTime: 2021-03-05 18:53:17
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-25 13:57:41
 -->
 <template>
   <div class="search-material-wrap">
@@ -44,8 +44,8 @@
               <el-tooltip class="item" effect="light" placement="right">
                 <i class="el-icon-info"></i>
                 <div slot="content">
-                  <p>最高：<span>{{scope.row.maxReadNum}}</span></p>
-                  <p>最低：<span>{{scope.row.minReadNum}}</span></p>
+                  <p>最高：<span v-html="scope.row.maxReadNum || 0"></span></p>
+                  <p>最低：<span v-html="scope.row.minReadNum || 0"></span></p>
                 </div>
               </el-tooltip>
             </p>
@@ -61,8 +61,8 @@
               <el-tooltip class="item" effect="light" placement="right">
                 <i class="el-icon-info"></i>
                 <div slot="content">
-                  <p>最高：<span>{{scope.row.maxLikeNum}}</span></p>
-                  <p>最低：<span>{{scope.row.minLikeNum}}</span></p>
+                  <p>最高：<span v-html="scope.row.maxLikeNum || 0"></span></p>
+                  <p>最低：<span v-html="scope.row.minLikeNum || 0"></span></p>
                 </div>
               </el-tooltip>
             </p>
@@ -78,8 +78,8 @@
               <el-tooltip class="item" effect="light" placement="right">
                 <i class="el-icon-info"></i>
                 <div slot="content">
-                  <p>最高：<span>{{scope.row.maxOldLikeNum}}</span></p>
-                  <p>最低：<span>{{scope.row.minOldLikeNum}}</span></p>
+                  <p>最高：<span v-html="scope.row.maxOldLikeNum || 0"></span></p>
+                  <p>最低：<span v-html="scope.row.minOldLikeNum || 0"></span></p>
                 </div>
               </el-tooltip>
             </p>
@@ -95,8 +95,8 @@
               <el-tooltip class="item" effect="light" placement="right">
                 <i class="el-icon-info"></i>
                 <div slot="content">
-                  <p>最高：<span>{{scope.row.maxCommentCount}}</span></p>
-                  <p>最低：<span>{{scope.row.minCommentCount}}</span></p>
+                  <p>最高：<span v-html="scope.row.maxCommentCount || 0"></span></p>
+                  <p>最低：<span v-html="scope.row.minCommentCount || 0"></span></p>
                 </div>
               </el-tooltip>
             </p>
@@ -131,7 +131,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 // 引入基本模板
+import { timeFormat } from '@/lib/tools'
 let echarts = require('echarts/lib/echarts')
 // 引入折线图组件
 require('echarts/lib/chart/line')
@@ -139,7 +141,6 @@ require('echarts/lib/chart/line')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 require('echarts/lib/component/legend')
-import { timeFormat } from '@/lib/tools'
 export default {
   name: 'search',
   components: {},
@@ -148,7 +149,7 @@ export default {
       dataValue: '1',
       timeValue: [],
       basicData: [],
-      accountMsg: {},
+      // accountMsg: {},
       isSelect: 1
     }
   },
@@ -175,14 +176,6 @@ export default {
       date.setTime(date.getTime() - 3600 * 1000 * 24 * num)
       return date
     },
-    getAccountMsg () {
-      this.$http.get(`${this.$api.getWxAccount}/${this.accountId}`)
-        .then(res => {
-          this.accountMsg = res.data.data[0]
-          this.getBasicList()
-          this.drawLine()
-        }).catch(() => {})
-    },
     // 获取数据的行为数据
     getBasicList () {
       let obj = {
@@ -191,9 +184,9 @@ export default {
         endTime: this.timeValue[1]
       }
       this.$http.post(this.$api.getBasicData, obj)
-         .then(res => {
-           this.basicData = res.data.data
-         })
+        .then(res => {
+          this.basicData = res.data.data
+        }).catch(() => {})
     },
     toDrawLine (i) {
       this.isSelect = i
@@ -256,18 +249,23 @@ export default {
             ]
           })
         }).catch(() => {})
-    },
+    }
   },
   created () {
     this.accountId = this.$route.query.id
-    this.getAccountMsg()
     let now = this.calcDate(1)
     let seven = this.calcDate(7)
     this.timeValue[1] = timeFormat(now)
     this.timeValue[0] = timeFormat(seven)
   },
   mounted () {
-    // this.drawLine()
+    this.getBasicList()
+    this.drawLine()
+  },
+  computed: {
+    ...mapState({
+      accountMsg: state => state.mutations.accountMsg
+    })
   }
 }
 </script>

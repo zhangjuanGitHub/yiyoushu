@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-01-25 17:27:30
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 11:52:41
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-04-09 13:41:37
 -->
 <template>
   <div class="content">
@@ -37,7 +37,7 @@ export default {
 <style scoped>
 .content-show {
   max-width: 1400px;
-  min-height: 1000px;
+  min-height: calc(100vh - 181px);
   margin: 0 auto;
   margin-bottom: 70px;
 }

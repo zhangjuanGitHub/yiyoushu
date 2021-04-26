@@ -3,13 +3,13 @@
  * @Description: 我的资料
  * @Date: 2021-02-26 09:42:59
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-02-26 16:54:25
+ * @LastEditTime: 2021-04-12 10:21:12
 -->
 <template>
   <div class="mayinfo">
     <div class="mayinfo-header">
       <div class="img-box flex-ali-center">
-        <img src="@/assets/images/home/aside.png"
+        <img src="@/assets/images/login/yys.png"
              alt="">
         <div class="crumbs">个人中心</div>
       </div>
@@ -43,6 +43,9 @@ export default {
 }
 </script>
 <style scoped>
+.mayinfo {
+  min-height: calc(100vh - 111px);
+}
 .mayinfo-header {
   background-color: #fff;
 }
@@ -50,6 +53,9 @@ export default {
   width: 1400px;
   height: 117px;
   margin: 0 auto;
+}
+.img-box>img {
+  width: 170px;
 }
 .crumbs {
   color: #3b81fe;
@@ -67,8 +73,8 @@ export default {
   border-radius: 50%;
 }
 .mayinfo-right{
-   width: 1212px;
+  width: 1212px;
   background-color: #fff;
-  margin: 30px 0 20px 20px;
+  margin: 30px 0 100px 20px;
 }
 </style>

@@ -34,7 +34,7 @@ export default {
 <style scoped>
 .account-show {
   width: 1400px;
-  min-height: 1000px;
+  min-height: calc(100vh - 181px);
   margin: 0 auto;
   margin-bottom: 70px;
 }

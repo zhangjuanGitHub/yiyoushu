@@ -14,7 +14,7 @@
                    layout="total, prev, pager, next, jumper"
                    :page-size="query.size"
                    :current-page.sync="query.page"
-                   :hide-on-single-page="total<=query.page"
+                   :hide-on-single-page="total<=query.size"
                    :total="total">
     </el-pagination>
   </div>

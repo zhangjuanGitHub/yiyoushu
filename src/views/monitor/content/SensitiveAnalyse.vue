@@ -110,6 +110,7 @@
 </template>
 <script>
 // 引入基本模板
+import { timeFormat } from '@/lib/tools'
 let echarts = require('echarts/lib/echarts')
 // 引入折线图组件
 require('echarts/lib/chart/pie')
@@ -117,11 +118,10 @@ require('echarts/lib/chart/pie')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 require('echarts/lib/component/legend')
-import { timeFormat } from '@/lib/tools'
 export default {
   data () {
     return {
-      valueTime: '',
+      valueTime: '2',
       ruleForm: {
         publishTime: [],
         keyword: '',
@@ -144,19 +144,20 @@ export default {
       this.ruleForm.pageSize = query.size
       this.ruleForm.pageNum = query.page
       this.getSensList()
+      this.drawPie()
     },
     toArticle (articleId) {
       this.$router.push({ name: 'SensitiveArticle', query: { articleId: articleId } })
     },
     drawPie () {
-      this.$http.post(this.$api.getSensPie, { bizList: this.ruleForm.bizList })
+      this.$http.post(this.$api.getSensPie, { bizList: this.ruleForm.bizList, publishTime: this.ruleForm.publishTime })
         .then(res => {
           this.errorCountNum = res.data.data[0].errorCountNum
           this.articleCountNum = res.data.data[0].articleCountNum
           let pieArr = []
           let total = 0
           for (let i = 1; i <= 5; i++) {
-            pieArr.push({ name: i+ '级', value: res.data.data[0]['errLevel' + i + 'CountNum'] })
+            pieArr.push({ name: i + '级', value: res.data.data[0]['errLevel' + i + 'CountNum'] })
             total = total + res.data.data[0]['errLevel' + i + 'CountNum']
           }
           let myPie = echarts.init(document.getElementById('myPie'))
@@ -197,7 +198,7 @@ export default {
               }
             ]
           })
-      }).catch(() => {})
+        }).catch(() => {})
     },
     // 筛选
     searchList () {
@@ -205,16 +206,16 @@ export default {
     },
     // 重置
     resetForm () {
-      this.valueTime = ''
+      this.valueTime = '2'
       this.ruleForm.level = ''
-      this.ruleForm.publishTime = []
+      this.calcCycle()
       this.$refs.child.handleCurrentChange(1)
     },
     // 获取列表
     getSensList () {
       this.$http.post(this.$api.getSensitiveList, this.ruleForm)
         .then(res => {
-          this.total =res.data.data.count
+          this.total = res.data.data.count
           this.accountList = res.data.data.list
         }).catch(() => {})
     },
@@ -226,7 +227,7 @@ export default {
     // 计算周期
     calcCycle () {
       let end = this.calcDate(1)
-      let start = this.calcDate(this.valueTime === '1' ? 7 : 30 )
+      let start = this.calcDate(this.valueTime === '1' ? 7 : 30)
       this.ruleForm.publishTime[0] = timeFormat(start)
       this.ruleForm.publishTime[1] = timeFormat(end)
     }
@@ -235,8 +236,10 @@ export default {
     this.drawPie()
   },
   created () {
+    this.calcCycle()
     this.ruleForm.bizList.push(this.$route.query.id)
     this.getSensList()
+    
   }
 }
 </script>

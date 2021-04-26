@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 14:12:27
+ * @LastEditTime: 2021-04-13 14:03:49
 -->
 <template>
   <div class="content-show article-detail">
@@ -10,8 +10,8 @@
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'AccountCompany' }">新媒体监测</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ name: 'Prescription' }">内容监测</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ name: 'Realtime' }">文章实时监测</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{name:'ArticleDetail'}">微信传播力分析</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'Realtime'}">文章传播计算</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{name:'ArticleDetail',query:{id:this.biz} }">微信传播力分析</el-breadcrumb-item>
         <el-breadcrumb-item>相似度</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -54,6 +54,7 @@ export default {
   },
   created () {
     this.params.id = this.$route.query.id
+    this.biz = this.$route.query.biz
     this.getArticle()
   },
   methods: {

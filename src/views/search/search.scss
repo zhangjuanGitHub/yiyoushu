@@ -3,7 +3,7 @@
 }
 .search-left-wrap {
   width: 269px;
-  max-height: 640px;
+  max-height: 690px;
   margin-right: 30px;
   background: #ffffff;
   .search-left-up-box {
@@ -94,6 +94,13 @@
   .left-class-cont {
     color: $tab-text-color;
   }
+  .left-class-caiji {
+    padding: 5px;
+    color: #ffffff;
+    border-radius: 5px;
+    margin-left: 5px;
+    background: $hight-light-color;
+  }
 }
 .search-right-main {
   flex: 1;
@@ -149,7 +156,7 @@
 .search-his-ii {
   margin-left: 15px;
   cursor: pointer;
-  color: $hight-light-color;
+  color: $hight-light-color !important;
 }
 .search-mater-time {
   p {
@@ -194,13 +201,14 @@
   width: 100%;
   height: 372px;
   .class-chart-left {
-    width: 440px;
+    width: 446px;
     height: 355px;
   }
   .class-chart-right {
-    width: 600px;
+    width: 546px;
     height: 372px;
   }
+  
 }
 .search-class-tab {
   margin: 30px 0;
@@ -290,7 +298,7 @@
   .search-tab-one {
     cursor: pointer;
     padding: 5px;
-    border: 1px solid #E1E4E8; 
+    border: 1px solid #E1E4E8;
   }
   .is-class {
     border-color: #4A8BFE;
@@ -339,25 +347,24 @@
   border-radius: 10px;
 }
 .search-read-about {
-  margin: 10px 0 30px 10px;
+  margin: 10px 20px 30px 10px;
   p {
     font-size: 30px;
     font-weight: 400;
-    margin-left: 10px;
+    margin-right: 10px;
     font-family: Microsoft YaHei;
   }
   span {
     margin-left: 10px;
     font-size: 14px;
-    margin-right: 30px;
+    margin-right: 10px;
     color: $content-text-color;
   }
   .el-progress {
-    margin-left: 10px;
+    //margin-left: 10px;
   }
   .search-about-scroll {
     position: relative;
-    margin-left: -15px;
   }
   .search-about-scroll::before {
     content: "";
@@ -442,27 +449,31 @@
       height: 5px;
     }
   }
-  .search-fenbu-list {
-   ul {
-    li {
-        width: 330px;
-        height: 42px;
-        line-height: 42px;
-        float: left;
-        color: $tab-text-color;
-        background: #F0F2F7;
-        border-radius: 20px;
-        margin: 5px 11px;
-        padding: 0 10px;
-        box-sizing: border-box;
-        cursor: pointer;
-        p {
-          font-size: 16px;
-        }
-      }
-    } 
+  .search-fenbu-list>p {
+    padding-left: 20px;
+    color: #F79406;
   }
-  
+  .search-fenbu-list {
+    ul {
+      li {
+          width: 330px;
+          height: 42px;
+          line-height: 42px;
+          float: left;
+          color: $tab-text-color;
+          background: #F0F2F7;
+          border-radius: 20px;
+          margin: 5px 11px;
+          padding: 0 10px;
+          box-sizing: border-box;
+          cursor: pointer;
+          p {
+            font-size: 16px;
+          }
+        }
+    }
+  }
+
 }
 .search-rules-cont {
   .search-cont-pro {
@@ -544,7 +555,7 @@
 }
 .search-list-main .search-list-title,
 .search-his-thirty .search-list-title {
-  width: 460px;
+  width: 400px;
   margin-left: 10px;
   color: $tab-text-color;
   cursor: pointer;
@@ -559,6 +570,7 @@
 .search-his-thirty {
   height: 50px;
   margin: 18px 10px;
+  padding: 0 5px;
   background: #F7F8FA;
 }
 // 数据回溯
@@ -677,9 +689,9 @@
 .search-analyse-des {
   margin-left: 15px;
   color: $content-text-color;
-  i {
-    margin-right: 10px;
-  }
+}
+.search-analyse-icon {
+  color: $primary-color;
 }
 .search-analyse-act {
   padding: 20px;
