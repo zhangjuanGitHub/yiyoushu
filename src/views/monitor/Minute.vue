@@ -36,7 +36,6 @@ export default {
   margin-bottom: 70px;
 }
 .minute-content {
-  width: 85%;
   margin-left: 50px;
   width: 100%;
   margin-top: 20px;

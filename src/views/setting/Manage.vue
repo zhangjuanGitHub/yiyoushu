@@ -2,8 +2,8 @@
  * @Author: MaiChao
  * @Description: 账号管理
  * @Date: 2021-02-26 09:42:59
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-12 10:21:51
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-06-01 16:04:56
 -->
 <template>
   <div class="manage">
@@ -19,14 +19,38 @@
         <v-menu></v-menu>
       </div>
       <div class="manage-right">
-        <div class="tabs-header">
-          <span class="tabs-title"
+        <div class="tabs-header flex-bwt-center">
+          <div>
+            <span class="tabs-title"
                 @click="tabsAll('Company')"
                 :class="this.$route.name==='Company'?'isActive':''">单位账号</span>
-          <span class="tabs-title"
-                @click="tabsAll('Collection')" :class="this.$route.name==='Collection'?'isActive':''">公众号收藏</span>
+            <span class="tabs-title"
+                  @click="tabsAll('Collection')"
+                  :class="this.$route.name==='Collection'?'isActive':''">收藏账号</span>
+          </div>
+          <div class="tab-type-img flex-ali-center">
+            <img v-if="showType[0]"
+                 src="@/assets/images/setting/type-0-0.png" alt=""
+                 class="cursor" @click="changeType(0)">
+            <img v-else-if="!showType[0]" src="@/assets/images/setting/type-0-1.png" alt="">
+
+            <img v-if="showType[1]"
+                 src="@/assets/images/setting/type-1-0.png" alt=""
+                 class="cursor" @click="changeType(1)">
+            <img v-else-if="!showType[1]" src="@/assets/images/setting/type-1-1.png" alt="">
+
+            <!-- <img v-if="showType[2]"
+                 src="@/assets/images/setting/type-2-0.png" alt=""
+                 class="cursor" @click="changeType(2)">
+            <img v-else-if="!showType[2]" src="@/assets/images/setting/type-2-1.png" alt="">
+
+            <img v-if="showType[3]"
+                 src="@/assets/images/setting/type-3-0.png" alt=""
+                 class="cursor" @click="changeType(3)">
+            <img v-else-if="!showType[3]" src="@/assets/images/setting/type-3-1.png" alt=""> -->
+          </div>
         </div>
-        <router-view></router-view>
+        <router-view :type="type"></router-view>
       </div>
     </div>
   </div>
@@ -36,13 +60,22 @@ import vMenu from '@/views/setting/components/Menu'
 export default {
   data () {
     return {
-
+      showType: [false, true, true, true],
+      type: 1
     }
   },
   methods: {
     tabsAll (name) {
+      // this.type = 1
+      this.showType = [true, true, true, true]
+      this.showType[this.type-1] = false
       this.$router.push({ name: name })
-    }
+    },
+    changeType (index) {
+      this.showType = [true, true, true, true]
+      this.showType[index] = false
+      this.type = index+1
+    },
   },
   components: {
     vMenu
@@ -89,5 +122,8 @@ export default {
   width: 1212px;
   background-color: #fff;
   margin: 30px 0 100px 20px;
+}
+.tab-type-img img {
+  margin: 0 3px;
 }
 </style>

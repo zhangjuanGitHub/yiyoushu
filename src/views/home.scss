@@ -34,6 +34,15 @@
   padding: 10px 20px;
   border-radius: 0;
 }
+.search-autotip-box {
+  height: 40px;
+}
+.search-autotip-img {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  margin-right: 5px;
+}
 .home-up-wrap {
   height: 117px;  
 }
@@ -176,6 +185,21 @@
 }
 .hot-down-img:hover {
   transform: scale(1.2);
+}
+.hot-down-msg {
+  height: 165px;
+  padding: 20px 20px 0;
+}
+.hot-down-msg img {
+  width: 90px;
+  height: 60px;
+  margin-right: 3px;
+  float: left;
+  clear: both;
+}
+.hot-down-msg p {
+  font-size: 16px;
+  color: #333333;
 }
 .hot-down-content {
   width: calc(100% - 30px);

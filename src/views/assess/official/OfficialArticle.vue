@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-21 17:29:44
+ * @LastEditTime: 2021-05-31 15:36:15
 -->
 <template>
   <div class="contents">
@@ -11,191 +11,34 @@
         <span class="tabs-title"
               @click="tabsAll('wx', 1)"
               :class="this.activeTab==='wx'?'isActive':''">微信榜单</span>
-        <!-- <span class="tabs-title"
+        <span class="tabs-title"
               @click="tabsAll('wb', 2)"
-              :class="this.activeTab==='wb'?'isActive':''">微博榜单</span> -->
+              :class="this.activeTab==='wb'?'isActive':''">微博榜单</span>
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
       <div class="conts-box">
-        <div class="title-time">{{fileName}}</div>
-        <div class="from-box">
-          <el-form :inline="true"
-                   ref="ruleForm"
-                   :model="ruleForm">
-            <div class="flex-ali-center">
-              <el-form-item prop="types">
-                <el-radio-group v-model="ruleForm.types"
-                                size='small' @change="openOther(ruleForm.types)">
-                  <el-radio-button label="1">公众号</el-radio-button>
-                  <el-radio-button label="2">文章</el-radio-button>
-                  <el-radio-button label="3">视频</el-radio-button>
-                </el-radio-group>
-              </el-form-item>
-              <el-form-item prop="dateType"
-                            label="时间"
-                            class="messageType">
-                <el-select v-model="ruleForm.dateType"
-                           placeholder="请选择"
-                           size="small" @change="tabsTitle">
-                  <el-option label="最近一天"
-                             :value="1"></el-option>
-                  <el-option label="最近一周"
-                             :value="2"></el-option>
-                  <el-option label="最近一月"
-                             :value="3"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item prop="districts"
-                            label="地区" class="area">
-                <el-cascader size="small"
-                             :options="options"
-                             :show-all-levels="false"
-                             :props="{ checkStrictly: true }"
-                             v-model="ruleForm.districts"
-                             placeholder="请选择地区"></el-cascader>
-              </el-form-item>
-              <el-form-item prop="position"
-                            label="位置"
-                            class="messageType">
-                <el-select v-model="ruleForm.position"
-                           placeholder="请选择"
-                           size='small'>
-                  <el-option label="头条"
-                             value="1"></el-option>
-                  <el-option label="次条"
-                             value="2"></el-option>
-                  <el-option label="三条"
-                             value="3"></el-option>
-                  <el-option label="四条"
-                             value="4"></el-option>
-                  <el-option label="五条"
-                             value="5"></el-option>
-                  <el-option label="六条"
-                             value="6"></el-option>
-                  <el-option label="七条"
-                             value="7"></el-option>
-                  <el-option label="八条"
-                             value="8"></el-option>
-                </el-select>
-
-              </el-form-item>
-              <el-form-item>
-                <el-button size="small"
-                           @click="searchList"
-                           type="primary">筛选</el-button>
-                <el-button size="small"
-                           @click="resetForm('ruleForm')">重置</el-button>
-                <el-button size="small"
-                           type="warning"
-                           @click="exportBox()">导出</el-button>
-              </el-form-item>
-            </div>
-          </el-form>
-        </div>
-        <div class="table-box">
-          <el-table :data="tableData"
-          id="wx-monitor"
-                    style="width: 100%"
-                    :cell-style="{ textAlign: 'center' }"
-                    :default-sort="{prop: 'date', order: 'descending'}">
-            <el-table-column prop="nickname"
-                             label="文章标题">
-              <template slot-scope='scope'>
-                <div class="account-infor flex-ali-center">
-                  <div class="account-title lin-clamp-1 cursor primary">
-                    <p @click="openWeb(scope.row)">{{scope.row.title}}</p>
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="nickname"
-                             label="微信名"
-                             width="140">
-            </el-table-column>
-            <el-table-column prop="alias"
-                             label="微信号"
-                             width="140">
-            </el-table-column>
-            <el-table-column prop="read_num"
-                             label="阅读数"
-                             width="100">
-              <template slot-scope='scope'>
-                <div v-if="scope.row.read_num>100000">
-                  10w+
-                </div>
-                <div v-else>{{scope.row.read_num}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="old_like_num"
-                             label="点赞数"
-                             width="100">
-            </el-table-column>
-            <el-table-column prop="like_num"
-                             label="在看数"
-                             width="100">
-            </el-table-column>
-            <el-table-column prop="is_origin"
-                             label="是否原创"
-                             width="100">
-              <template slot-scope='scope'>
-                <div v-if="scope.row.is_origin==1"
-                     class="export">是</div>
-                <div v-else
-                     class="delete">否</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="idx"
-                             label="文章位置"
-                             width="100">
-                <template slot-scope='scope'>
-                <div v-if="scope.row.idx==1">头条</div>
-                <div v-if="scope.row.idx==2">次条</div>
-                <div v-if="scope.row.idx==3">三条</div>
-                <div v-if="scope.row.idx==4">四条</div>
-                <div v-if="scope.row.idx==5">五条</div>
-                <div v-if="scope.row.idx==6">六条</div>
-                <div v-if="scope.row.idx==7">七条</div>
-                <div v-if="scope.row.idx==8">八条</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="unit_name"
-                             label="单位名称"
-                             width="150">
-            </el-table-column>
-            <el-table-column prop="pubtime"
-                             label="发布时间"
-                             width="150">
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="keepon"
-               v-if="!dataShow">
-            无更多数据
-          </div>
-          <div v-else>
-            <div class="keepon"
-                 v-if="!pageShow">
-              <span class="click-span"
-                    @click="loadMore">点击加载更多</span>
-            </div>
-            <div class="keepon"
-                 v-else>
-              <p>当前权限只可加载 <span>{{limitCount}}</span>条数据,需要更多权限请点击 <span class="click-span">扩展权限</span></p>
-            </div>
-          </div>
+        <official-article-wx v-if="this.activeTab==='wx'" @changeTab="tabsAll"></official-article-wx>
+        <official-article-wb v-if="this.activeTab==='wb'" @changeTab="tabsAll"></official-article-wb>
       </div>
     </div>
   </div>
 </template>
 <script>
+import officialArticleWx from './OfficialArticleWx'
+import officialArticleWb from './OfficialArticleWb'
 import { exportTable } from '@/lib/tools'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 export default {
+  components: {
+    officialArticleWx,
+    officialArticleWb
+  },
   data () {
     return {
       fileName: '最近一天微信文章排行榜', // 导出名称
+      fileName2: '最近一天微博文章排行榜',
       limitCount: '', // 限制个数
       dataShow: false,
       pageShow: false, // 页面条数限制
@@ -227,8 +70,12 @@ export default {
     }
   },
   created () {
-    this.rankType()
-    this.geListData()
+    console.log(this.$route.query)
+    if (this.$route.query.active) {
+      this.activeTab = this.$route.query.active
+    }
+    // this.rankType()
+    // this.geListData()
   },
   methods: {
     // 切换导出名称
@@ -298,6 +145,7 @@ export default {
     },
     // 微信/微博
     tabsAll (name, level) {
+      this.$router.replace({ name: 'OfficialArticle', query: { tab: name } })
       this.activeTab = name
     },
     // 自定义榜单

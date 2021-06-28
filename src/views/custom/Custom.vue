@@ -1,8 +1,8 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-04-07 18:08:52
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-21 16:10:14
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-05-06 15:21:07
 -->
 <template>
   <div class="custom">
@@ -66,7 +66,7 @@
         </div>
       </div>
       <div class="my-user">
-        <div class="custom-cont-top">我们的客户</div>
+        <div class="custom-cont-top">我们客户</div>
         <div class="show-content flex">
           <div class="list-box flex-arr-center" v-for="(item, index) of 20" :key="index">
             <img :src="require('@/assets/images/home/hang_'+index+'.png')" alt="">
@@ -200,7 +200,7 @@ export default {
   width: 245px;
   height: 78px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
-  /* padding: 12px 30px; */
+  padding: 0 10px;
   box-sizing: border-box;
   margin: 10px 25px 25px 0;
   cursor: pointer;

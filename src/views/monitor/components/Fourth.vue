@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-23 15:01:05
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-14 15:22:53
+ * @LastEditTime: 2021-04-27 15:29:15
 -->
 <template>
   <div class="flex-bwt-center">
@@ -32,11 +32,12 @@ export default {
         jsonObj.forEach(item => {
           let params = {
             name: item.pageType,
-            value: item.percentage,
-            num: item.articleCountNum
+            value: item.articleCountNum,
+            num: item.percentage
           }
           pieData.push(params)
         })
+        console.log(pieData)
         let myChart = echarts.init(document.getElementById('article-type'))
         let option = {
           color: ['#019CFF', '#33C74D', '#F7E71B', '#19D6EC'],
@@ -49,10 +50,10 @@ export default {
           },
           tooltip: {
             trigger: 'item',
-            // formatter: '{b} : {c}%'
-            formatter (params) {
-              return params.data.name + ':' + params.data.num + '占比' + params.data.value + '%'
-            }
+            formatter: '{b} : {d}%'
+            // formatter (params) {
+            //   return params.data.name + ':' + params.data.num + '占比' + params.data.value + '%'
+            // }
           },
 
           calculable: true,
@@ -63,9 +64,7 @@ export default {
             label: {
               normal: {
                 show: true,
-                formatter: function (params) {
-                  return params.name + ':' + params.value + '%'
-                },
+                formatter: '{b} : {d}%',
                 textStyle: {
                   fontSize: 20
                 },
@@ -90,7 +89,7 @@ export default {
     },
     getArticleTime (data) {
       let jsonObj = JSON.parse(data.aricleHotChartJson)
-      if (jsonObj.length > 0) {
+      if (jsonObj.listData.length > 0) {
         let myChart = echarts.init(document.getElementById('article-word'))
         let option = {
           tooltip: {

@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-01-25 17:27:30
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-09 13:41:37
+ * @LastEditTime: 2021-04-29 15:12:20
 -->
 <template>
   <div class="content">
@@ -42,7 +42,6 @@ export default {
   margin-bottom: 70px;
 }
 .warp-content {
-  width: 85%;
   margin-left: 50px;
   width: 100%;
   margin-top: 20px;

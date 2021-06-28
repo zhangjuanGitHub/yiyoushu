@@ -3,7 +3,7 @@
  * @Description: Home
  * @Date: 2021-01-28 11:10:50
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-22 17:11:45
+ * @LastEditTime: 2021-05-26 09:52:37
 -->
 <template>
   <div class="home-wrap">
@@ -36,19 +36,19 @@
             <span class="right-tab cursor"
                   :class="{ 'hot_active': hotActive === 'wx'}"
                   @click="changeHotActive('wx')">微信</span>
-            <!-- <span class="right-tab cursor"
+            <span class="right-tab cursor"
                   :class="{ 'hot_active': hotActive === 'wb'}"
-                  @click="changeHotActive('wb')">微博</span> -->
+                  @click="changeHotActive('wb')">微博</span>
           </p>
           <p class="hot-up-right">
             <span class="show-reload cursor"
                   @click="changeHotAirticle">换一换<i class="el-icon-refresh"></i></span>
             <span class="show-more cursor"
-                  @click="$router.push({ name: 'MoreHot' } )">查看更多<i class="el-icon-arrow-right"></i></span>
+                  @click="lookMoreHot">查看更多<i class="el-icon-arrow-right"></i></span>
           </p>
         </div>
-        <div class="hot-down flex-bwt-center">
-          <div v-for="(item, index) of hotList" :key="index">
+        <div class="hot-down flex-bwt-center" v-if="hotActive === 'wx'">
+          <div v-for="(item, index) of wxHotList" :key="'wx'+index">
               <el-card shadow="hover"
                     cursor
                     :body-style="{ padding: '0px' }">
@@ -63,6 +63,27 @@
                   <p>{{item.nickname}}</p>
                 </div>
                 <p v-html="(item.last_pubtime || '').slice(0, 10)"></p>
+                <!-- <p>{{item.type}}</p> -->
+              </div>
+            </el-card>
+          </div>
+        </div>
+        <div class="hot-down flex-bwt-center" v-else>
+          <div v-for="(item, index) of wbHotList" :key="'wb'+index">
+              <el-card shadow="hover"
+                    cursor
+                    :body-style="{ padding: '0px' }">
+              <div class="hot-down-msg" @click="targetHotUrl(item.url)">
+                <img class="hot-down-wbimg cursor"
+                    :src="item.original_pic" alt="" v-if="item.original_pic">
+                <p class="cursor" v-html="item.raw_text.slice(0, 80) + '...'"></p>
+              </div>
+              <div class="hot-down-info flex-bwt-center">
+                <div class="hot-info-left flex-ali-center">
+                  <el-avatar size="medium" :src="item.profile_image_url"></el-avatar>
+                  <p>{{item.screen_name}}</p>
+                </div>
+                <p v-html="(item.pubtime || '').slice(0, 10)"></p>
                 <!-- <p>{{item.type}}</p> -->
               </div>
             </el-card>
@@ -91,7 +112,7 @@
                 <div class="you-down-btn flex-bwt-center">
                   <p @click="$router.push({ name: 'AccountCompany'})">账号监测</p>
                   <p @click="$router.push({ name: 'Prescription'})">内容监测</p>
-                  <p @click="$router.push({ name: 'AccountCompare'})">账号对比</p>
+                  <p @click="$router.push({ name: 'NewAccCompare'})">账号对比</p>
                 </div>
               </div>
             </el-card>
@@ -321,7 +342,8 @@ export default {
           desc: '按需定制目标新媒体监测任务，实施24小时无间断流程化高效采集，为新媒体大数据分析提供数据源并且提供更多满足您需求的专属定制服务，解决您数据多、时间紧、技术难、没资源等众多数据获取难题。'
         }
       ],
-      hotList: [],
+      wxHotList: [],
+      wbHotList: [], // 微博热文
       funcList: [],
       // 产品功能——新媒体监测
       funcListOne: [
@@ -380,22 +402,40 @@ export default {
     accountSearch (obj) {
       this.accountActive = obj.accountActive
       this.accountkey = obj.keyword
-      if (obj.keyword && obj.accountActive === 'wx') {
-        this.$router.push({ name: 'AccountList', query: { type: obj.accountActive, keyword: obj.keyword } })
-      } else if (obj.keyword && obj.accountActive === 'article') {
-        this.$router.push({ name: 'MoreHot', query: { type: obj.accountActive, keyword: obj.keyword } })
+      if (obj.keyword) {
+        let routeName = ''
+        switch (obj.accountActive) {
+          case 'wx':
+            routeName = 'AccountListWx'
+            break
+          case 'wb':
+            routeName = 'AccountListWb'
+            break
+          case 'article':
+            routeName = 'MoreHotWx'
+            break
+          default:
+            break
+        }
+        this.$router.push({ name: routeName, query: { type: obj.accountActive, keyword: obj.keyword } })
       }
     },
     changeHotActive (tab) {
       this.hotActive = tab
+      this.pageCount = 1
+      this.ruleForm.pageNum = 1
+      this.wxHotList = []
+      this.wbHotList = []
+      tab === 'wx' ? this.getWxHotList() : this.getWbHotList()
     },
     changeFuncActive (func) {
-      if (func === 'monitor') {
-        this.funcList = this.funcListOne
-      } else {
-        this.funcList = this.funcListTwo
-      }
+      this.funcList = func === 'monitor' ? this.funcListOne : this.funcListTwo
       this.funcActive = func
+    },
+    // 查看更多热文
+    lookMoreHot () {
+      let routeName = this.hotActive === 'wx' ? 'MoreHotWx' : 'MoreHotWb'
+      this.$router.push({ name: routeName } )
     },
     // 鼠标进入
     setDisplay (index) {
@@ -443,20 +483,34 @@ export default {
         this.pageCount++
       }
       this.ruleForm.pageNum = this.pageCount
-      this.hotList = []
-      this.getHotList()
+      this.wxHotList = []
+      this.hotActive === 'wx' ? this.getWxHotList() : this.getWbHotList()
     },
-    // 获取热文
-    getHotList () {
+    // 获取微信热文
+    getWxHotList () {
       let obj = {
         page: this.ruleForm.pageNum,
         size: this.ruleForm.pageSize
       }
       this.$http.get(this.$api.getHotArticle, { params: obj })
         .then(res => {
-          this.hotList = res.data.data.article
+          this.wxHotList = res.data.data.article
         })
-    }
+    },
+    // 获取微博热文
+    getWbHotList () {
+      let obj = {
+        videoOrArticle: 0,
+        pageBean: {
+          pageNum: (this.ruleForm.pageNum - 1) * this.ruleForm.pageSize + 1,
+          pageSize: this.ruleForm.pageSize
+        }
+      }
+      this.$http.post(this.$api.getWbHot, obj)
+        .then(res => {
+          this.wbHotList = res.data.data.data
+        }).catch(() => {})
+    },
   },
   created () {
     var oMeta = document.createElement('meta')
@@ -464,7 +518,7 @@ export default {
     oMeta.content = 'never'
     document.getElementsByTagName('head')[0].appendChild(oMeta)
     this.funcList = this.funcListOne
-    this.getHotList()
+    this.getWxHotList()
   },
   mounted () {
     AOS.init()

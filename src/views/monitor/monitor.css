@@ -81,7 +81,7 @@
   color: #3A81FE;
   border-bottom: 2px solid #3b82fe;
 }
-.el-input-group__append button.el-button{
+.rel-detail-append .el-input-group__append button.el-button{
   color: #fff;
   background-color: #409eff;
   border-top-left-radius: 0;
@@ -112,6 +112,7 @@
 .link-time .el-radio-group .el-radio__label{
   padding-left: 5px;
 }
+.minute-account .link-time .minute-wb-days .el-select .el-input,
 .minute-article .link-time .el-select .el-input{
   width: 82px;
   margin-left: 15px;

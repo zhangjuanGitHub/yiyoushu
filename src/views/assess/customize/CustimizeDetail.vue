@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-18 11:28:06
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-22 16:09:36
+ * @LastEditTime: 2021-06-30 14:52:39
 -->
 <template>
   <div class="contents">
@@ -65,6 +65,9 @@
                   <el-radio-button :label="1">日榜</el-radio-button>
                   <el-radio-button :label="2">周榜</el-radio-button>
                   <el-radio-button :label="3">月榜</el-radio-button>
+                  <el-radio-button :label="4">季榜</el-radio-button>
+                  <el-radio-button :label="5">半年榜</el-radio-button>
+                  <el-radio-button :label="6">年榜</el-radio-button>
                 </el-radio-group>
               </el-form-item>
               <el-form-item class="messageType">
@@ -98,7 +101,7 @@
             <el-table-column prop="nickname"
                              label="公众号">
               <template slot-scope='scope'>
-                <div class="account-infor flex-ali-center">
+                <div class="account-infor flex-ali-center cursor" @click="toSearch(scope.row.biz)">
                   <img :src="scope.row.cover"
                        alt="">
                   <div class="account-name">
@@ -260,7 +263,7 @@
                               :trigger-on-focus="false"></el-input>
                   </el-form-item>
                   <el-form-item v-for="(item, index) in dateForm.toUrlList"
-                                :label="'新增链接' + index"
+                                :label="'新增链接' + (index+1)"
                                 :key="item.key"
                                 :prop="'toUrlList.' + index + '.value'"
                                 :rules="{
@@ -273,8 +276,8 @@
                   </el-form-item>
                 </el-form>
                 <div class="second-add-btn flex-all-center">
-                  <el-button type="success" @click="addUrlInput">添加链接</el-button>
-                  <el-button type="primary" @click="queryUrl">查询</el-button>
+                  <el-button type="success" @click="addUrlInput" :disabled="dateForm.url.length <= 0">添加链接</el-button>
+                  <el-button type="primary" @click="queryUrl" :disabled="dateForm.url.length <= 0">查询</el-button>
                   <el-button @click="clearDateForm('dateForm')">清空</el-button>
                 </div>
                 <div class="flex-ali" v-if="urlData.length > 0">
@@ -524,78 +527,72 @@ export default {
     },
     // 日/月*周类型切换
     getDateOption () {
-      // var time = new Date(this.updateDate)
       if (this.ruleForm.rankingType === 1) {
         this.ruleForm.date = this.updateDate
         this.dateOption = []
-        let obj = {
-          value: this.updateDate,
-          label: this.updateDate
-        }
-        this.dateOption.push(obj)
+        this.dateOption.push({ value: this.updateDate, label: this.updateDate })
       } else if (this.ruleForm.rankingType === 2) {
         this.dateOption = []
-        for (let i = 1; i <= 4; i++) {
-          let s1 = this.getWeek(i)
-          let obj = {
-            value: s1,
-            label: s1
-          }
-          this.dateOption.push(obj)
-        }
-        this.ruleForm.date = this.dateOption[0].value
+        this.getWeekYou()
       } else if (this.ruleForm.rankingType === 3) {
         this.dateOption = []
         for (let i = 0; i < 4; i++) {
           let s1 = this.getMounth(i)
-          let obj = {
-            value: s1,
-            label: s1
-          }
-          this.dateOption.push(obj)
+          this.dateOption.push({ value: s1, label: s1 })
         }
         this.ruleForm.date = this.dateOption[0].value
+      } else if (this.ruleForm.rankingType === 4) {
+        this.dateOption = []
+        for (let i = 0; i < 4; i++) {
+          let s1 = this.getQuarter(i)
+          this.dateOption.push({ value: s1, label: s1 })
+        }
+        this.ruleForm.date = this.dateOption[0].value
+      } else if (this.ruleForm.rankingType === 5) {
+        this.dateOption = []
+        for (let i = 0; i < 2; i++) {
+          let s1 = this.getHalfYear(i)
+          this.dateOption.push({ value: s1, label: s1 })
+        }
+        this.ruleForm.date = this.dateOption[0].value
+      } else if (this.ruleForm.rankingType === 6) {
+        this.dateOption = []
+        let today = new Date(this.updateDate)
+        let curYear = today.getFullYear()
+        let time = (curYear - 1) + '-01-01~' + (curYear - 1) + '-12-31'
+        this.dateOption.push({ value: time, label: time })
+        this.ruleForm.date = time
       }
       this.restTable()
     },
-    // 获取周
-    getWeek (i) {
-      // 获取上周时间
-      let myDate = new Date(new Date(this.updateDate).getTime() + 24 * 3600 * 1000 - 7 * 24 * 3600 * 1000 * i)
-      let day = myDate.getDay()
-      let time = myDate.getDate() - day + (day === 0 ? -6 : 1)
-      let startTime = new Date(myDate.setDate(time))
-      let startYear = startTime.getFullYear()
-      let startMonth = startTime.getMonth() + 1
-      if (startMonth < 0) {
-        startMonth = 12 + startMonth
-        startYear = startYear - 1
-      } else if (startMonth === 0) {
-        startMonth = 12
-        startYear = startYear - 1
+    getWeekYou () {
+      let currentDate = new Date(this.updateDate)
+      currentDate = this.addDay(currentDate, 1)
+      let day = currentDate.getDay()
+      console.log(day)
+      if (day == 0) { day = 7 }
+      // 计算周一
+      let date = this.addDay(currentDate, -1 * (day - 1))
+      let startDate, endDate
+      for (let i = 0; i < 4; i++) {
+        startDate = this.addDay(date, -1 * (7 + i * 7))
+        endDate = this.addDay(date, -1 * (1 + i * 7))
+        let time = this.dateStr(startDate) + '~' + this.dateStr(endDate)
+        this.dateOption.push({ value: time, label: time })
       }
-      let startData = startTime.getDate()
-      startMonth = startMonth < 10 ? '0' + startMonth : startMonth
-      startData = startData < 10 ? '0' + startData : startData
-      let startDateTime =
-        startYear + '-' + startMonth + '-' + startData
-      let endTime = new Date(myDate.setDate(time + 6))
-      let endYear = endTime.getFullYear()
-      let endData = endTime.getDate()
-      let endMonth = endData >= 6 ? endTime.getMonth() + 1 : endTime.getMonth() + 2
-      // let endMonth = endTime.getMonth() + 1
-      if (endMonth < 0) {
-        endMonth = 12 + endMonth
-        endYear = endYear - 1
-      } else if (endMonth === 0) {
-        endMonth = 12
-        endYear = endYear - 1
-      }
-      endMonth = endMonth < 10 ? '0' + endMonth : endMonth
-      endData = endData < 10 ? '0' + endData : endData
-      let endDateTime =
-        endYear + '-' + endMonth + '-' + endData
-      return startDateTime + '~' + endDateTime
+      this.ruleForm.date = this.dateOption[0].value
+    },
+    addDay (date, addDay) {
+      var temp = new Date()
+      temp.setTime(date.getTime() + addDay * 24 * 60 * 60 * 1000)
+      return temp
+    },
+    dateStr (time) {
+      var year = time.getFullYear()
+      var month = ('0' + (time.getMonth() + 1)).slice(-2)
+      var day = ('0' + time.getDate()).slice(-2)
+      var mydate = year + '-' + month + '-' + day
+      return mydate
     },
     // 获取月
     getMounth (i) {
@@ -615,6 +612,40 @@ export default {
       let startDateTime = year + '-' + month + '-01' // 上个月第一天
       let endDateTime = year + '-' + month + '-' + yDate.getDate() // 上个月最后一天
       return startDateTime + '~' + endDateTime
+    },
+    // 获取季度
+    getQuarter (i) {
+      let today = new Date(new Date(this.updateDate).getTime() - 24 * 3600 * 1000 * i * 90)
+      let curYear = today.getFullYear()
+      let curMonth = today.getMonth() + 1
+      let curQuarter = Math.floor((curMonth % 3 == 0 ? (curMonth / 3) : (curMonth / 3 + 1))) // 当前季度
+      if (curQuarter === 1) {
+        curYear = curYear - 1
+        curQuarter = 5
+      }
+      let calcEndQuar = (curQuarter - 1) * 3 < 10 ? '0' + ((curQuarter - 1) * 3) : (curQuarter - 1) * 3
+      let calcQuar = ((curQuarter - 1) * 3 - 2) < 10 ? '0' + ((curQuarter - 1) * 3 - 2) : ((curQuarter - 1) * 3 - 2)
+      let startTime = curYear + '-' + calcQuar + '-01'
+      let endTime = curYear + '-' + calcEndQuar + '-' + new Date(curYear, (curQuarter - 1) * 3, 0).getDate()
+      return startTime + '~' + endTime
+    },
+    // 获取半年
+    getHalfYear (i) {
+      let now = new Date(new Date(this.updateDate).getTime() - 24 * 3600 * 1000 * i * 180)
+      let curYear = now.getFullYear()
+      let curMonth = now.getMonth() + 1
+      let calcNum = parseInt(curMonth / 6)
+      let start = ''
+      let end = ''
+      if (calcNum === 1) {
+        curYear = curYear - 1
+        start = curYear + '-07-01'
+        end = curYear + '-12-31'
+      } else {
+        start = curYear + '-01-01'
+        end = curYear + '-06-30'
+      }
+      return start + '~' + end
     },
     // 获取时间参数
     getNewDate () {
@@ -643,6 +674,10 @@ export default {
       this.searchDetail = ''
       this.dialogVisible = false
       this.addApply = false
+    },
+    toSearch (id) {
+      // let routeName = this.activeTab === 'company' ? 'AccountMaterial' : 'HistoryTweets'
+      this.$router.push({ name: 'AccountMaterial', query: { id: id } })
     },
     // 筛选
     searchLists () {
@@ -758,6 +793,7 @@ export default {
             if (res.data.data.length > 0) {
               let datas = res.data.data
               let urlArr = []
+              let reUrl = ''
               for (let index = 0; index < datas.length; index++) {
                 if (Number(datas[index].isCollect) === 1) {
                   urlArr.push({
@@ -767,8 +803,11 @@ export default {
                     oriHeadImg: datas[index].oriHeadImg
                   })
                 } else {
-                  this.$message.warning(datas[index].nickname + '暂时无法进行排榜，敬请谅解')
+                  reUrl += datas[index].nickname + ' '
                 }
+              }
+              if (reUrl.length > 0) {
+                this.$message.warning(reUrl + '暂时无法进行排榜，敬请谅解')
               }
               this.urlData = this.unique(urlArr)
             } else {
@@ -900,7 +939,11 @@ export default {
 }
 .second-add-form .el-input {
   width: 85%;
-  margin: 6px 0;
+  margin: 10px 0;
+}
+.second-add-form .el-form-item__error {
+  padding: 0;
+  top: 90%;
 }
 </style>
 <style scoped lang="scss">
@@ -909,6 +952,9 @@ export default {
 <style lang="scss" scoped>
 .second-add-btn {
   margin: 10px 0;
+}
+.second-add-del {
+  margin-left: 10px;
 }
 .list-title {
   display: inline-block;

@@ -1,8 +1,8 @@
 /*
  * @Author: MaiChao
  * @Date: 2021-01-28 11:16:35
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-15 10:06:59
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-05-26 14:24:39
  */
 module.exports = [
   {
@@ -25,7 +25,7 @@ module.exports = [
         path: '/setting/manage/collection',
         name: 'Collection',
         meta: {
-          title: '公众号收藏'
+          title: '收藏账号'
         },
         component: () => import('@/views/setting/manage/Collection')
       }

@@ -2,136 +2,47 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-20 15:20:56
+ * @LastEditTime: 2021-06-01 14:12:56
  * 其他文章数量改为非涉检文章数量
 -->
 <template>
   <div class="relevant content-box">
     <div class="tabs-header">
-      <span class="tabs-title"
+      <!-- <span class="tabs-title"
             @click="tabsAll('Relevant')"
             :class="this.$route.name==='Relevant'?'isActive':''">微信</span>
-      <!-- <span class="tabs-title"
+      <span class="tabs-title"
             @click="tabsAll('')">微博</span> -->
+
+            <span class="tabs-title"
+              @click="tabsAll('wx', 1)"
+              :class="this.activeTab==='wx'?'isActive':''">微信</span>
+        <span class="tabs-title"
+              @click="tabsAll('wb', 2)"
+              :class="this.activeTab==='wb'?'isActive':''">微博</span>
     </div>
-    <div class="wx-warp-box">
-      <el-form :inline="true"
-               ref="ruleForm"
-               :model="ruleForm">
-        <el-form-item class="publishTime"
-                      label="时间"
-                      prop="publishTime">
-          <el-date-picker v-model="ruleForm.publishTime"
-                          size="small"
-                          type="daterange"
-                          align="right"
-                          unlink-panels
-                          range-separator="至"
-                          value-format="yyyy-MM-dd"
-                          start-placeholder="开始日期"
-                          end-placeholder="结束日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item prop="keyword"
-                      label="关键字">
-          <el-input size="small"
-                    v-model="ruleForm.keyword"
-                    placeholder="请输入关键字"
-                    class="search_key"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button size="small"
-                     @click="searchList"
-                     type="primary"
-                     class="search_query">查询</el-button>
-          <el-button size="small"
-                     @click="resetForm('ruleForm')"
-                     class="search_reset">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-    <div class="wx-warp-content">
-      <div class="line-box">
-        <div class="title">折线图走势</div>
-        <div id="line-charts"></div>
-      </div>
-      <div class="relevant-table">
-        <el-table :data="tableData"
-                  style="width: 100%"
-                  height="570"
-                  border
-                  :cell-style="{ textAlign: 'center' }"
-                  :default-sort="{prop: 'date', order: 'descending'}">
-          <!-- <el-table-column label="序号"
-                           width="80">
-            <template slot-scope='scope'>
-              <div>
-                {{scope.$index+1}}
-              </div>
-            </template>
-          </el-table-column> -->
-          <el-table-column prop="nickname"
-                           label="账号信息">
-            <template slot-scope='scope'>
-              <div class="account-infor flex-ali-center cursor" @click="tabsCharts(scope.row)">
-                <img :src="scope.row.hd_head_img"
-                     alt="">
-                <div class="account-name">
-                  <p class="import-name"
-                     v-html='scope.row.nickname'></p>
-                  <p>{{scope.row.alias}}</p>
-                </div>
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="articleCountNum"
-                           label="文章总数"
-                           sortable
-                           width="200">
-          </el-table-column>
-          <el-table-column prop="procuratorialCountNum"
-                           sortable
-                           label="涉检文章数量"
-                           width="200">
-            <template slot-scope='scope'>
-              <div class="cursor"
-                   @click="openInvolved(scope.row)">
-                {{scope.row.procuratorialCountNum}}
-              </div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="articleNotPertinenceNum"
-                           sortable
-                           label="非涉检文章数量">
-            <template slot-scope="scope">
-              <div class="cursor"
-                   @click="openInvolved(scope.row)">{{scope.row.articleNotPertinenceNum}}</div>
-            </template>
-          </el-table-column>
-          <el-table-column prop="pictureNum"
-                           width="200"
-                           sortable
-                           label="其他文章数量">
-            <template slot-scope="scope">
-              <div class="cursor"
-                   @click="openInvolved(scope.row)">{{scope.row.pictureNum}}</div>
-            </template>
-          </el-table-column>
-        </el-table>
-        <!-- <set-page @pagingChange="pagingChange"
-                  :total="total"
-                  ref="child"></set-page> -->
-      </div>
+    <div>
+      <relevant-wx v-if="this.activeTab==='wx'"
+                     @changeTab="tabsAll"></relevant-wx>
+        <relevant-wb v-if="this.activeTab==='wb'"></relevant-wb>
     </div>
   </div>
 </template>
 <script>
 // import vSearch from '@/views/monitor/components/RealSearch'
+// eslint-disable-next-line import/no-duplicates
+import relevantWx from './RelevantWx'
+import relevantWb from './RelevantWb'
 import echarts from 'echarts'
 export default {
+  components: {
+    relevantWx,
+    relevantWb
+  },
   data () {
     return {
       // total: 0,
+      activeTab: 'wx',
       ruleForm: {
         publishTime: [],
         keyword: '',
@@ -144,11 +55,14 @@ export default {
     }
   },
   created () {
-    const end = new Date()
-    const start = new Date()
-    start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
-    this.ruleForm.publishTime[0] = this.formatDate(start)
-    this.ruleForm.publishTime[1] = this.formatDate(end)
+    // const end = new Date()
+    // const start = new Date()
+    // start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+    // this.ruleForm.publishTime[0] = this.formatDate(start)
+    // this.ruleForm.publishTime[1] = this.formatDate(end)
+    if (this.$route.query.tab) {
+      this.activeTab = this.$route.query.tab
+    }
   },
   methods: {
     formatDate (now) {
@@ -459,16 +373,19 @@ export default {
         }).catch(() => { })
     },
     // 跳转详情页面
-    openInvolved (row) {
-      this.$router.push({ name: 'RelevantDetail', query: { id: row.biz } })
+    openInvolved (row, level) {
+      let route = this.$router.resolve({ name: 'RelevantDetail', query: { id: row.biz, level: level, publishTime: this.ruleForm.publishTime } })
+      window.open(route.href, '_blank')
     },
     tabsAll (name) {
-      this.$router.push({ name: name })
+      // this.$router.push({ name: name })
+      this.$router.replace({ name: 'Relevant', query: { tab: name } })
+      this.activeTab = name
     }
   },
   mounted () {
-    this.drawLine()
-    this.getTableData()
+    // this.drawLine()
+    // this.getTableData()
   }
 }
 </script>

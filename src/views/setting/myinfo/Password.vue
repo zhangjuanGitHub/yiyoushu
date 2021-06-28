@@ -3,7 +3,7 @@
  * @@Description:修改密码
  * @Date: 2021-02-26 15:22:10
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-21 14:53:02
+ * @LastEditTime: 2021-04-29 16:09:46
 -->
 <template>
   <div class="password">
@@ -110,20 +110,9 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
 import md5 from 'js-md5'
 export default {
   data () {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass')
-        }
-        callback()
-      }
-    }
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
@@ -135,6 +124,7 @@ export default {
     }
     return {
       passAlter: false,
+      userInfo: {}, // 获取用户信息
       show: {
         old: false,
         new: false,
@@ -150,7 +140,10 @@ export default {
         currentLoginPass: [
           { required: true, message: '请输入原密码', trigger: 'blur' }
         ],
-        loginPass: [{ validator: validatePass, trigger: 'blur' }],
+        loginPass: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/, message: '密码须包含数字、字母两种元素，且密码位数为6-16位' }
+        ],
         checkPass: [
           { validator: validatePass2, trigger: 'blur' }
         ]
@@ -158,16 +151,32 @@ export default {
     }
   },
   created () {
-    console.log(this.userInfo)
+    this.geUserInfo()
   },
   methods: {
+    // 获取 用户信息
+    geUserInfo () {
+      this.$http.get(this.$api.getUserInfo)
+        .then(res => {
+          this.userInfo = res.data.data
+          if (this.userInfo.loginPhone) {
+            this.active = 2
+          } else {
+            this.active = 0
+            this.getCodes()
+            this.getQRcode()
+          }
+        }).catch(() => { })
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.ruleForm.currentLoginPass = md5(md5(this.ruleForm.currentLoginPass) + this.userInfo.loginPhone)
-          this.ruleForm.loginPass = md5(md5(this.ruleForm.loginPass) + this.userInfo.loginPhone)
-          this.ruleForm.checkPass = md5(md5(this.ruleForm.checkPass) + this.userInfo.loginPhone)
-          this.$http.post(this.$api.security, this.ruleForm)
+          let params = {
+            currentLoginPass: md5(md5(this.ruleForm.currentLoginPass) + this.userInfo.loginPhone),
+            loginPass: md5(md5(this.ruleForm.loginPass) + this.userInfo.loginPhone),
+            checkPass: md5(md5(this.ruleForm.checkPass) + this.userInfo.loginPhone)
+          }
+          this.$http.post(this.$api.security, params)
             .then(res => {
               if (res.data.code === 200) {
                 this.passAlter = true
@@ -200,9 +209,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      userInfo: state => state.user.userInfo
-    })
   }
 }
 </script>

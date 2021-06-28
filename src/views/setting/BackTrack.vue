@@ -3,7 +3,7 @@
  * @Description: 账号回溯
  * @Date: 2021-02-26 09:42:59
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-20 16:13:18
+ * @LastEditTime: 2021-06-03 17:39:12
 -->
 <template>
   <div class="back-track">
@@ -19,8 +19,29 @@
         <v-menu></v-menu>
       </div>
       <div class="back-track-right">
-        <div class="tabs-header">
+        <div class="tabs-header flex-bwt-center">
           <span class="tabs-title">导出回溯数据</span>
+          <div class="tab-type-img flex-ali-center">
+            <img v-if="showType[0]"
+                 src="@/assets/images/setting/type-0-0.png" alt=""
+                 class="cursor" @click="changeType(0)">
+            <img v-else-if="!showType[0]" src="@/assets/images/setting/type-0-1.png" alt="">
+
+            <img v-if="showType[1]"
+                 src="@/assets/images/setting/type-1-0.png" alt=""
+                 class="cursor" @click="changeType(1)">
+            <img v-else-if="!showType[1]" src="@/assets/images/setting/type-1-1.png" alt="">
+
+            <!-- <img v-if="showType[2]"
+                 src="@/assets/images/setting/type-2-0.png" alt=""
+                 class="cursor" @click="changeType(2)">
+            <img v-else-if="!showType[2]" src="@/assets/images/setting/type-2-1.png" alt="">
+
+            <img v-if="showType[3]"
+                 src="@/assets/images/setting/type-3-0.png" alt=""
+                 class="cursor" @click="changeType(3)">
+            <img v-else-if="!showType[3]" src="@/assets/images/setting/type-3-1.png" alt=""> -->
+          </div>
         </div>
         <div class="back-teack-table">
           <el-table :data="tableData"
@@ -74,19 +95,19 @@
           </el-table>
         </div>
         <el-dialog title="回溯删除"
-                 :visible.sync="deleteTeam"
-                 :modal-append-to-body="false"
-                 :close-on-click-modal='false'
-                 width="30%"
-                 center>
-        <span class="dialog-span">您确定要执行此操作吗?</span>
-        <span slot="footer"
-              class="dialog-footer">
-          <el-button @click="overDelete">取 消</el-button>
-          <el-button type="primary"
-                     @click="deleteTeams">确 定</el-button>
-        </span>
-      </el-dialog>
+                  :visible.sync="deleteTeam"
+                  :modal-append-to-body="false"
+                  :close-on-click-modal='false'
+                  width="30%"
+                  center>
+          <span class="dialog-span">您确定要执行此操作吗?</span>
+          <span slot="footer"
+                class="dialog-footer">
+            <el-button @click="overDelete">取 消</el-button>
+            <el-button type="primary"
+                      @click="deleteTeams">确 定</el-button>
+          </span>
+        </el-dialog>
         <set-page @pagingChange="pagingChange"
                   :total="total" ref="child"></set-page>
       </div>
@@ -98,13 +119,16 @@ import vMenu from '@/views/setting/components/Menu'
 export default {
   data () {
     return {
+      showType: [false, true, true, true],
       total: 0,
       deleteTeam: false,
       deleteId: '',
       ruleForm: {
         pageSize: 10,
-        pageNum: 1
+        pageNum: 1,
+        reviewType: 1, // 1微信   2微博
       },
+      
       tableData: []
     }
   },
@@ -112,11 +136,17 @@ export default {
     this.getTableData()
   },
   methods: {
+    changeType (index) {
+      this.showType = [true, true, true, true]
+      this.showType[index] = false
+      this.ruleForm.reviewType = index+1
+      console.log(index+1)
+      this.getTableData()
+    },
     // 获取表格信息
     getTableData () {
       this.$http.post(this.$api.wxListData, this.ruleForm)
         .then(res => {
-          console.log(res.data.data)
           this.tableData = res.data.data.content
           this.total = res.data.data.totalElements
         }).catch(() => { })
@@ -209,5 +239,8 @@ export default {
 }
 .export {
   margin-right: 10px;
+}
+.tab-type-img img {
+  margin: 0 3px;
 }
 </style>

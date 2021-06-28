@@ -1,11 +1,11 @@
 /*
  * @Author: MaiChao
  * @Date: 2021-01-28 11:16:35
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-07 09:29:24
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-06-01 09:56:11
  */
 const state = {
-  userInfo: sessionStorage.getItem(`userinfo`) || ``, // 用户信息
+  userInfo: {}, // 用户信息
   token: sessionStorage.getItem(`token`) || ``,
   noReadMessageNum: null, // 未读系统消息
   chatMessageList: [], // 站内消息列表（聊天）
@@ -21,7 +21,7 @@ const mutations = {
   },
   // 获取用户信息
   userInfo (state, val) {
-    sessionStorage.setItem(`userinfo`, val)
+    // sessionStorage.setItem(`userinfo`, val)
     state.userInfo = val
     state.noReadMessageNum = val.noReadMessageNum // 消息数量
   },

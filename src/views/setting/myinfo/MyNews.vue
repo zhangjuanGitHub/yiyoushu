@@ -3,7 +3,7 @@
  * @@Description:我的消息
  * @Date: 2021-02-26 15:25:21
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-25 15:57:27
+ * @LastEditTime: 2021-05-28 11:51:26
 -->
 <template>
   <div class="password">
@@ -81,10 +81,10 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
 export default {
   data () {
     return {
+      userInfo: {}, // 获取用户信息
       total: 0,
       isTrend: '',
       tableData: [],
@@ -98,17 +98,33 @@ export default {
     }
   },
   created () {
+    this.geUserInfo()
     this.$route.query.type ? this.isTrend = this.$route.query.type : this.isTrend = ''
     this.getTableList()
   },
   methods: {
+    // 获取 用户信息
+    geUserInfo () {
+      this.$http.get(this.$api.getUserInfo)
+        .then(res => {
+          this.userInfo = res.data.data
+          if (this.userInfo.loginPhone) {
+            this.active = 2
+          } else {
+            this.active = 0
+            this.getCodes()
+            this.getQRcode()
+          }
+        }).catch(() => { })
+    },
     routeOther (row) { // 1:账号分析,2:分钟级监测,3:账号回溯
       if (row.messageType === 1) {
-        let routeName = row.extraParam === '1' ? 'WeekSearch' : 'MonthSearch'
-        this.openWeb(row, routeName, row.extraParam)
+        this.openWeb(row, 'WxAnalysis')
+      } else if (row.messageType === 2) {
+        let type = row.extraParam && row.extraParam !== null ? 2 : 1
+        this.openWeb(row, 'MinuteList', type)
       } else {
-        let routerName = row.messageType === 2 ? 'MinuteList' : row.messageType === 3 ? 'BackTrack' : ''
-        this.openWeb(row, routerName)
+        this.openWeb(row, 'BackTrack')
       }
     },
     handleSelectionChange (val) {
@@ -150,11 +166,13 @@ export default {
         }).catch(() => { })
     },
     // 已读
-    openWeb (row, routerName ,type) {
+    openWeb (row, routerName, type) {
       this.$http.get(this.$api.messageRead, { params: { id: row.id } })
         .then(res => {
-          if (type) {
+          if (row.messageType === 1) {
             this.$router.push({ name: routerName, query: { type: type, tab: 'list' } })
+          } else if (row.messageType === 2) {
+            this.$router.push({ name: routerName, query: { type: type } })
           } else {
             this.$router.push({ name: routerName })
           }
@@ -169,9 +187,6 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      userInfo: state => state.user.userInfo
-    })
   }
 }
 </script>

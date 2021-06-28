@@ -3,24 +3,48 @@
  * @Description: search
  * @Date: 2021-02-01 11:07:53
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-16 16:31:26
+ * @LastEditTime: 2021-05-25 10:43:17
  */
 module.exports = [
   {
-    path: '/search/morehot',
-    name: 'MoreHot',
+    path: '/search/morehotwx',
+    name: 'MoreHotWx',
     meta: {
-      title: '文章'
+      title: '微信文章'
     },
-    component: () => import('@/views/search/MoreHot')
+    component: () => import('@/views/search/MoreHotWx')
   },
   {
-    path: '/search/accountlist',
-    name: 'AccountList',
+    path: '/search/morehotwb',
+    name: 'MoreHotWb',
     meta: {
-      title: '搜索账号列表'
+      title: '微博文章'
     },
-    component: () => import('@/views/search/AccountList')
+    component: () => import('@/views/search/MoreHotWb')
+  },
+  {
+    path: '/search/accountlistwx',
+    name: 'AccountListWx',
+    meta: {
+      title: '微信账号列表'
+    },
+    component: () => import('@/views/search/AccountListWx')
+  },
+  {
+    path: '/search/accountlistwb',
+    name: 'AccountListWb',
+    meta: {
+      title: '微博账号列表'
+    },
+    component: () => import('@/views/search/AccountListWb')
+  },
+  {
+    path: '/search/drilldetails',
+    name: 'DrillDetails',
+    meta: {
+      title: '详情'
+    },
+    component: () => import('@/views/search/DrillDetails')
   },
   {
     path: '/searched/addaccount',
@@ -31,16 +55,24 @@ module.exports = [
     component: () => import('@/views/search/AddAccount')
   },
   {
-    path: '/searched/account/analyse',
+    path: '/searched/accountwx/analyse',
     name: 'ArticleAnalyse',
     meta: {
       title: '文章分析'
     },
-    component: () => import('@/views/search/account/ArticleAnalyse')
+    component: () => import('@/views/search/accountwx/ArticleAnalyse')
   },
   {
-    path: '/searched/account/',
-    component: () => import('@/views/search/SearchBox'),
+    path: '/searched/accountwb/details',
+    name: 'TweetsDetails',
+    meta: {
+      title: '文章详情'
+    },
+    component: () => import('@/views/search/accountwb/TweetsDetails')
+  },
+  {
+    path: '/searched/accountwx/',
+    component: () => import('@/views/search/SearchWxBox'),
     children: [
       {
         path: 'material',
@@ -48,7 +80,7 @@ module.exports = [
         meta: {
           title: '账号资料'
         },
-        component: () => import('@/views/search/account/AccountMaterial')
+        component: () => import('@/views/search/accountwx/AccountMaterial')
       },
       {
         path: 'class',
@@ -56,7 +88,7 @@ module.exports = [
         meta: {
           title: '文章类别'
         },
-        component: () => import('@/views/search/account/ArticleClass')
+        component: () => import('@/views/search/accountwx/ArticleClass')
       },
       {
         path: 'data',
@@ -64,7 +96,7 @@ module.exports = [
         meta: {
           title: '基础数据统计'
         },
-        component: () => import('@/views/search/account/BasicData')
+        component: () => import('@/views/search/accountwx/BasicData')
       },
       {
         path: 'backtrack',
@@ -72,7 +104,7 @@ module.exports = [
         meta: {
           title: '公众号数据回溯'
         },
-        component: () => import('@/views/search/account/DataBacktrack')
+        component: () => import('@/views/search/accountwx/DataBacktrack')
       },
       {
         path: 'history',
@@ -80,7 +112,7 @@ module.exports = [
         meta: {
           title: '历史推文'
         },
-        component: () => import('@/views/search/account/HistoryTweets')
+        component: () => import('@/views/search/accountwx/HistoryTweets')
       },
       {
         path: 'original',
@@ -88,7 +120,7 @@ module.exports = [
         meta: {
           title: '阅读原文'
         },
-        component: () => import('@/views/search/account/ReadOriginal')
+        component: () => import('@/views/search/accountwx/ReadOriginal')
       },
       {
         path: 'rule',
@@ -96,7 +128,37 @@ module.exports = [
         meta: {
           title: '发布规律'
         },
-        component: () => import('@/views/search/account/ReleaseRules')
+        component: () => import('@/views/search/accountwx/ReleaseRules')
+      }
+    ]
+  },
+  {
+    path: '/searched/accountwb/',
+    component: () => import('@/views/search/SearchWbBox'),
+    children: [
+      {
+        path: 'data',
+        name: 'BasicDataWb',
+        meta: {
+          title: '基础数据统计'
+        },
+        component: () => import('@/views/search/accountwb/BasicDataWb')
+      },
+      {
+        path: 'history',
+        name: 'HistoryTweetsWb',
+        meta: {
+          title: '历史推文'
+        },
+        component: () => import('@/views/search/accountwb/HistoryTweetsWb')
+      },
+      {
+        path: 'rule',
+        name: 'ReleaseRulesWb',
+        meta: {
+          title: '发布规律'
+        },
+        component: () => import('@/views/search/accountwb/ReleaseRulesWb')
       }
     ]
   }

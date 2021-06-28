@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-19 16:37:28
+ * @LastEditTime: 2021-06-02 11:36:57
 -->
 <template>
   <div class="real-time content-box">
@@ -70,8 +70,10 @@
               <span>任务创建时间: {{item.updateTime}}</span>
               <span class="outpush"
                     v-if="item.simCount>0">有<i @click="articleDetail(item)">{{item.simCount}}</i>篇文章转载</span>
-              <span class="outpush"
-                    v-else>有{{item.simCount}}篇文章转载</span>
+              <!-- <span class="outpush"
+                    v-else>有{{item.simCount}}篇文章转载</span> -->
+                    <span class="outpush"
+                    v-else>无转载文章</span>
             </div>
           </div>
           <div class="delete-box cursor"
@@ -119,12 +121,12 @@
             <el-form-item label="监测时间"
                           prop="fromData">
               <el-date-picker v-model="creadForm.fromData"
-                              type="datetimerange"
+                              type="daterange"
                               range-separator="至"
-                              format='yyyy-MM-dd HH:mm:ss'
-                              value-format="yyyy-MM-dd HH:mm:ss"
+                              format='yyyy-MM-dd'
+                              value-format="yyyy-MM-dd"
                               start-placeholder="开始日期"
-                              end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']">
+                              end-placeholder="结束日期">
               </el-date-picker>
             </el-form-item>
           </el-form>

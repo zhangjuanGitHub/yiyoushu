@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-02-04 11:11:09
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-15 11:53:45
+ * @LastEditTime: 2021-05-18 14:03:14
 -->
 <template>
   <div class="pagination-wrap flex-all-center">
@@ -45,7 +45,7 @@ export default {
         this.$emit('pagingChange', this.query)
       } else {
         this.query.size = 10
-        return this.$message.error('当前页数小于总条数！')
+        return this.$message.warning('当前页数小于总条数！')
       }
     }
   },

@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-23 15:01:05
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-10 17:57:15
+ * @LastEditTime: 2021-04-26 14:22:03
 -->
 <template>
   <div class="flex-bwt-center">
@@ -93,7 +93,6 @@ export default {
       this.successData = this.artcleDelJson[0]
       this.warningData = this.artcleDelJson[1]
       this.dangerData = this.artcleDelJson[2]
-      console.log(this.artcleDelJson)
     }
   },
   mounted () {

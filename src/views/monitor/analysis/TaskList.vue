@@ -4,6 +4,13 @@
       <el-form :inline="true"
                ref="ruleForm"
                :model="ruleForm">
+        <el-form-item label="分析时长"
+                      prop="dateType">
+          <el-radio-group v-model="ruleForm.dateType" @change="changeDateType">
+            <el-radio :label="1">周分析</el-radio>
+            <el-radio :label="2">月分析</el-radio>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="创建时间"
                       prop="publishTime">
           <el-date-picker v-model="ruleForm.publishTime"
@@ -50,15 +57,17 @@
            v-for="(item, index) of taskList" :key="index">
         <div class="flex-bwt-center">
           <div class="main-list-up flex-ali-center">
-            <img :src="item.hdHeadImg" alt="">
-            <div class="main-list-name">
-              <p v-html="item.nickname"></p>
+            <img :src="item.hdHeadImg" alt=""
+                  @click="hdToAnalyse(item)"
+                  class="cursor">
+            <div class="main-list-name cursor">
+              <p v-html="item.nickname" @click="hdToAnalyse(item)"></p>
               <p v-html="item.username"></p>
             </div>
           </div>
           <div v-if="item.analyseScore > 0"
                class="cursor"
-               @click="toAnalyse(item.id)">
+               @click="hdToAnalyse(item)">
             <el-progress type="circle"
                          :width="40"
                          :stroke-width="3"
@@ -67,9 +76,10 @@
                          :percentage="Number(item.analyseScore)"
                        ></el-progress>
           </div>
-          <p v-else>处理中...</p>
+          <p v-else>分析中...</p>
         </div>
         <div class="main-list-time">
+          <p>分析时长：<span v-if="item.dateType === 1">周</span><span v-else>月</span></p>
           <p>创建时间：<span>{{item.createTime}}</span></p>
           <p>分析时间：<span>{{item.startDate}}</span> 至 <span>{{item.endDate}}</span></p>
         </div>
@@ -103,7 +113,7 @@ export default {
     return {
       ruleForm: {
         keyword: '',
-        dateType: '',
+        dateType: 1,
         publishTime: [],
         pageNum: 1,
         pageSize: 12
@@ -134,11 +144,12 @@ export default {
       }
     },
     // 跳转详情页
-    toAnalyse (id) {
-      if (this.$route.name === 'MonthSearch') {
-        this.$router.push({ name: 'MonthDetail', query: { id: id } })
+    hdToAnalyse (item) {
+      if (item.analyseScore > 0) {
+        let routeName = item.dateType === 2 ? 'MonthDetail' : 'WeekDetail'
+        this.$router.push({ name: routeName, query: { id: item.id } })
       } else {
-        this.$router.push({ name: 'WeekDetail', query: { id: id } })
+        this.$message.warning('还在分析中，请稍后')
       }
     },
     goDelete () {
@@ -186,6 +197,10 @@ export default {
       this.ruleForm.publishTime = []
       this.handleCurrentChange(1)
     },
+    changeDateType (val) {
+      this.ruleForm.dateType = val
+      this.handleCurrentChange(1)
+    },
     // 获取任务列表
     getTaskList () {
       this.$http.post(this.$api.getTaskList, this.ruleForm)
@@ -199,7 +214,6 @@ export default {
     }
   },
   created () {
-    this.ruleForm.dateType = this.$route.query.type
     this.getTaskList()
   }
 }
@@ -236,7 +250,6 @@ export default {
 }
 .main-list-box {
   width: 355px;
-  height: 145px;
   margin: 10px;
   padding: 20px;
   float: left;
@@ -282,6 +295,9 @@ export default {
 }
 .main-list-time p {
   color: #ADAEB2;
+}
+.main-list-time p:nth-child(1) span {
+  color: #E6A23C;
 }
 .main-list-time p span {
   color: #151C29;

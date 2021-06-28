@@ -3,12 +3,12 @@
  * @Description:
  * @Date: 2021-03-05 10:06:51
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-25 16:02:19
+ * @LastEditTime: 2021-06-01 10:44:13
 -->
 <template>
   <div class="interaction content-box">
     <div class="tabs-header">
-      <span class="tabs-title" @click="tabsAll('company', 1)" :class="this.activeTab==='company'?'isActive':''">单位账户</span>
+      <!-- <span class="tabs-title" @click="tabsAll('company', 1)" :class="this.activeTab==='company'?'isActive':''">单位账户</span> -->
       <span class="tabs-title" @click="tabsAll('follow', 2)"  :class="this.activeTab==='follow'?'isActive':''">关注的账号</span>
     </div>
     <div class="wx-warp-box">
@@ -28,7 +28,7 @@
                            label="账号信息">
               <template slot-scope='scope'>
               <div class="account-msg-box flex-ali-center cursor"
-                   @click="toSearch(scope.row.id)">
+                   @click="toSearch(scope.row.biz)">
                 <img :src="scope.row.hd_head_img" alt="">
                 <div class="account-msg">
                   <p class="lin-clamp-1" v-html="scope.row.nickname"></p>
@@ -73,7 +73,10 @@
               </el-tooltip>
             </template>
             <template slot-scope="scope">
-              <p>{{scope.row.livenessNum}}</p>
+              <p v-if="scope.row.livenessNum === 1">不活跃</p>
+              <p v-else-if="scope.row.livenessNum === 2">一般活跃</p>
+              <p v-else-if="scope.row.livenessNum === 3">比较活跃</p>
+              <p v-else-if="scope.row.livenessNum === 4">活跃</p>
             </template>
           </el-table-column>
           <el-table-column prop="influenceNum"
@@ -111,14 +114,14 @@ export default {
       warningMessage: null, // 消息提示
       targetRouteName: '', // 如果没有认证单位或者没有关注账号跳转到相应页面
       tableData: [],
-      activeTab: 'company',
+      activeTab: 'follow',
       showImport: true, // 搜索框是否展示导出按钮
       pageBean: {
         // pageSort: {
         //   pageNum: 1,
         //   pageSize: 10
         // },
-        level: 1, // 单位为1，关注为2
+        level: 2, // 单位为1，关注为2
         publishTime: [],
         keyword: '',
         sortDirection: '',
@@ -153,6 +156,7 @@ export default {
     },
     getPercentage () {
       return function (day) {
+        day = day === 7 ? 6 : day
         let calc = Number(Math.abs(((1 - (day / 7)) * 100).toFixed(0)))
         let value
         if (calc >= 100) {
@@ -195,7 +199,7 @@ export default {
     },
     toSearch (id) {
       let routeName = this.activeTab === 'company' ? 'AccountMaterial' : 'HistoryTweets'
-      this.$router.push({ name: routeName , query: { id: id } })
+      this.$router.push({ name: routeName, query: { id: id } })
     },
     // tab
     tabsAll (name, level) {

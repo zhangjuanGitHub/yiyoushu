@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-02-22 17:11:40
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-05 11:50:59
+ * @LastEditTime: 2021-05-13 16:37:04
  */
 export const timeFormat = (date) => {
   var date = new Date(date)
@@ -14,9 +14,9 @@ export const timeFormat = (date) => {
 }
 export const secondsFormat = (date) => {
   var date = new Date(date)
-  var hh = (date.getHours() < 10 ? '0'+date.getHours() : date.getHours()) + ':'
-  var mm = (date.getMinutes() < 10 ? '0'+date.getMinutes() : date.getMinutes()) + ':'
-  var ss = (date.getSeconds() < 10 ? '0'+date.getSeconds() : date.getSeconds())
+  var hh = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':'
+  var mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':'
+  var ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds())
   return hh + mm + ss
 }
 /**

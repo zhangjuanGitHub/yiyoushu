@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-03-08 10:43:44
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-22 16:57:05
+ * @LastEditTime: 2021-05-11 18:41:34
 -->
 <template>
   <div class="interaction">
@@ -114,7 +114,8 @@
                   <img :src="item.ori_head_img"
                        alt="">
                   <div class="compare-msg-name">
-                    <p v-html="item.nickname" class="lin-clamp-1"></p>
+                    <p v-html="item.nickname"
+                       class="lin-clamp-1"></p>
                     <p v-html="item.alias"></p>
                   </div>
                 </div>
@@ -212,9 +213,9 @@
                     </div>
                     <div class="compare-table-right">
                       <div v-for="(item, index) of scope.row.list"
-                          :key="index"
-                          :style="{ width: calcWidth + '%' }"
-                          class="compare-table-cont">
+                           :key="index"
+                           :style="{ width: calcWidth + '%' }"
+                           class="compare-table-cont">
                         <div v-if="scope.row.name === '基础信息'">
                           <p><span v-html="item.auth_type ? '是' : '否'"></span></p>
                           <p><span>{{getChinese(item.auth_type) || '无'}}</span></p>
@@ -231,50 +232,50 @@
                           <p v-else><span>-</span></p>
                         </div>
                         <div v-else-if="scope.row.name === '涉检文章'">
-                          <p ><span v-html="item.procuratorialNum"></span></p>
+                          <p><span v-html="item.procuratorialNum"></span></p>
                           <p><span v-html="item.notProcuratorialNum"></span></p>
                           <p><span v-html="item.procuratorialOneNum"></span></p>
                           <p><span v-html="item.procuratorialTwoNum"></span></p>
                         </div>
                         <div v-else-if="scope.row.name === '吸引力'">
-                          <p><span>{{item.sumReadNum}}</span></p>
-                          <p><span>{{item.averageReadNum}}</span></p>
-                          <p><span>{{item.maxReadNum}}</span></p>
-                          <p><span>{{item.sumOneReadNum}}</span></p>
-                          <p><span>{{item.averageOneReadNum}}</span></p>
-                          <p><span>{{item.maxOneReadNum}}</span></p>
-                          <p><span>{{item.sumTwoReadNum}}</span></p>
-                          <p><span>{{item.averageTwoReadNum}}</span></p>
-                          <p><span>{{item.maxTwoReadNum}}</span></p>
-                          <p><span>{{item.sumThreeReadNum}}</span></p>
-                          <p><span>{{item.averageThreeReadNum}}</span></p>
-                          <p><span>{{item.maxThreeReadNum}}</span></p>
+                          <p><span v-html="item.sumReadNum"></span></p>
+                          <p><span v-html="item.averageReadNum"></span></p>
+                          <p><span v-html="item.maxReadNum"></span></p>
+                          <p><span v-html="item.sumOneReadNum"></span></p>
+                          <p><span v-html="item.averageOneReadNum"></span></p>
+                          <p><span v-html="item.maxOneReadNum"></span></p>
+                          <p><span v-html="item.sumTwoReadNum"></span></p>
+                          <p><span v-html="item.averageTwoReadNum"></span></p>
+                          <p><span v-html="item.maxTwoReadNum"></span></p>
+                          <p><span v-html="item.sumThreeReadNum"></span></p>
+                          <p><span v-html="item.averageThreeReadNum"></span></p>
+                          <p><span v-html="item.maxThreeReadNum"></span></p>
                         </div>
                         <div v-else>
-                          <p><span>{{item.sumPointNum}}</span></p>
-                          <p><span>{{item.averagePointNum}}</span></p>
-                          <p><span>{{item.maxPointNum}}</span></p>
-                          <p><span>{{item.sumOnePointNum}}</span></p>
-                          <p><span>{{item.averageOnePointNum}}</span></p>
-                          <p><span>{{item.maxOnePointNum}}</span></p>
-                          <p><span>{{item.sumTwoPointNum}}</span></p>
-                          <p><span>{{item.averageTwoPointNum}}</span></p>
-                          <p><span>{{item.maxTwoPointNum}}</span></p>
-                          <p><span>{{item.sumThreePointNum}}</span></p>
-                          <p><span>{{item.averageThreePointNum}}</span></p>
-                          <p><span>{{item.maxThreePointNum}}</span></p>
-                          <p><span>{{item.sumOldLikeNum}}</span></p>
-                          <p><span>{{item.averageOldLikeNum}}</span></p>
-                          <p><span>{{item.maxOldLikeNum}}</span></p>
-                          <p><span>{{item.sumOneOldLikeNum}}</span></p>
-                          <p><span>{{item.averageOneOldLikeNum}}</span></p>
-                          <p><span>{{item.maxOneOldLikeNum}}</span></p>
-                          <p><span>{{item.sumTwoOldLikeNum}}</span></p>
-                          <p><span>{{item.averageTwoOldLikeNum}}</span></p>
-                          <p><span>{{item.maxTwoOldLikeNum}}</span></p>
-                          <p><span>{{item.sumThreeOldLikeNum}}</span></p>
-                          <p><span>{{item.averageThreeOldLikeNum}}</span></p>
-                          <p><span>{{item.maxThreeOldLikeNum}}</span></p>
+                          <p><span v-html="item.sumPointNum"></span></p>
+                          <p><span v-html="item.averagePointNum"></span></p>
+                          <p><span v-html="item.maxPointNum"></span></p>
+                          <p><span v-html="item.sumOnePointNum"></span></p>
+                          <p><span v-html="item.averageOnePointNum"></span></p>
+                          <p><span v-html="item.maxOnePointNum"></span></p>
+                          <p><span v-html="item.sumTwoPointNum"></span></p>
+                          <p><span v-html="item.averageTwoPointNum"></span></p>
+                          <p><span v-html="item.maxTwoPointNum"></span></p>
+                          <p><span v-html="item.sumThreePointNum"></span></p>
+                          <p><span v-html="item.averageThreePointNum"></span></p>
+                          <p><span v-html="item.maxThreePointNum"></span></p>
+                          <p><span v-html="item.sumOldLikeNum"></span></p>
+                          <p><span v-html="item.averageOldLikeNum"></span></p>
+                          <p><span v-html="item.maxOldLikeNum"></span></p>
+                          <p><span v-html="item.sumOneOldLikeNum"></span></p>
+                          <p><span v-html="item.averageOneOldLikeNum"></span></p>
+                          <p><span v-html="item.maxOneOldLikeNum"></span></p>
+                          <p><span v-html="item.sumTwoOldLikeNum"></span></p>
+                          <p><span v-html="item.averageTwoOldLikeNum"></span></p>
+                          <p><span v-html="item.maxTwoOldLikeNum"></span></p>
+                          <p><span v-html="item.sumThreeOldLikeNum"></span></p>
+                          <p><span v-html="item.averageThreeOldLikeNum"></span></p>
+                          <p><span v-html="item.maxThreeOldLikeNum"></span></p>
                         </div>
                       </div>
                     </div>
@@ -314,7 +315,8 @@
                      :key="index"
                      @dblclick="shuttle(item,index)">
                   <div class="content-box-avatar flex-ali-center">
-                    <img :src="item.ori_head_img" alt="">
+                    <img :src="item.ori_head_img"
+                         alt="">
                     <p>{{item.nickname}}</p>
                   </div>
                   <p>{{item.alias}}</p>
@@ -333,7 +335,8 @@
                      :key="index"
                      @dblclick="unShuttle(item,index)">
                   <div class="content-box-avatar flex-ali-center">
-                    <img :src="item.ori_head_img" alt="">
+                    <img :src="item.ori_head_img"
+                         alt="">
                     <p>{{item.nickname}}</p>
                   </div>
                   <p>{{item.alias}}</p>
@@ -572,15 +575,63 @@ export default {
         this.$http.post(this.$api.startCompare, obj)
           .then(res => {
             this.accountList = res.data.data
-            let activeList = []
             this.accountList.forEach((item, index) => {
               item.showContent = true
-              if (item.name === '活跃度') {
-                activeList = item.list
+              switch (item.name) {
+                case '活跃度':
+                  item.list[this.getMaxIndex(item.list, 'articleSum')].articleSum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'articleSum')].articleSum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'articleOneSum')].articleOneSum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'articleOneSum')].articleOneSum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'countNum')].countNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'countNum')].countNum + '</i>'
+                  break
+                case '涉检文章':
+                  item.list[this.getMaxIndex(item.list, 'notProcuratorialNum')].notProcuratorialNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'notProcuratorialNum')].notProcuratorialNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'procuratorialNum')].procuratorialNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'procuratorialNum')].procuratorialNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'procuratorialOneNum')].procuratorialOneNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'procuratorialOneNum')].procuratorialOneNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'procuratorialTwoNum')].procuratorialTwoNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'procuratorialTwoNum')].procuratorialTwoNum + '</i>'
+                  break
+                case '吸引力':
+                  item.list[this.getMaxIndex(item.list, 'averageOneReadNum')].averageOneReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageOneReadNum')].averageOneReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageReadNum')].averageReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageReadNum')].averageReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageThreeReadNum')].averageThreeReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageThreeReadNum')].averageThreeReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageTwoReadNum')].averageTwoReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageTwoReadNum')].averageTwoReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxOneReadNum')].maxOneReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxOneReadNum')].maxOneReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxReadNum')].maxReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxReadNum')].maxReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxThreeReadNum')].maxThreeReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxThreeReadNum')].maxThreeReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxTwoReadNum')].maxTwoReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxTwoReadNum')].maxTwoReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumOneReadNum')].sumOneReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumOneReadNum')].sumOneReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumReadNum')].sumReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumReadNum')].sumReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumThreeReadNum')].sumThreeReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumThreeReadNum')].sumThreeReadNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumTwoReadNum')].sumTwoReadNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumTwoReadNum')].sumTwoReadNum + '</i>'
+                  break
+                case '认可度':
+                  item.list[this.getMaxIndex(item.list, 'averageOldLikeNum')].averageOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageOldLikeNum')].averageOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageOneOldLikeNum')].averageOneOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageOneOldLikeNum')].averageOneOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageOnePointNum')].averageOnePointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageOnePointNum')].averageOnePointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averagePointNum')].averagePointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averagePointNum')].averagePointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageThreeOldLikeNum')].averageThreeOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageThreeOldLikeNum')].averageThreeOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageThreePointNum')].averageThreePointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageThreePointNum')].averageThreePointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageTwoOldLikeNum')].averageTwoOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageTwoOldLikeNum')].averageTwoOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'averageTwoPointNum')].averageTwoPointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'averageTwoPointNum')].averageTwoPointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxOldLikeNum')].maxOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxOldLikeNum')].maxOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxOneOldLikeNum')].maxOneOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxOneOldLikeNum')].maxOneOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxOnePointNum')].maxOnePointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxOnePointNum')].maxOnePointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxPointNum')].maxPointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxPointNum')].maxPointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxThreeOldLikeNum')].maxThreeOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxThreeOldLikeNum')].maxThreeOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxThreePointNum')].maxThreePointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxThreePointNum')].maxThreePointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxTwoOldLikeNum')].maxTwoOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxTwoOldLikeNum')].maxTwoOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'maxTwoPointNum')].maxTwoPointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'maxTwoPointNum')].maxTwoPointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumOldLikeNum')].sumOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumOldLikeNum')].sumOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumOneOldLikeNum')].sumOneOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumOneOldLikeNum')].sumOneOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumOnePointNum')].sumOnePointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumOnePointNum')].sumOnePointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumPointNum')].sumPointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumPointNum')].sumPointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumThreeOldLikeNum')].sumThreeOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumThreeOldLikeNum')].sumThreeOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumThreePointNum')].sumThreePointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumThreePointNum')].sumThreePointNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumTwoOldLikeNum')].sumTwoOldLikeNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumTwoOldLikeNum')].sumTwoOldLikeNum + '</i>'
+                  item.list[this.getMaxIndex(item.list, 'sumTwoPointNum')].sumTwoPointNum = '<i class="color7">' + item.list[this.getMaxIndex(item.list, 'sumTwoPointNum')].sumTwoPointNum + '</i>'
+                  break
               }
             })
-            console.log(this.mathMax(activeList, 'articleOneSum'))
-            console.log(this.getMaxIndex(activeList, 'articleOneSum'))
+            console.log(this.accountList)
           }).catch(() => { })
       } else {
         if (this.ruleForm.type.length > 0) {
@@ -590,25 +641,16 @@ export default {
         }
       }
     },
+    // 最大值下标
     getMaxIndex (arrs, data) {
       var max = arrs[0]
       var maxIndex = 0
-      for (var i = 1, ilen = arrs.length; i < ilen; i++) {
-        if (arrs[i].data > max.data) {
+      for (var i = 0, ilen = arrs.length; i < ilen; i++) {
+        if (parseInt(arrs[i][data]) > parseInt(max[data])) {
           maxIndex = i
         }
       }
       return maxIndex
-    },
-    // 最大值
-    mathMax (arrs, data) {
-      var max = arrs[0]
-      for (var i = 1, ilen = arrs.length; i < ilen; i++) {
-        if (arrs[i].data > max.data) {
-          max.data = '<span class="color1">' + arrs[i].data + '</span>'
-        }
-      }
-      return max
     },
     // 删除某一个账号
     deleteComAccount (index) {
@@ -625,6 +667,7 @@ export default {
     }
   },
   created () {
+    // this.textData()
     this.calcWidth = (1 / 2) * 100 // 默认是两个
     this.changeTime('1')
   },
@@ -641,9 +684,9 @@ export default {
   min-height: 500px;
 }
 .add-compare-table .el-table--border {
-  border-color: #97BDFE;
-  border-bottom: 1px solid #97BDFE;
-  border-right: 1px solid #97BDFE;
+  border-color: #97bdfe;
+  border-bottom: 1px solid #97bdfe;
+  border-right: 1px solid #97bdfe;
   border-top: none;
 }
 </style>
@@ -684,7 +727,7 @@ export default {
 .alone:hover {
   background: #f7f8fa;
 }
-.alone>p {
+.alone > p {
   width: 50%;
   padding: 10px 0;
   text-align: center;
@@ -692,7 +735,8 @@ export default {
 .alone {
   height: 45px;
 }
-.top-line, .name-box  {
+.top-line,
+.name-box {
   height: 40px;
 }
 .name-box {

@@ -2,16 +2,16 @@
  * @Author: MaiChao
  * @Date: 2021-02-23 15:01:05
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-14 15:34:23
+ * @LastEditTime: 2021-04-26 16:15:23
 -->
 <template>
   <div class="flex-bwt-center">
     <div class="line-left">
-      <div class="title">发文数据分析</div>
+      <div class="title">发文时间分布</div>
       <div id="article-data"></div>
     </div>
     <div class="line-right">
-      <div class="title">发文时间分布</div>
+      <div class="title">发文数据分析</div>
       <div id="article-time"></div>
     </div>
   </div>

@@ -111,11 +111,11 @@ module.exports = {
     port: 8080,
     proxy: {
       '/yys': {
-        // target: 'http://192.168.10.9:19001', // 安豪
-        // target: 'http://47.93.1.52', // 线上
-        target: 'http://192.168.10.18:19001', // 李智
-        // target: 'http://192.168.10.13:19001', // 东阳
-        // target: 'http://192.168.10.16:19001', // 坤明
+        // target: 'http://192.168.10.7:19001', // 安豪
+        target: 'http://47.93.1.52', // 线上
+        // target: 'http://192.168.10.9:19001', // 李智
+        // target: 'http://192.168.10.2:19001', // 东阳
+        // target: 'http://192.168.10.12:19001', // 坤明
         changeOrigin: false,
         ws: true, // 是否启用websockets
         pathRewrite: {

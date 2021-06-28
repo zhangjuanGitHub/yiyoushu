@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-01-28 11:13:04
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-18 10:43:38
+ * @LastEditTime: 2021-05-13 15:32:59
  */
 import Vue from 'vue'
 import Router from 'vue-router'
@@ -16,6 +16,7 @@ import openapi from './openapi'
 import custom from './custom'
 import setting from './setting'
 import search from './search'
+import mobile from './mobile'
 // 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
 // const originalPush = Router.prototype.push
 // Router.prototype.push = function push (location) {
@@ -51,7 +52,17 @@ routes = routes.concat(openapi) // 开放API
 routes = routes.concat(custom) // 定制数据
 routes = routes.concat(setting) // 个人中心
 routes = routes.concat(search) // 账号搜索
+routes = routes.concat(mobile) // 推送页面
 // console.log(routes)
+// const routesM = [{
+//   path: '/',
+//   name: 'PushPage',
+//   component: () => import('@/views/monitor/components/PushPage')
+// }]
+// // var routes = [];
+// if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+//   routes = routesM
+// }
 const router = new Router({
   mode: 'history',
   base: process.env.NODE_ENV === 'production' ? 'yys' : '/',
@@ -61,6 +72,7 @@ const router = new Router({
     return { x: 0, y: 0 }
   }
 })
+
 router.beforeEach((to, from, next) => {
   next()
   // meta title

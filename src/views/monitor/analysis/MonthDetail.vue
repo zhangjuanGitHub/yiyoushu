@@ -2,14 +2,14 @@
  * @Author: MaiChao
  * @Date: 2021-02-22 15:10:18
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-23 17:14:49
+ * @LastEditTime: 2021-05-28 11:33:18
 -->
 <template>
   <div class="detail content-show">
     <div class="tabs-header flex-ali-center ">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'AccountCompany' }">新媒体监测</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ name: 'MonthSearch', query: { type: '2' } }">月分析</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'WxAnalysis', query: { tab: 'list' } }">月分析</el-breadcrumb-item>
         <el-breadcrumb-item>诊断历史</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -291,6 +291,7 @@ export default {
 .analysis-content {
   background-color: #fff;
   padding: 20px;
+  box-sizing: border-box;
 }
 .content-show {
   max-width: 1400px;

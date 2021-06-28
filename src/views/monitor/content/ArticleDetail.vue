@@ -1,8 +1,8 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-19 10:33:37
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-05-21 15:11:05
 -->
 <template>
   <div class="content-show article-detail">
@@ -119,7 +119,7 @@
                 </el-tooltip>
                 <el-tooltip class="item"
                             effect="dark"
-                            content="点在数"
+                            content="点赞数"
                             placement="top">
                     <span><i class="el-icon-star-off"></i>{{item.oldLikeNum}}</span>
                 </el-tooltip>
@@ -127,7 +127,7 @@
                             effect="dark"
                             content="在看数"
                             placement="top">
-                   <span><i class="el-icon-help"></i>{{item.commentCount}}</span>
+                   <span><i class="el-icon-help"></i>{{item.likeNum}}</span>
                 </el-tooltip>
                 <el-tooltip class="item"
                             effect="dark"
@@ -190,13 +190,15 @@ export default {
       this.ruleForm.id = this.id
       this.$http.post(this.$api.findSimilarity, this.ruleForm)
         .then(res => {
-          this.articleList = res.data.data
+          this.articleList = res.data.data.content
+          this.total = res.data.data.totalElements
         }).catch(() => { })
     },
     // 分页
     pagingChange (query) {
       this.ruleForm.pageSize = query.size
       this.ruleForm.pageNum = query.page
+      this.getListData()
     },
     // 获取关系图数据
     getData () {
@@ -266,7 +268,9 @@ export default {
       let myChart = echarts.init(document.getElementById('bar-charts'))
       var option = {
         backgroundColor: '#000',
-        tooltip: {},
+        tooltip: {
+          trigger: ''
+        },
         xAxis: {
           show: false,
           type: 'value',
@@ -319,7 +323,7 @@ export default {
         ]
       }
       myChart.on('click', function (params) {
-        console.log(params)
+        window.open(params.data.url, '_blank')
       })
       myChart.setOption(option)
       window.addEventListener('resize', function () {
@@ -402,6 +406,39 @@ export default {
               }
             }]
           }
+          myChart.on('click', (params) => {
+            let idx = ''
+            switch (params.name) {
+              case '头条':
+                idx = 1
+                break
+              case '次条':
+                idx = 2
+                break
+              case '第三条':
+                idx = 3
+                break
+              case '第四条':
+                idx = 4
+                break
+              case '第五条':
+                idx = 5
+                break
+              case '第六条':
+                idx = 6
+                break
+              case '第七条':
+                idx = 7
+                break
+              case '第八条':
+                idx = 8
+                break
+              default:
+                break
+            }
+            let rout = this.$router.resolve({ name: 'DrillDetails', query: { id: this.id, idx: idx }})
+            window.open(rout.href, '_blank')
+          })
           myChart.setOption(option)
           window.addEventListener('resize', function () {
             myChart.resize()
@@ -476,6 +513,10 @@ export default {
 
             ]
           }
+          myChart.on('click', (params) => {
+            let rout = this.$router.resolve({ name: 'DrillDetails', query: { id: this.id, province: params.name }})
+            window.open(rout.href, '_blank')
+          })
           myChart.setOption(option)
           window.addEventListener('resize', function () {
             myChart.resize()
@@ -1073,6 +1114,10 @@ export default {
               data: datas
             }]
           }
+          myChart.on('click', (params) => {
+            let rout = this.$router.resolve({ name: 'DrillDetails', query: { id: this.id, authType: params.name }})
+            window.open(rout.href, '_blank')
+          })
           myChart.setOption(option)
           window.addEventListener('resize', function () {
             myChart.resize()
@@ -1148,6 +1193,12 @@ export default {
               }
             ]
           }
+          myChart.on('click', (params) => {
+            if (params.data != undefined) {
+              let rout = this.$router.resolve({ name: 'DrillDetails', query: { id: this.id, province: params.name }})
+              window.open(rout.href, '_blank')
+            }
+          })
           myChart.setOption(option)
           window.addEventListener('resize', function () {
             myChart.resize()
@@ -1241,11 +1292,7 @@ export default {
       return array
     },
     routerMaterial (item) {
-      this.$http.get(this.$api.selectIdByBiz, { params: { biz: item.biz } })
-        .then(res => {
-          this.$router.push({ name: 'AccountMaterial', query: { id: res.data.data.id } })
-        })
-        .catch(() => { })
+      this.$router.push({ name: 'AccountMaterial', query: { id: item.biz } })
     }
   },
   mounted () {

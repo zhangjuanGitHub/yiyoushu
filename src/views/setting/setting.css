@@ -81,7 +81,7 @@
   color: #3A81FE;
   border-bottom: 2px solid #3b82fe;
 }
-.el-input-group__append button.el-button{
+.smscode-box .el-input-group__append button.el-button{
   color: #fff;
   background-color: #409eff;
   border-top-left-radius: 0;
@@ -170,4 +170,7 @@
 }
 .click-sapn{
   text-decoration: underline;
+}
+.replaceForm .code-box .el-input-group__append{
+  padding: 0;
 }

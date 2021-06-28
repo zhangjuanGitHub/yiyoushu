@@ -2,8 +2,17 @@
   <div class="add-main flex-cloumn-cen">
     <img src="@/assets/images/monitor/analyse.png" alt="">
     <div class="add-main-center">
-      <div class="add-task-search flex-ali-center">
-        <p>账号名称筛选</p>
+
+      <div class="add-task-search">
+        <div class="flex-cloumn-cen">
+          <p class="add-title">分析时长</p>
+          <el-radio-group v-model="type" @change="calcCycle">
+            <el-radio :label="1">周分析</el-radio>
+            <el-radio :label="2">月分析</el-radio>
+          </el-radio-group>
+          <p class="add-tip">为您提供最近<span v-if="type===1">一周</span><span v-else>一月</span>微信数据报告</p>
+          <p class="add-title">账号名称筛选</p>
+        </div>
         <el-input size="small"
                   v-model="queryText"
                   placeholder="请输入公众号名称"></el-input>
@@ -79,7 +88,7 @@ export default {
       },
       queryText: '',
       record: [], // 搜索历史
-      type: '',
+      type: 1,
       cycle: [],
       selectItem: {} // 选择的账号
     }
@@ -119,7 +128,7 @@ export default {
         this.$http.post(this.$api.addOneAnalyse, obj)
           .then(res => {
             if (res.data.message === '已存在' && res.data.code === 200) {
-              let str = this.type === '1' ? '您已添加过该账号进行周分析了' : '您已添加过该账号进行月分析了'
+              let str = this.type === 1 ? '您已添加过该账号进行周分析了' : '您已添加过该账号进行月分析了'
               this.$message.warning(str)
             } else {
               this.tipVisible = true
@@ -202,7 +211,7 @@ export default {
     // 计算周期
     calcCycle () {
       let end = this.calcDate(1)
-      let start = this.calcDate(this.type === '1' ? 7 : 30)
+      let start = this.calcDate(this.type === 1 ? 7 : 30)
       this.cycle[0] = timeFormat(start)
       this.cycle[1] = timeFormat(end)
     },
@@ -213,7 +222,6 @@ export default {
     }
   },
   created () {
-    this.type = JSON.stringify(this.$route.query.type)
     this.getRecord()
     this.calcCycle()
   },
@@ -249,10 +257,13 @@ export default {
 .add-main {
   width: 100%;
 }
-.add-task-search p {
-  width: 110px;
-  font-size: 16px;
+.add-task-search .add-title {
+  font-size: 20px;
   color: #151C29;
+  margin: 20px 0;
+}
+.add-task-search .add-tip {
+  margin-top: 25px;
 }
 .add-task-search .el-input {
   width: 377px;
@@ -260,7 +271,6 @@ export default {
   margin-right: 10px;
 }
 .add-main-record {
-  width: 380px;
   margin: 8px auto;
 }
 .add-main-record p {

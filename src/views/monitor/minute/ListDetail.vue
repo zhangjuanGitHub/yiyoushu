@@ -1,15 +1,15 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-03-12 14:10:32
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-21 18:12:39
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-05-27 16:36:03
 -->
 <template>
   <div class="detail content-show">
     <div class="tabs-header flex-ali-center">
       <el-breadcrumb separator-class="el-icon-arrow-right">
         <el-breadcrumb-item :to="{ name: 'AccountCompany' }">新媒体监测</el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ name: 'MinuteArticle' }">分钟级监测</el-breadcrumb-item>
+        <el-breadcrumb-item :to="{ name: 'WxMinuteBox' }">分钟级监测</el-breadcrumb-item>
         <el-breadcrumb-item :to="{ name:'MinuteList' }">监测列表</el-breadcrumb-item>
         <el-breadcrumb-item>查看详情</el-breadcrumb-item>
       </el-breadcrumb>
@@ -235,7 +235,7 @@ export default {
               top: '20%',
               left: '5%',
               right: '5%',
-              bottom: '5%'
+              bottom: '10%'
               // containLabel: true
             },
             legend: {
@@ -298,6 +298,25 @@ export default {
               axisTick: {
                 show: false
               }
+            }],
+            dataZoom: [{
+              show: true,
+              height: 30,
+              xAxisIndex: [0],
+
+              'start': 0,
+              'end': 30,
+              handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
+              handleSize: '110%',
+              handleStyle: {
+                color: '#00ca95'
+              },
+              textStyle: {
+                color: 'rgba(204,187,225,0.9)'
+              },
+              fillerColor: 'rgba(0,202,149,0.4)',
+              borderColor: 'rgba(0,202,149,0.5)'
+
             }],
             series: [
               {

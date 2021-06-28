@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-02-03 17:18:48
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-23 13:42:37
+ * @LastEditTime: 2021-05-25 15:19:38
 -->
 <template>
   <div class="home-up-wrap">
@@ -23,12 +23,18 @@
         </div>
         <div>
           <el-autocomplete v-model="keyword"
-                           v-if="accountActive === 'wx'"
+                           v-if="accountActive === 'wx' || accountActive === 'wb'"
                           :fetch-suggestions="querySearch"
                           placeholder="新媒体搜索引擎，你想要的都在这里哦"
-                          :trigger-on-focus="false"
+                          :trigger-on-focus="historyList.length > 0"
                           @select="submitSearch">
             <el-button type="primary" slot="append" icon="el-icon-search" @click="submitSearch"></el-button>
+            <template slot-scope="{ item }">
+              <div class="search-autotip-box flex-ali-center">
+                <img :src="item.url" alt="" class="search-autotip-img" v-if="item.url">
+                <p class="search-autotip-p" v-html="item.value"></p>
+              </div>
+            </template>
           </el-autocomplete>
           <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
                     v-model="keyword"
@@ -49,7 +55,8 @@ export default {
     return {
       accountActive: 'wx',
       keyword: '',
-      state2: ''
+      historyList: [],
+      undefinedUrl: require('@/assets/images/home/avatar.png')
     }
   },
   methods: {
@@ -57,22 +64,41 @@ export default {
       this.accountActive = type
     },
     querySearch (query, cb) {
-      let obj = {
-        searchSource: 1, // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
-        queryText: this.keyword
-      }
-      this.$http.post(this.$api.wxSearchTip, obj)
-        .then(res => {
-          let newRes = []
-          let result = res.data.data
-          for (let i = 0; i < result.length; i++) {
-            newRes.push({value: result[i]})
+      if (this.historyList.length > 0 && !this.keyword) { // 历史记录
+        cb(this.historyList)
+      } else if (this.keyword) {
+        if (this.accountActive === 'wx') {
+          let obj = {
+            searchSource: 1, // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
+            queryText: this.keyword
           }
-          cb(newRes)
-        }).catch(() => {})
+          this.$http.post(this.$api.wxSearchTip, obj)
+            .then(res => {
+              let newRes = res.data.data
+              for (let i = 0; i < newRes.length; i++) {
+                if (newRes[i].url === '') {
+                  newRes[i].url = this.undefinedUrl
+                }
+              }
+              cb(newRes)
+            }).catch(() => {})
+        } else if (this.accountActive === 'wb') {
+          this.$http.post(this.$api.wbSearchTip, { queryText: this.keyword })
+            .then(res => {
+              let newRes = res.data.data
+              for (let i = 0; i < newRes.length; i++) {
+                if (newRes[i].url === '') {
+                  newRes[i].url = this.undefinedUrl
+                }
+              }
+              cb(newRes)
+            }).catch(() => {})
+        }
+      }
     },
     submitSearch () {
-      this.keyword = this.keyword.replace(/\s*/g, '')
+      this.keyword = this.keyword.trim()
+      // this.keyword = this.keyword.replace(/\s*/g, '')
       if (this.keyword.length > 0 && this.keyword !== ' ') {
         let obj = {
           accountActive: this.accountActive,
@@ -87,6 +113,16 @@ export default {
       if (e.keyCode === 13 && this.keyword !== '') {
         this.submitSearch()
       }
+    },
+    // 读取cookie
+    getCookie () {
+      var arr = document.cookie.split('; ')
+      for (var i = 0; i < arr.length; i++) {
+        var arr2 = arr[i].split('=')
+        if (arr2[0] === 'history') {
+          this.historyList = JSON.parse(arr2[1])
+        }
+      }
     }
   },
   mounted () {
@@ -94,6 +130,9 @@ export default {
   },
   destroyed () {
     window.removeEventListener('keydown', this.listenerSubmit, false)
+  },
+  created () {
+    this.getCookie()
   }
 }
 </script>

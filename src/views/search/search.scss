@@ -60,6 +60,42 @@
     }
   }
 }
+.search-left-action p,
+.search-left-action>div,
+.wb-his-actbox p {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.search-left-action {
+  .left-action-up {
+    color: #F79406;
+    font-size: 18px;
+    font-family: Microsoft YaHei;
+  }
+  .left-action-down {
+    font-size: 14px;
+    color: #808080;
+    img {
+      margin-right: 2px;
+    }
+  }
+  .left-action-wb-up {
+    font-size: 24px;
+    font-family: Microsoft YaHei;
+  }
+}
+.left-height-one, .left-height-wb-one {
+  width: 1px;
+  background: #D9D9D9;
+}
+.left-height-wb-one {
+  height: 45px;
+}
+.left-height-one {
+  height: 35px;
+}
 .search-left-des i,
 .mater-mag-account i,
 .search-left-click {
@@ -82,6 +118,18 @@
 .search-left-class {
   padding: 0 20px 20px ;
   box-sizing: border-box;
+  .search-class-ren {
+    width: 100px;
+    padding: 4px 0;
+    border-radius: 20px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    img {
+      width: 14px;
+      height: 14px;
+      margin-right: 2px;
+    }
+  }
   p {
     margin: 3px 0;
   }
@@ -401,8 +449,8 @@
 // 发布规律
 .search-rules-num {
   .search-num-echarts {
-    width: 340px;
-    height: 200px;
+    width: 400px;
+    height: 260px;
   }
 }
 .search-rules-point {
@@ -573,6 +621,10 @@
   padding: 0 5px;
   background: #F7F8FA;
 }
+.his-date-pick .el-date-editor.el-input__inner {
+  width: 230px;
+  margin-left: 10px;
+}
 // 数据回溯
 .search-back-title {
   font-size: 30px;
@@ -632,20 +684,23 @@
 // 文章分析
 .search-analyse-up {
   width: 100%;
+  // height: 100%;
+}
+.wb-detail-msg {
+  p {
+    font-size: 16px;
+  }
+  img {
+    width: 16px;
+    height: 16px;
+    margin: 0 3px 0 8px;
+  }
 }
 .search-analyse-art {
-  // width: 100%;
   padding: 30px 20px;
-  // height: 125px;
   background: $white-text-color;
   .search-art-left {
     margin: 0 40px;
-    img {
-      width: 60px;
-      height: 60px;
-      border-radius: 30px;
-      margin-right: 10px;
-    }
     .search-left-name p:nth-child(1) {
       font-size: 16px;
       color: $tab-text-color;
@@ -675,6 +730,52 @@
       }
     }
   }
+  .wb-detail-ava img, .search-art-left img {
+    width: 60px;
+    height: 60px;
+    border-radius: 30px;
+    margin-right: 10px;
+  }
+  // wb
+  .wb-detail-ava {
+    width: 60px;
+    margin-right: 10px;
+  }
+  .wb-detail-cont {
+    margin: 10px 0;
+    span {
+      color: #3B81FE;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+    i {
+      color: #6B798E;
+    }
+  }
+  .wb-detail-cover {
+    width: 230px;
+    height: 150px;
+    position: relative;
+    margin-bottom: 15px;
+    background: #f5f5f5;
+    img {
+      width: 100%;
+      max-height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      margin: auto;
+    }
+  }
+  .wb-detail-down {
+    p {
+      font-size: 22px;
+      color: #151C29;
+      margin-left: 5px;
+    }
+  }
 }
 .search-analyse-main {
   margin-top: 20px;
@@ -684,6 +785,34 @@
     padding: 0 20px 42px;
     box-sizing: border-box;
     background: $white-text-color;
+  }
+  // wb
+  .wb-ul {
+    width: 100%;
+    min-height: 400px;
+    li {
+      width: 50%;
+      float: left;
+      box-sizing: border-box;
+      padding: 14px 20px 14px 5px;
+      border-bottom: 1px solid #EDEFF4;
+    }
+  }
+  .wb-comment-box {
+    max-width: 200px;
+    p {
+      color: #6B798E;
+    }
+  }
+  .wb-comment-cont {
+    flex: 1;
+    margin-left: 3px;
+  }
+  .wb-comment-box>img {
+    width: 34px;
+    height: 34px;
+    border-radius: 17px;
+    margin-right: 5px;
   }
 }
 .search-analyse-des {
@@ -757,5 +886,168 @@
     width: 90%;
     height: 80px;
     margin: 20px auto 0;
+  }
+}
+// 微博发布规律
+.rules-fans-echarts {
+  width: 1060px;
+  height: 400px;
+}
+.wb-rules-about {
+  margin-left: 70px;
+  border: 1px solid #E9E9E9;
+}
+.wb-rules-about li {
+  border-top: 1px solid #E9E9E9;
+  color: #151C29;
+}
+.wb-rules-about li:nth-child(1) {
+  border-top: none;
+  font-weight: bold;
+}
+.wb-rules-about li:nth-child(2) {
+  color: #6B798E;
+}
+.wb-rules-about li p {
+  width: 200px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid #E9E9E9;
+}
+.wb-rules-about li p:nth-child(1) {
+  border-left: none;
+}
+// weibo历史推文
+.wb-his-actbox {
+  width: 240px;
+  padding: 15px 0;
+  background: #F7F8FA;
+  border-radius: 5px;
+  img {
+    margin-right: 10px;
+  }
+}
+.wb-his-actbox p {
+  color: #6B798E;
+}
+.wb-his-actbox p span:nth-child(1) {
+  font-size: 30px;
+}
+.wb-is-original {
+  font-size: 10px;
+  padding: 0 3px;
+  margin-left: 10px;
+  color: #F79406;
+  background: #FFF4ED;
+  border: 1px solid #D7D7D7;
+  border-radius: 8px;
+}
+.wb-his-action .wb-data-box p {
+  color: #ffffff;
+}
+.wb-data-trend>div {
+  width: 520px;
+}
+.wb-trend-chart {
+  width: 500px;
+  height: 360px;
+}
+.wb-rules-list {
+  min-height: 800px;
+}
+.wb-rules-list>p {
+  margin-top: 20px;
+}
+
+// account
+.account-list-nav {
+  width: 100%;
+  height: 90px;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #F7F8FA;
+  p {
+    float: left;
+    margin-right: 20px;
+    color: $content-text-color;
+    span {
+      margin: 0 5px;
+      cursor: pointer;
+    }
+  }
+  .sort_active {
+    color: $hight-light-color;
+  }
+  .account-list-key {
+    clear: both;
+    margin-top: 7px;
+  }
+}
+.account-list-box .account-list-intro {
+  margin-top: 15px;
+}
+
+.account-list-li {
+  padding: 20px 15px;
+  border-bottom: 1px solid #EDEFF4;
+  p {
+    color: $content-text-color;
+  }
+  .account-list-yizhi p {
+    font-size: 34px;
+    // font-weight: bold;
+    font-family: Microsoft YaHei;
+    color: rgba(255,120,0,1);
+    margin-right: 10px;
+  }
+  .account-list-des {
+    .account-list-ava {
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+      border-radius: 30px;
+    }
+    .account-list-type, .account-list-name p {
+      font-size: 18px;
+      color: $tab-text-color;
+      margin-right: 10px;
+    }
+    .sao {
+      padding-top: 6px;
+    }
+    .account-list-name img{
+      width: 20px;
+      height: 20px;
+      margin: 5px;
+    }
+    .account-list-num {
+      margin: 5px 15px 5px 0;
+      i {
+        color: #F79406;
+      }
+    }
+  }
+  .el-popper {
+    display: flex;
+    justify-content: center;
+  }
+}
+.account-list-undefined {
+  img {
+    width: 457px;
+    height: 329px;
+    margin-top: 30px;
+  }
+  p {
+    margin-top: 55px;
+    color: $content-text-color;
+  }
+  .el-button {
+    margin: 15px 0;
+    .is_red {
+      color: #ff0000;
+    }
   }
 }

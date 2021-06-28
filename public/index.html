@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-09 18:59:15
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-11 16:11:47
+ * @LastEditTime: 2021-05-13 13:52:08
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -14,14 +14,21 @@
   <link rel="icon" href="<%= BASE_URL %>favicon.ico">
   <meta name="renderer" content="webkit">
   <meta name="referrer" content="never">
+  <meta name="keywords"
+    content="易有数,检察新媒体监测,政法新媒体监测,政务新媒体监测,新媒体监测,微信公众号监测,微博监测,政府微信监测,头条监测,新媒体发布内容的传播路径,微信榜单,微博榜单,头条榜单,微信公众号数据,传播国办15号文,易有数">
+  <meta name="description"
+    content="易有数行业新媒体监测提供微信公众号、微博、头条、抖音等新媒体监测分析，应用新媒体行为数据（发文、阅读、点赞、在看、转发、评论等指标）监测并综合评估新媒体排行榜，深入挖掘新媒体的传播度与影响力指标；定制传播榜、自定义榜单。" />
   <% for (var i in htmlWebpackPlugin.options.cdn&&htmlWebpackPlugin.options.cdn.css) { %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    
     <link href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" rel="preload" as="style">
     <link href="<%= htmlWebpackPlugin.options.cdn.css[i] %>" rel="stylesheet">
     <% } %>
       <% for (var i in htmlWebpackPlugin.options.cdn&&htmlWebpackPlugin.options.cdn.js) { %>
         <link href="<%= htmlWebpackPlugin.options.cdn.js[i] %>" rel="preload" as="script">
         <% } %>
-          <title></title>
+          <title>行业新媒体数据监测-易有数</title>
           <script>
             function IEVersion() {
               var userAgent = navigator.userAgent // 取得浏览器的userAgent字符串
@@ -55,6 +62,7 @@
             }
             if (IEVersion() >= 10) {
             } else {
+              console.log('ie')
               location.href = '<%= BASE_URL %>/browsers.html'
             }
           </script>
@@ -63,6 +71,16 @@
 
 <body>
   <div id="app"></div>
+  <!-- 百度流量统计代码 -->
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?9caf33667daa364bf8f271f2a4518392";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
   <% for (var i in htmlWebpackPlugin.options.cdn&&htmlWebpackPlugin.options.cdn.js) { %>
     <script src="<%= htmlWebpackPlugin.options.cdn.js[i] %>"></script>
     <% } %>

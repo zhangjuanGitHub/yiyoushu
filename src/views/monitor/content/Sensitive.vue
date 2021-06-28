@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-04 14:54:55
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-08 19:35:21
+ * @LastEditTime: 2021-04-26 15:20:01
 -->
 <template>
   <div class="interaction content-box">
@@ -121,7 +121,7 @@ import { exportTable, timeFormat } from '@/lib/tools'
 export default {
   data () {
     return {
-      valueTime: '',
+      valueTime: '1',
       activeTab: 'wx',
       ruleForm: {
         publishTime: [],
@@ -170,10 +170,11 @@ export default {
     },
     // 重置
     resetForm () {
-      this.valueTime = ''
+      this.valueTime = '1'
       this.ruleForm.level = ''
       this.ruleForm.keyword = ''
-      this.ruleForm.publishTime = []
+      this.calcCycle()
+      // this.ruleForm.publishTime = []
       this.$refs.child.handleCurrentChange(1)
     },
     // 获取错敏列表
@@ -198,6 +199,7 @@ export default {
     }
   },
   created () {
+    this.calcCycle()
     this.getAccountList()
   }
 }

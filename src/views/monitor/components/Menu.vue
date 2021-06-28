@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-04 09:41:36
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-12 14:07:34
+ * @LastEditTime: 2021-06-04 10:18:02
 -->
 <template>
   <div class="monitor-menu">
@@ -21,9 +21,9 @@
          <el-menu-item index="AccountCompany">
           <div class="padding50">微信公众号</div>
         </el-menu-item>
-        <!-- <el-menu-item index="wb">
-          <div class="padding50">新浪微博</div>
-        </el-menu-item> -->
+        <el-menu-item index="AccountBlogger">
+          <div class="padding50">微博博主</div>
+        </el-menu-item>
       </el-submenu>
       <el-submenu index="Content">
         <template slot="title">
@@ -35,20 +35,14 @@
         <el-menu-item index="Prescription">
           <div class="padding50">发布时效监测</div>
         </el-menu-item>
+        <el-menu-item index="Interaction">
+           <div class="padding50">互动性监测</div>
+        </el-menu-item>
         <el-menu-item index="Sensitive">
           <div class="padding50">错敏检测</div>
         </el-menu-item>
-        <!-- <el-menu-item index="Spread">
-          <div class="padding50">传播分析</div>
-        </el-menu-item> -->
-        <!-- <el-menu-item index="Realtime">
-          <div class="padding50">文章实时监测</div>
-        </el-menu-item> -->
         <el-menu-item index="Relevant">
           <div class="padding50">相关性分析</div>
-        </el-menu-item>
-        <el-menu-item index="Interaction">
-           <div class="padding50">互动性监测</div>
         </el-menu-item>
       </el-submenu>
       <el-submenu index="Compare">
@@ -58,10 +52,16 @@
             <span slot="title">账号对比</span>
           </div>
         </template>
-         <el-menu-item index="AccountCompare">
+        <!-- <el-menu-item index="AccountCompare">
+          <div class="padding50">旧账号对比</div>
+        </el-menu-item> -->
+        <el-menu-item index="NewAccCompare">
           <div class="padding50">账号对比</div>
         </el-menu-item>
-        <el-menu-item index="DepartCompare">
+        <!-- <el-menu-item index="DepartCompare">
+          <div class="padding50">旧单位对比</div>
+        </el-menu-item> -->
+        <el-menu-item index="NewDepCompare">
           <div class="padding50">单位对比</div>
         </el-menu-item>
       </el-submenu>
@@ -69,34 +69,48 @@
         <template slot="title">
           <div class="title-box">
             <i class="el-icon-pie-chart"></i>
-            <span slot="title">公众号分析</span>
+            <span slot="title">账号分析</span>
           </div>
         </template>
-         <el-menu-item index="WeekSearch">
-          <div class="padding50">周分析</div>
+         <el-menu-item index="WxAnalysis">
+          <div class="padding50">公众号分析</div>
         </el-menu-item>
-        <el-menu-item index="MonthSearch">
-          <div class="padding50">月分析</div>
+        <el-menu-item index="BloggerAnalysis">
+          <div class="padding50">微博分析</div>
         </el-menu-item>
       </el-submenu>
       <el-submenu index="Minute">
         <template slot="title">
           <div class="title-box">
             <i class="el-icon-s-platform"></i>
-            <span>分钟级检测</span>
+            <span>分钟级监测</span>
           </div>
         </template>
-        <el-menu-item index="MinuteArticle">
-          <div class="padding50">文章即时监测</div>
+        <el-menu-item index="WxMinuteBox">
+          <div class="padding50">公众号监测</div>
         </el-menu-item>
-        <el-menu-item index="MinuteAccount">
-          <div class="padding50">账号预约监测</div>
+        <el-menu-item index="WbMinuteBox">
+          <div class="padding50">微博监测</div>
         </el-menu-item>
-        <!-- <el-menu-item index="MinuteAll">
-          <div class="padding50">批量预约监测</div>
-        </el-menu-item> -->
         <el-menu-item index="MinuteList">
           <div class="padding50">监测列表</div>
+        </el-menu-item>
+      </el-submenu>
+      <el-submenu index="warning">
+        <template slot="title">
+          <div class="title-box">
+            <i class="el-icon-cpu"></i>
+            <span slot="title">内容预警</span>
+          </div>
+        </template>
+        <el-menu-item index="WechatWarningList">
+          <div class="padding50">关键词设置</div>
+        </el-menu-item>
+        <el-menu-item index="WechatWarning">
+          <div class="padding50">预警账号</div>
+        </el-menu-item>
+        <el-menu-item index="HitArticleList">
+          <div class="padding50">预警记录</div>
         </el-menu-item>
       </el-submenu>
       <el-submenu index="6">
@@ -106,8 +120,14 @@
             <span slot="title">数据智能中心</span>
           </div>
         </template>
-         <el-menu-item index="Realtime">
+        <el-menu-item index="Realtime">
           <div class="padding50">文章传播计算</div>
+        </el-menu-item>
+        <el-menu-item index="WrongIndex">
+          <div class="padding50">账号违规监测</div>
+        </el-menu-item>
+        <el-menu-item index="TrendQuery">
+          <div class="padding50">趋势查询</div>
         </el-menu-item>
         <el-menu-item index="MonitorBacktrack">
           <div class="padding50">数据回溯</div>
@@ -116,6 +136,12 @@
           <div class="padding50">错敏检查</div>
         </el-menu-item>
       </el-submenu>
+      <el-menu-item index="Whole">
+        <div class="title-box">
+          <i class="el-icon-collection"></i>
+          <span slot="title">全局账号信息</span>
+        </div>
+      </el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -129,11 +155,7 @@ export default {
   },
   methods: {
     handleSelect (key, keypush) {
-      if (key === 'WeekSearch' || key === 'MonthSearch') {
-        this.$router.push({ name: key, query: { type: key === 'WeekSearch' ? '1' : '2' } })
-      } else {
-        this.$router.push({ name: key })
-      }
+      this.$router.push({ name: key })
     },
     // 首字母大写
     firstWordUpperCase (str) {

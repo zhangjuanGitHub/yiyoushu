@@ -3,7 +3,7 @@
  * @@Description:手机号绑定
  * @Date: 2021-02-26 15:22:10
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-21 14:44:48
+ * @LastEditTime: 2021-05-10 13:38:03
 -->
 <template>
   <div class="password">
@@ -20,7 +20,8 @@
         <p v-if="userInfo.departmentName">认证单位:<span class="user-num">{{userInfo.departmentName}}</span></p>
       </div>
     </div>
-    <div class="click-box" v-if="userInfo.loginPhone">
+    <div class="click-box"
+         v-if="userInfo.loginPhone">
       <span class="cursor primary click-sapn"
             @click="relievePhone">解除绑定</span>
       <span class="cursor primary click-sapn last-span"
@@ -45,7 +46,7 @@
             <el-image :src="this.codeUrl">
               <div slot="error"
                    class="image-slot">
-                <i class="el-icon-picture-outline"></i>
+                <i class="el-icon-loading"></i>
               </div>
             </el-image>
           </div>
@@ -129,7 +130,7 @@
           </el-form>
         </div>
         <div class="finish-box"
-             v-if="active===2">
+             v-if="active===3">
           <div class="note-box">
             <div class="el-icon-success"></div>
             <p class="left-title">成功绑定手机</p>
@@ -158,7 +159,7 @@
         <el-image :src="this.codeUrl">
           <div slot="error"
                class="image-slot">
-            <i class="el-icon-picture-outline"></i>
+            <i class="el-icon-loading"></i>
           </div>
         </el-image>
         <div class="pass-tip pass-center">请使用注册微信号扫一扫验证</div>
@@ -188,7 +189,7 @@
     <el-dialog :visible.sync="replace"
                :modal-append-to-body="false"
                :close-on-click-modal='false'
-               :show-close="true"
+               :show-close="false"
                width="25%"
                center
                class="pass-dialog">
@@ -203,6 +204,18 @@
                       type="text"
                       prefix-icon="el-icon-mobile-phone"
                       placeholder="请输入绑定手机号">
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="code"
+                        class="code-box">
+            <el-input v-model="replaceForm.code"
+                      type="text"
+                      placeholder="请输入图片验证码"
+                      prefix-icon="el-icon-mobile-phone">
+              <template slot="append">
+                <img :src="this.phoneCode"
+                     @click="getCodes()">
+              </template>
             </el-input>
           </el-form-item>
           <el-form-item prop="smsCode"
@@ -220,9 +233,9 @@
                          v-else>获取验证码</el-button>
             </el-input>
           </el-form-item>
-          <el-form-item prop="loginPass">
-            <el-input :type="show.new?'text':'password'"
-                      v-model="replaceForm.loginPass"
+          <el-form-item prop="replacePass">
+            <el-input :type="show.new?'text':'password'" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')"
+                      v-model="replaceForm.replacePass"
                       placeholder='请输入密码6-16位数字、字母和符号'>
               <i slot="suffix"
                  :class="show.new?'el-icon-minus':'el-icon-view'"
@@ -231,9 +244,9 @@
                  @click="show.new=!show.new" />
             </el-input>
           </el-form-item>
-          <el-form-item prop="checkPass">
-            <el-input :type="show.check?'text':'password'"
-                      v-model="replaceForm.checkPass"
+          <el-form-item prop="replaceCheckPass">
+            <el-input :type="show.check?'text':'password'" autocomplete="off" readonly onfocus="this.removeAttribute('readonly')"
+                      v-model="replaceForm.replaceCheckPass"
                       placeholder='请确认登录密码'>
               <i slot="suffix"
                  :class="show.check?'el-icon-minus':'el-icon-view'"
@@ -245,6 +258,9 @@
           <el-form-item class="pass-footer">
             <el-button type="primary"
                        @click="reForm('replaceForm')">确定</el-button>
+          </el-form-item>
+          <el-form-item class="pass-footer">
+            <el-button @click="closeFrom('replaceForm')">取消</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -272,24 +288,22 @@
   </div>
 </template>
 <script>
-import { mapState } from 'vuex'
 import md5 from 'js-md5'
 export default {
   data () {
-    var validatePass = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入密码'))
-      } else {
-        if (this.ruleForm.checkPass !== '') {
-          this.$refs.ruleForm.validateField('checkPass')
-        }
-        callback()
-      }
-    }
     var validatePass2 = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
       } else if (value !== this.ruleForm.loginPass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
+    var replacePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.replaceForm.replacePass) {
         callback(new Error('两次输入密码不一致!'))
       } else {
         callback()
@@ -309,7 +323,8 @@ export default {
       passPhone: false, // 解除成功
       relieve: false, // 解除弹框
       errorPhone: false, // 未绑定
-      active: 2,
+      active: 0,
+      userInfo: {}, // 获取用户信息
       show: {
         old: false,
         new: false,
@@ -325,9 +340,10 @@ export default {
       },
       replaceForm: {
         phone: '',
+        code: '',
         smsCode: '',
-        loginPass: '',
-        checkPass: ''
+        replacePass: '',
+        replaceCheckPass: ''
       },
       rules: {
         phone: [
@@ -335,10 +351,19 @@ export default {
         ],
         code: [{ required: true, message: '请输入短信验证码', trigger: 'blur' }],
         smsCode: [{ required: true, message: '请输入验证码', trigger: 'blur' }],
-        loginPass: [{ validator: validatePass, trigger: 'blur' }],
-        checkPass: [
-          { validator: validatePass2, trigger: 'blur' }
-        ]
+        loginPass: [
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          // { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/, message: '密码须包含数字、字母两种元素，且密码位数为6-16位' }
+          { pattern: /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,16}$/, message: '密码须包含数字、字母两种元素，且密码位数为6-16位' }
+        ],
+        checkPass: [{ validator: validatePass2, trigger: 'blur' }],
+        replacePass: [
+          // { required: true, validator: replacePass0, trigger: 'blur' },
+          { required: true, message: '请输入密码', trigger: 'blur' },
+          // { pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/, message: '密码须包含数字、字母两种元素，且密码位数为6-16位' }
+          { pattern: /^(?![0-9]+$)(?![a-z]+$)(?![A-Z]+$)(?!([^(0-9a-zA-Z)])+$).{6,16}$/, message: '密码须包含数字、字母两种元素，且密码位数为6-16位' }
+        ],
+        replaceCheckPass: [{ validator: replacePass2, trigger: 'blur' }]
       },
       open: false, // 验证码刷新
       count: '',
@@ -352,22 +377,30 @@ export default {
     }
   },
   created () {
-    if (this.userInfo.loginPhone) {
-      this.active = 2
-    } else {
-      this.active = 1
-      this.getCodes()
-      this.getQRcode()
-    }
+    this.geUserInfo()
   },
   methods: {
+    // 获取 用户信息
+    geUserInfo () {
+      this.$http.get(this.$api.getUserInfo)
+        .then(res => {
+          this.userInfo = res.data.data
+          if (this.userInfo.loginPhone) {
+            this.active = 3
+          } else {
+            this.active = 0
+            this.getCodes()
+            this.getQRcode()
+          }
+        }).catch(() => { })
+    },
     // 确定修改绑定手机
     reForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           let newRuleForm = {}
-          let loginPass = md5(md5(this.replaceForm.loginPass) + this.replaceForm.phone)
-          let checkPass = md5(md5(this.replaceForm.checkPass) + this.replaceForm.phone)
+          let loginPass = md5(md5(this.replaceForm.replacePass) + this.replaceForm.phone)
+          let checkPass = md5(md5(this.replaceForm.replaceCheckPass) + this.replaceForm.phone)
           for (var key in this.replaceForm) {
             newRuleForm[key] = this.replaceForm[key]
           }
@@ -375,9 +408,10 @@ export default {
           newRuleForm.checkPass = checkPass
           this.$http.post(this.$api.bindPhone, newRuleForm)
             .then(res => {
-              this.replaceForm = {}
-              newRuleForm = {}
-              this.active = 2
+              this.$message.success('更换绑定成功!')
+              this.geUserInfo()
+              this.closeFrom(formName)
+              this.active = 3
             }).catch(() => { })
         } else {
           return false
@@ -396,6 +430,11 @@ export default {
       this.getCodes()
       this.getQRcode()
     },
+    // 关闭更换绑定
+    closeFrom (formName) {
+      this.replace = false
+      this.$refs[formName].resetFields()
+    },
     // 关闭解除弹框
     handleClose () {
       clearInterval(this.isLogin)
@@ -411,18 +450,25 @@ export default {
       this.getCodes()
       this.replace = true
     },
+    // 验证参数
+    getReplace () {
+      this.$http.get(this.$api.unbindPhone, { params: { sceneStr: this.sceneStr } })
+        .then(res => {
+          if (res.data.data) {
+            clearInterval(this.isLogin)
+            this.relieve = false
+            this.passPhone = true
+            this.$message.success('解除绑定成功')
+          }
+        }).catch(() => { })
+    },
     // 验证二维码
     Verify () {
       this.$http.get(this.$api.verify, { params: { sceneStr: this.sceneStr } })
         .then(res => {
           if (res.data.data) {
             clearInterval(this.isLogin)
-            if (this.relieve) {
-              this.relieve = false
-              this.passPhone = true
-            } else {
-              this.active = 1
-            }
+            this.active = 1
           }
         }).catch(() => { })
     },
@@ -438,7 +484,11 @@ export default {
             clearInterval(this.isLogin)
           }, 60000)
           this.isLogin = setInterval(() => {
-            this.Verify()
+            if (this.relieve) {
+              this.getReplace()
+            } else {
+              this.Verify()
+            }
           }, 2000)
         }).catch(() => { })
     },
@@ -518,7 +568,9 @@ export default {
             .then(res => {
               this.ruleForm = {}
               newRuleForm = {}
-              this.active = 2
+              this.$message.success('绑定手机号成功')
+              this.geUserInfo()
+              this.active = 3
             }).catch(() => { })
         } else {
           return false
@@ -531,9 +583,9 @@ export default {
     }
   },
   computed: {
-    ...mapState({
-      userInfo: state => state.user.userInfo
-    })
+    // ...mapState({
+    //   userInfo: state => state.user.userInfo
+    // })
   },
   destroyed () {
     clearInterval(this.isLogin)
@@ -708,10 +760,10 @@ export default {
 .pass-center {
   text-align: center;
 }
-.replaceForm{
+.replaceForm {
   margin-top: 30px;
 }
-.replaceForm .el-form-item{
+.replaceForm .el-form-item {
   width: 350px;
   margin: auto;
   margin-bottom: 20px;

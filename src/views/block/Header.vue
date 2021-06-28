@@ -3,7 +3,7 @@
  * @Description: Header
  * @Date: 2021-01-28 14:21:32
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-23 16:32:12
+ * @LastEditTime: 2021-06-07 09:37:29
 -->
 <template>
   <div class="header-wrap" v-if="routeName != 'Login' & routeName != 'DataExplain'">
@@ -65,22 +65,22 @@
               </el-tooltip>
             </li>
           </ul>
-          <el-dropdown @command="handleCommand">
-            <div class="header-avatar flex-bwt-center cursor" v-if="this.userInfo">
+          <el-dropdown v-if="this.userInfo && this.userInfo.nickName" @command="handleCommand">
+            <div class="header-avatar flex-bwt-center cursor">
               <el-avatar size="medium"
                         :src="this.userInfo.headPicture"></el-avatar>
-              <span class="el-dropdown-link cursor" >{{this.userInfo.nickName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
+              <span class="el-dropdown-link cursor">{{this.userInfo.nickName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
             </div >
-            <div v-else class="header-avatar flex-bwt-center cursor">
-              <el-avatar size="medium"
-                        :src="circleUrl"></el-avatar>
-              <span class="el-dropdown-link cursor" @click="$router.push({ name: 'Login'})">请登录</span>
-            </div>
-            <el-dropdown-menu slot="dropdown" v-if="this.userInfo">
+            <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="Company">个人中心</el-dropdown-item>
               <el-dropdown-item command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
+          <div v-else class="header-avatar flex-bwt-center cursor">
+            <el-avatar size="medium"
+                      :src="circleUrl"></el-avatar>
+            <span class="el-dropdown-link cursor" @click="$router.push({ name: 'Login'})">请登录</span>
+          </div>
         </div>
       </div>
     </div>
@@ -143,7 +143,8 @@ export default {
           this.$router.push({ name: 'Home' })
           break
         case 'monitor':
-          this.$router.push({ name: 'AccountCompany' })
+          let routeName = this.userInfo && this.userInfo.departmentVerify === 2 ? 'Prescription' : 'AccountCompany'
+          this.$router.push({ name: routeName })
           break
         case 'personal':
           this.$router.push({ name: 'Personal' })

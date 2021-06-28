@@ -150,7 +150,7 @@ export default {
       this.$http.get(this.$api.getUserInfo)
         .then(res => {
           this.$store.commit('user/userInfo', res.data.data) // 用户详情
-          sessionStorage.setItem(`userinfo`, res.data.data)
+          // sessionStorage.setItem('userinfo', res.data.data)
         }).catch(() => { })
     },
     setCookies (c_name, c_pwd, saveDays) {

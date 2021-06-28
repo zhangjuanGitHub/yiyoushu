@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-01-28 11:13:04
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-03-18 10:57:57
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-06-01 09:54:32
  */
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -23,7 +23,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
       key: 'user',
-      storage: window.localStorage
+      storage: window.sessionStorage
     })
   ]
 })

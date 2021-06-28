@@ -1,8 +1,8 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-13 14:03:49
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-05-18 11:39:02
 -->
 <template>
   <div class="content-show article-detail">
@@ -19,15 +19,15 @@
       <div class="top-info">
         两文有<span class="import">{{articleDertail.simWordCount}}</span>个字重合,相似度为<span class="import">{{articleDertail.simScore}}% </span> 对比细节如下:
       </div>
-      <div class="flex-bwt-center">
+      <div class="flex-bwt">
         <div class="original  content-box">
           <div class="tabs-head">
             <span>原文内容</span>
           </div>
           <div class="infor">
-          <div class="title" v-html="articleDertail.originalTitle"></div>
-          <div class="article-cont" v-html="articleDertail.originalArticle"></div>
-        </div>
+            <div class="title" v-html="articleDertail.originalTitle"></div>
+            <div class="article-cont" v-html="articleDertail.originalArticle"></div>
+          </div>
         </div>
         <div class="similarity content-box">
           <div class="tabs-head">
@@ -35,7 +35,7 @@
           </div>
           <div class="infor">
             <div class="title" v-html="articleDertail.SimilarityTitle"></div>
-          <div class="article-cont" v-html="articleDertail.SimilarityArticle"></div>
+            <div class="article-cont" v-html="articleDertail.SimilarityArticle"></div>
           </div>
         </div>
       </div>
