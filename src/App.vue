@@ -3,11 +3,11 @@
  * @Description:
  * @Date: 2021-01-28 11:10:50
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-04-10 14:55:32
+ * @LastEditTime: 2021-07-01 16:44:31
 -->
 <template>
   <div id="app">
-    <v-header></v-header>
+    <v-header v-if="routeName != 'Login' & routeName != 'DataExplain'"></v-header>
     <router-view></router-view>
     <v-bottom></v-bottom>
     <!-- 右侧在线客服 -->

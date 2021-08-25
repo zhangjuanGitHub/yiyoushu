@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-30 16:27:36
+ * @LastEditTime: 2021-08-03 10:35:02
 -->
 <template>
   <div class="real-time content-box">
@@ -300,13 +300,13 @@ export default {
     },
 
     addAccount () {
-      console.log('收藏账号')
+      // console.log('收藏账号')
       this.addAccountDialog = true
       this.getRecord()
     },
     // 取消收藏账号
     offAddAccount () {
-      console.log('取消收藏账号')
+      // console.log('取消收藏账号')
       console.log(this.total2)
       this.total2 = { total: 0 }
       console.log(this.total2)
@@ -438,7 +438,7 @@ export default {
         this.ruleForm.startDate = this.publishTime[0]
         this.ruleForm.endDate = this.publishTime[1]
       }
-      console.log(this.ruleForm)
+      // console.log(this.ruleForm)
       this.$http.post(this.$api.wechatWarning, this.ruleForm)
         .then(res => {
           // console.log('res', res.data.code)

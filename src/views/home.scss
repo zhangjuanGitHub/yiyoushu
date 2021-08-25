@@ -129,7 +129,8 @@
   background: #F5FAFF;
 }
 .home-hot-main {
-  height: 360px;
+  // height: 360px;
+  height: 400px;
 }
 .left-title {
   font-size: 24px;
@@ -163,6 +164,65 @@
 }
 .show-reload:hover i {
   transform: rotateZ(-360deg);
+}
+.hot-down-dy {
+  margin-top: 20px;
+  width: 100%;
+  height: 340px;
+  .el-card {
+    width: 220px;
+  }
+}
+.hot-dy-box {
+  width: 100%;
+  height: 285px;
+  background-size: 100% 100% !important;
+  position: relative;
+  cursor: pointer;
+  .time {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #ffffff;
+    background-color: #F08F02;
+  }
+  .action-box {
+    width: 100%;
+    height: 110px;
+    padding: 0 5px;
+    box-sizing: border-box;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #ffffff;
+    background: linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.9));
+    .dy-msg {
+      margin-top: 10px;
+      img {
+        width: 26px;
+        height: 26px;
+        margin-bottom: 5px;
+      }
+    }
+  }
+}
+.hot-dy-bottom {
+  width: 100%;
+  height: 55px;
+  padding: 7px 10px;
+  box-sizing: border-box;
+  >img {
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin-right: 5px;
+  }
+}
+.hot-dy-msg p:nth-child(1) {
+  font-weight: bold;
+}
+.hot-dy-msg p:nth-child(2) {
+  color: #6B798E;
 }
 .hot-down,
 .hot-down-other {

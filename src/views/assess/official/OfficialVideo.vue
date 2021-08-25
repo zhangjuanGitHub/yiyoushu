@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-31 15:36:07
+ * @LastEditTime: 2021-07-19 15:04:48
 -->
 <template>
   <div class="contents">
@@ -14,12 +14,16 @@
         <span class="tabs-title"
               @click="tabsAll('wb', 2)"
               :class="this.activeTab==='wb'?'isActive':''">微博榜单</span>
+              <span class="tabs-title"
+              @click="tabsAll('toutiao', 3)"
+              :class="this.activeTab==='toutiao'?'isActive':''">头条榜单</span>
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
       <div class="conts-box">
         <official-video-wx v-if="this.activeTab==='wx'" @changeTab="tabsAll"></official-video-wx>
         <official-video-wb v-if="this.activeTab==='wb'" @changeTab="tabsAll"></official-video-wb>
+        <official-video-toutiao v-if="this.activeTab==='toutiao'" @changeTab="tabsAll"></official-video-toutiao>
       </div>
     </div>
   </div>
@@ -27,10 +31,12 @@
 <script>
 import officialVideoWx from './OfficialVideoWx'
 import officialVideoWb from './OfficialVideoWb'
+import officialVideoToutiao from './OfficialVideoToutiao'
 export default {
   components: {
     officialVideoWx,
-    officialVideoWb
+    officialVideoWb,
+    officialVideoToutiao
   },
   data () {
     return {

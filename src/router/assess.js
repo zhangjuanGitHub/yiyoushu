@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-09 18:59:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-28 10:29:59
+ * @LastEditTime: 2021-07-27 10:01:04
  */
 module.exports = [
   {
@@ -78,6 +78,46 @@ module.exports = [
     component: () => import('@/views/assess/official/OfficialVideo')
   },
   {
+    path: '/assess/justice',
+    name: 'Justice',
+    meta: {
+      title: '正义网榜单'
+    },
+    component: () => import('@/views/assess/Justice')
+  },
+  {
+    path: '/assess/justice/justiceadd',
+    name: 'JusticeAdd',
+    meta: {
+      title: '正义网榜单添加'
+    },
+    component: () => import('@/views/assess/justice/JusticeAdd')
+  },
+  {
+    path: '/assess/justice/justicelist',
+    name: 'JusticeList',
+    meta: {
+      title: '正义网榜单列表'
+    },
+    component: () => import('@/views/assess/justice/JusticeList')
+  },
+  {
+    path: '/assess/justice/justicedetailwx',
+    name: 'JusticeDetailWx',
+    meta: {
+      title: '正义网榜单微信详情'
+    },
+    component: () => import('@/views/assess/justice/JusticeDetailWx')
+  },
+  {
+    path: '/assess/justice/justicedetailwb',
+    name: 'JusticeDetailWb',
+    meta: {
+      title: '正义网榜单微博详情'
+    },
+    component: () => import('@/views/assess/justice/JusticeDetailWb')
+  },
+  {
     path: '/assess/customize',
     name: 'Customize',
     meta: {
@@ -100,6 +140,14 @@ module.exports = [
       title: '我的榜单详情-微博'
     },
     component: () => import('@/views/assess/customize/CustimizeWbDetail')
+  },
+  {
+    path: '/assess/customize/custimizetoutiaodetail',
+    name: 'CustimizeToutiaoDetail',
+    meta: {
+      title: '我的榜单详情-头条'
+    },
+    component: () => import('@/views/assess/customize/CustimizeToutiaoDetail')
   },
   {
     path: '/assess/customize/custimizearticle',
@@ -132,5 +180,21 @@ module.exports = [
       title: '我的榜单详情-视频-微博'
     },
     component: () => import('@/views/assess/customize/CustimizeWbVideo')
+  },
+  {
+    path: '/assess/customize/custimizetoutiaoarticle',
+    name: 'CustimizeToutiaoArticle',
+    meta: {
+      title: '我的榜单详情-文章-头条'
+    },
+    component: () => import('@/views/assess/customize/CustimizeToutiaoArticle')
+  },
+  {
+    path: '/assess/customize/custimizetoutiaovideo',
+    name: 'CustimizeToutiaoVideo',
+    meta: {
+      title: '我的榜单详情-视频-头条'
+    },
+    component: () => import('@/views/assess/customize/CustimizeToutiaoVideo')
   }
 ]

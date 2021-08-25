@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-01-29 14:17:11
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-19 14:05:28
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-29 17:03:51
 -->
 <template>
   <div class="search-material-wrap">
@@ -38,7 +38,7 @@
                             width="200">
             <template slot-scope="scope">
               <div class="search-mater-table flex-ali-center cursor"
-                   @click="reToCurrent(scope.row.id)">
+                   @click="reToCurrent(scope.row.biz)">
                 <img :src="scope.row.ori_head_img" alt="">
                 <p v-html="scope.row.nickname" style="text-align: left"></p>
               </div>
@@ -152,6 +152,7 @@ export default {
       this.updateTime = timeFormat(now.getTime()) + ' ' + secondsFormat(now.getTime())
     },
     reToCurrent (id) {
+      // console.log(id)
       this.$router.push({ name: 'AccountMaterial', query: { id: id } })
     }
   },

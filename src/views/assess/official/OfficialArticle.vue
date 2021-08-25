@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-31 15:36:15
+ * @LastEditTime: 2021-07-19 15:02:28
 -->
 <template>
   <div class="contents">
@@ -14,12 +14,16 @@
         <span class="tabs-title"
               @click="tabsAll('wb', 2)"
               :class="this.activeTab==='wb'?'isActive':''">微博榜单</span>
+              <span class="tabs-title"
+              @click="tabsAll('toutiao', 3)"
+              :class="this.activeTab==='toutiao'?'isActive':''">头条榜单</span>
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
       <div class="conts-box">
         <official-article-wx v-if="this.activeTab==='wx'" @changeTab="tabsAll"></official-article-wx>
         <official-article-wb v-if="this.activeTab==='wb'" @changeTab="tabsAll"></official-article-wb>
+        <official-article-toutiao v-if="this.activeTab==='toutiao'" @changeTab="tabsAll"></official-article-toutiao>
       </div>
     </div>
   </div>
@@ -27,13 +31,15 @@
 <script>
 import officialArticleWx from './OfficialArticleWx'
 import officialArticleWb from './OfficialArticleWb'
+import officialArticleToutiao from './OfficialArticleToutiao'
 import { exportTable } from '@/lib/tools'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 export default {
   components: {
     officialArticleWx,
-    officialArticleWb
+    officialArticleWb,
+    officialArticleToutiao
   },
   data () {
     return {

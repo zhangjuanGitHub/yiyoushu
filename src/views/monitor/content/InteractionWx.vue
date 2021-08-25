@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-24 17:26:01
+ * @LastEditTime: 2021-08-03 11:49:15
  * 时间参数修改为type ， 时间类别， 1   一周    2 一个月， 3 半年， 4 ，一年
 -->
 <template>
@@ -111,7 +111,7 @@
                   :cell-style="{ textAlign: 'center' }"
                   :default-sort="{prop: 'date', order: 'descending'}">
           <el-table-column prop="nickname"
-                           label="账号信息">
+                           label="公众号">
             <template slot-scope='scope'>
               <div class="account-infor flex-ali-center">
                 <img :src="scope.row.hd_head_img"
@@ -332,8 +332,9 @@ export default {
   margin: 0 auto;
 }
 .account-infor img {
-  height: 60px;
-  width: 60px;
-  margin-right: 20px;
+  height: 46px;
+  width: 46px;
+  margin-right: 8px;
+  border-radius: 50%;
 }
 </style>

@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-01 14:12:56
+ * @LastEditTime: 2021-07-19 17:50:24
  * 其他文章数量改为非涉检文章数量
 -->
 <template>
@@ -14,17 +14,21 @@
       <span class="tabs-title"
             @click="tabsAll('')">微博</span> -->
 
-            <span class="tabs-title"
-              @click="tabsAll('wx', 1)"
-              :class="this.activeTab==='wx'?'isActive':''">微信</span>
-        <span class="tabs-title"
-              @click="tabsAll('wb', 2)"
-              :class="this.activeTab==='wb'?'isActive':''">微博</span>
+      <span class="tabs-title"
+            @click="tabsAll('wx', 1)"
+            :class="this.activeTab==='wx'?'isActive':''">微信</span>
+      <span class="tabs-title"
+            @click="tabsAll('wb', 2)"
+            :class="this.activeTab==='wb'?'isActive':''">微博</span>
+      <span class="tabs-title"
+            @click="tabsAll('toutiao', 3)"
+            :class="this.activeTab==='toutiao'?'isActive':''">今日头条</span>
     </div>
     <div>
       <relevant-wx v-if="this.activeTab==='wx'"
-                     @changeTab="tabsAll"></relevant-wx>
-        <relevant-wb v-if="this.activeTab==='wb'"></relevant-wb>
+                   @changeTab="tabsAll"></relevant-wx>
+      <relevant-wb v-if="this.activeTab==='wb'"></relevant-wb>
+      <relevant-toutiao v-if="this.activeTab==='toutiao'"></relevant-toutiao>
     </div>
   </div>
 </template>
@@ -33,11 +37,13 @@
 // eslint-disable-next-line import/no-duplicates
 import relevantWx from './RelevantWx'
 import relevantWb from './RelevantWb'
+import relevantToutiao from './RelevantToutiao'
 import echarts from 'echarts'
 export default {
   components: {
     relevantWx,
-    relevantWb
+    relevantWb,
+    relevantToutiao
   },
   data () {
     return {

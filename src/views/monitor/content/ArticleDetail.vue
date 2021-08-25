@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-21 15:11:05
+ * @LastEditTime: 2021-06-29 14:35:38
 -->
 <template>
   <div class="content-show article-detail">
@@ -38,8 +38,7 @@
         <div class="tabs-header">
           <span class="tabs-title">文章被公众号转载统计图</span>
         </div>
-        <div id="bar-charts"
-             :style="autoHeight"></div>
+        <div id="bar-charts" :style="autoHeight"></div>
       </div>
       <div class="realtime-top flex-bwt-center">
         <div class="read-article-box">
@@ -78,6 +77,69 @@
       <div class="realtime-bottom">
         <div class="bottom-list">
           <div class="tabs-header">
+            <span class="tabs-title">文章源头（疑似）</span>
+          </div>
+        </div>
+        <div class="list-content">
+          <div class="list-box">
+            <div class="flex-ali-center list-top">
+              <div class="left-img flex-arr-center">
+                <img :src="articleSource.cover" alt="">
+              </div>
+              <div class="right">
+                <div class="right-top flex-bwt-center">
+                  <div class="right-title title cursor"
+                       v-html="articleSource.title"
+                       @click="openUrl(articleSource.url)"></div>
+                  <div class="right-time">数据更新时间:{{articleSource.lastPubtime}}</div>
+                </div>
+                <div class="right-bottom cursor lin-clamp-3"
+                     v-html="articleSource.content"
+                     @click="openUrl(articleSource.url)"></div>
+              </div>
+            </div>
+            <div class="flex-bwt-center list-bottom-source">
+              <div class="left-time">
+                <span>{{articleSource.lastPubtime}}</span>
+                <span>{{articleSource.author}}</span>
+                <span>文章位置:{{articleSource.idx}}</span>
+                <span>昵称:<i @click="routerMaterial(articleSource)"
+                     class="click-sapn cursor">{{articleSource.nickname}}</i></span>
+              </div>
+              <div class="right-infor">
+                <el-tooltip class="item"
+                            effect="dark"
+                            content="阅读数"
+                            placement="top">
+                  <span><i class="el-icon-view"></i>{{articleSource.readNum}}</span>
+                </el-tooltip>
+                <el-tooltip class="item"
+                            effect="dark"
+                            content="点赞数"
+                            placement="top">
+                  <span><i class="el-icon-star-off"></i>{{articleSource.oldLikeNum}}</span>
+                </el-tooltip>
+                <el-tooltip class="item"
+                            effect="dark"
+                            content="在看数"
+                            placement="top">
+                  <span><i class="el-icon-help"></i>{{articleSource.likeNum}}</span>
+                </el-tooltip>
+                <el-tooltip class="item"
+                            effect="dark"
+                            content="相似度"
+                            placement="top">
+                  <span class="click-sapn cursor"
+                        @click="routeSim(articleSource)"><i class="el-icon-connection"></i>{{articleSource.simScore}}</span>
+                </el-tooltip>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="realtime-bottom">
+        <div class="bottom-list">
+          <div class="tabs-header">
             <span class="tabs-title">转载明细列表</span>
           </div>
         </div>
@@ -102,7 +164,7 @@
                      @click="openUrl(item.url)"></div>
               </div>
             </div>
-            <div class="flex-bwt-center list-bootom">
+            <div class="flex-bwt-center list-bottom">
               <div class="left-time">
                 <span>{{item.lastPubtime}}</span>
                 <span>{{item.author}}</span>
@@ -159,6 +221,7 @@ export default {
       dataArr: [],
       autoHeight: '',
       articleDetail: {},
+      articleSource: {}, // 文章源头（疑似）
       articleList: [],
       charsData: {
         nodes: [],
@@ -190,7 +253,8 @@ export default {
       this.ruleForm.id = this.id
       this.$http.post(this.$api.findSimilarity, this.ruleForm)
         .then(res => {
-          this.articleList = res.data.data.content
+          this.articleList = res.data.data.list
+          this.articleSource = res.data.data.oneArticle
           this.total = res.data.data.totalElements
         }).catch(() => { })
     },
@@ -319,8 +383,7 @@ export default {
             symbol: 'pin' // 动画的类型
           },
           data: this.dataArr
-        }
-        ]
+        }]
       }
       myChart.on('click', function (params) {
         window.open(params.data.url, '_blank')
@@ -1421,8 +1484,7 @@ export default {
   width: 500px;
 }
 .realtime-bottom {
-  margin-top: 30px;
-  margin-bottom: 90px;
+  margin: 30px 0;
   background-color: #fff;
 }
 .list-content {
@@ -1433,7 +1495,10 @@ export default {
   background-color: #fff;
   padding: 28px 28px 0 28px;
 }
-.list-bootom {
+.list-bottom-source {
+  padding-bottom: 28px;
+}
+.list-bottom {
   padding-bottom: 28px;
   border-bottom: 1px solid #979696;
 }

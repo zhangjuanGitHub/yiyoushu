@@ -1,8 +1,8 @@
 <!--
  * @Author: MaiChao
  * @Date: 2021-02-04 09:41:36
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-04 10:18:02
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-08-03 11:24:48
 -->
 <template>
   <div class="monitor-menu">
@@ -18,12 +18,18 @@
             <span slot="title">账号监测</span>
           </div>
         </template>
-         <el-menu-item index="AccountCompany">
+        <el-menu-item index="AccountCompany">
           <div class="padding50">微信公众号</div>
         </el-menu-item>
         <el-menu-item index="AccountBlogger">
           <div class="padding50">微博博主</div>
         </el-menu-item>
+        <el-menu-item index="AccountToutiao">
+          <div class="padding50">头条号</div>
+        </el-menu-item>
+        <!-- <el-menu-item index="AccountDouyin">
+          <div class="padding50">抖音号</div>
+        </el-menu-item> -->
       </el-submenu>
       <el-submenu index="Content">
         <template slot="title">
@@ -36,7 +42,7 @@
           <div class="padding50">发布时效监测</div>
         </el-menu-item>
         <el-menu-item index="Interaction">
-           <div class="padding50">互动性监测</div>
+          <div class="padding50">互动性监测</div>
         </el-menu-item>
         <el-menu-item index="Sensitive">
           <div class="padding50">错敏检测</div>
@@ -72,11 +78,14 @@
             <span slot="title">账号分析</span>
           </div>
         </template>
-         <el-menu-item index="WxAnalysis">
+        <el-menu-item index="WxAnalysis">
           <div class="padding50">公众号分析</div>
         </el-menu-item>
         <el-menu-item index="BloggerAnalysis">
           <div class="padding50">微博分析</div>
+        </el-menu-item>
+        <el-menu-item index="ToutiaoAnalysis">
+          <div class="padding50">头条分析</div>
         </el-menu-item>
       </el-submenu>
       <el-submenu index="Minute">
@@ -136,7 +145,8 @@
           <div class="padding50">错敏检查</div>
         </el-menu-item>
       </el-submenu>
-      <el-menu-item index="Whole">
+      <el-menu-item index="Whole"
+                    v-if="menuShow">
         <div class="title-box">
           <i class="el-icon-collection"></i>
           <span slot="title">全局账号信息</span>
@@ -147,10 +157,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'Menu',
   data () {
     return {
+      menuShow: false
     }
   },
   methods: {
@@ -167,6 +179,10 @@ export default {
   mounted () {
   },
   computed: {
+    ...mapState({
+      userInfo: state => state.user.userInfo,
+      menuPermission: state => state.user.menuPermission
+    }),
     getRoutePath () {
       let routerActive = this.$route.name
       // switch (this.$route.path.split('/')[2]) {
@@ -175,6 +191,16 @@ export default {
       //     break
       // }
       return routerActive
+    }
+  },
+  created () {
+    // console.log(this.menuPermission)
+    if (this.menuPermission) {
+      for (var i = 0; i < this.menuPermission.length; i++) {
+        if (this.menuPermission[i] == '1') {
+          this.menuShow = true
+        }
+      }
     }
   }
 }
@@ -188,7 +214,7 @@ export default {
   min-height: 200px;
   margin-top: 20px;
   border: none;
-  background-color: #EDEFF4;
+  background-color: #edeff4;
 }
 /* .el-menu-item:last-of-type {
   border: none;

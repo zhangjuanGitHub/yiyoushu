@@ -94,6 +94,15 @@
         </el-form>
       </div>
       <div class="quick-click flex-bwt-center">
+        <div class="click-box color10 flex-arr-center cursor"
+             @click="searchType('')">
+          <div class="flex-arr-center">
+            <img class="click-image"
+                 :src="require('@/assets/images/assess/09.png')">
+            <span class="click-name">全部榜</span>
+          </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.functionType === '' }"></div>
+        </div>
         <div class="click-box color1 flex-arr-center cursor"
              @click="searchType('教育')">
           <div class="flex-arr-center">
@@ -101,6 +110,7 @@
                  :src="require('@/assets/images/assess/01.png')">
             <span class="click-name">教育榜</span>
           </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.functionType === '教育' }"></div>
         </div>
         <div class="click-box color2 flex-arr-center cursor"
              @click="searchType('时尚')">
@@ -109,6 +119,7 @@
                  :src="require('@/assets/images/assess/02.png')">
             <span class="click-name">时尚榜</span>
           </div>
+           <div class="click-box-click" :class="{ 'quick_active': ruleForm.functionType === '时尚' }"></div>
         </div>
         <div class="click-box color3 flex-arr-center cursor"
              @click="searchType('娱乐')">
@@ -117,6 +128,7 @@
                  :src="require('@/assets/images/assess/03.png')">
             <span class="click-name">娱乐榜</span>
           </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.functionType === '娱乐' }"></div>
         </div>
         <div class="click-box color6 flex-arr-center cursor"
              @click="searchType('科技')">
@@ -125,6 +137,7 @@
                  :src="require('@/assets/images/assess/04.png')">
             <span class="click-name">科技榜</span>
           </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.functionType === '科技' }"></div>
         </div>
       </div>
       <div class="table-box">
@@ -682,6 +695,7 @@ export default {
       this.restTable()
     },
     searchType (type) {
+      console.log(type)
       this.ruleForm.function = []
       this.ruleForm.function.push(type)
       this.ruleForm.functionType = type
@@ -793,9 +807,20 @@ export default {
   padding: 20px 0;
 }
 .click-box {
-  width: 313px;
-  height: 115px;
+  // width: 313px;
+  width: 250px;
+  // height: 115px;
+  height: 100px;
   text-align: center;
+  position: relative;
+}
+.click-box-click {
+  width: 230px;
+  height: 86px;
+  position: absolute;
+}
+.quick_active{
+  border: 2px solid #ffffff;
 }
 .click-name {
   font-size: 24px;
@@ -860,5 +885,9 @@ export default {
 .addUser .dialog-footer {
   display: block;
   text-align: center;
+}
+.color10 {
+  background: coral;
+  // background: lightsalmon;
 }
 </style>

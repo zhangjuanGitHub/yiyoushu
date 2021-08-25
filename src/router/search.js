@@ -3,7 +3,7 @@
  * @Description: search
  * @Date: 2021-02-01 11:07:53
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-25 10:43:17
+ * @LastEditTime: 2021-07-30 15:12:59
  */
 module.exports = [
   {
@@ -23,6 +23,14 @@ module.exports = [
     component: () => import('@/views/search/MoreHotWb')
   },
   {
+    path: '/search/morehottoutiao',
+    name: 'MoreHotToutiao',
+    meta: {
+      title: '头条文章'
+    },
+    component: () => import('@/views/search/MoreHotToutiao')
+  },
+  {
     path: '/search/accountlistwx',
     name: 'AccountListWx',
     meta: {
@@ -37,6 +45,30 @@ module.exports = [
       title: '微博账号列表'
     },
     component: () => import('@/views/search/AccountListWb')
+  },
+  {
+    path: '/search/accountlistdy',
+    name: 'AccountListDy',
+    meta: {
+      title: '抖音账号列表'
+    },
+    component: () => import('@/views/search/AccountListDy')
+  },
+  {
+    path: '/search/accountlisttoutiao',
+    name: 'AccountListToutiao',
+    meta: {
+      title: '头条账号列表'
+    },
+    component: () => import('@/views/search/AccountListToutiao')
+  },
+  {
+    path: '/search/findarticle',
+    name: 'FindArticle',
+    meta: {
+      title: '找文章'
+    },
+    component: () => import('@/views/search/FindArticle')
   },
   {
     path: '/search/drilldetails',
@@ -61,6 +93,14 @@ module.exports = [
       title: '文章分析'
     },
     component: () => import('@/views/search/accountwx/ArticleAnalyse')
+  },
+  {
+    path: '/searched/accounttoutiao/analyse',
+    name: 'ArticleAnalyseToutiao',
+    meta: {
+      title: '文章分析-头条'
+    },
+    component: () => import('@/views/search/accounttoutiao/ArticleAnalyseToutiao')
   },
   {
     path: '/searched/accountwb/details',
@@ -161,5 +201,59 @@ module.exports = [
         component: () => import('@/views/search/accountwb/ReleaseRulesWb')
       }
     ]
+  },
+  {
+    path: '/searched/accounttoutiao/', // 头条
+    component: () => import('@/views/search/SearchToutiaoBox'),
+    children: [
+      {
+        path: 'data',
+        name: 'BasicDataToutiao',
+        meta: {
+          title: '基础数据统计'
+        },
+        component: () => import('@/views/search/accounttoutiao/BasicDataToutiao')
+      },
+      {
+        path: 'class',
+        name: 'ArticleClassToutiao',
+        meta: {
+          title: '文章类别'
+        },
+        component: () => import('@/views/search/accounttoutiao/ArticleClassToutiao')
+      },
+      {
+        path: 'history',
+        name: 'HistoryTweetsToutiao',
+        meta: {
+          title: '历史推文'
+        },
+        component: () => import('@/views/search/accounttoutiao/HistoryTweetsToutiao')
+      },
+      {
+        path: 'rule',
+        name: 'ReleaseRulesToutiao',
+        meta: {
+          title: '发布规律'
+        },
+        component: () => import('@/views/search/accounttoutiao/ReleaseRulesToutiao')
+      }
+      // {
+      //   path: 'details',
+      //   name: 'TweetsDetailsToutiao',
+      //   meta: {
+      //     title: '文章详情'
+      //   },
+      //   component: () => import('@/views/search/accounttoutiao/TweetsDetailsToutiao')
+      // }
+    ]
+  },
+  {
+    path: '/searched/accounttoutiao/details',
+    name: 'TweetsDetailsToutiao',
+    meta: {
+      title: '文章详情'
+    },
+    component: () => import('@/views/search/accounttoutiao/TweetsDetailsToutiao')
   }
 ]

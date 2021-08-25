@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-01-29 14:18:52
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-27 11:30:07
+ * @LastEditTime: 2021-06-29 17:36:12
 -->
 <template>
   <div class="search-material-wrap">
@@ -174,11 +174,14 @@ export default {
       this.$http.post(this.$api.getMonthPublishedNum, { biz: this.accountMsg.biz })
         .then(res => {
           // 基于准备好的dom，初始化echarts实例
-          let myChart = echarts.init(document.getElementById('myLine'))
-          let fourLine = echarts.init(document.getElementById('fourLine'))
+          let chartId = this.accountMsg.function_type === '检察' ? 'fourLine' : 'myLine'
+          let myChart = echarts.init(document.getElementById(chartId))
           // 绘制图表
           let option = {
-            title: {},
+            title: {
+              text: '发文趋势',
+              x: 'center'
+            },
             tooltip: {
               trigger: 'axis'
             },
@@ -222,17 +225,10 @@ export default {
               }
             ]
           }
-          if (this.accountMsg.function_type === '检察') {
-            fourLine.setOption(option)
-            window.addEventListener('resize', function () {
-              fourLine.resize()
-            })
-          } else {
-            myChart.setOption(option)
-            window.addEventListener('resize', function () {
-              myChart.resize()
-            })
-          }
+          myChart.setOption(option)
+          window.addEventListener('resize', function () {
+            myChart.resize()
+          })
         }).catch(() => { })
     },
     // 获取文章类型
@@ -250,7 +246,6 @@ export default {
             this.getClassArticle()
           }).catch(() => { })
       }
-      // this.getClassArticle()
     },
     // 根据类型获取文章
     getClassArticle () {
@@ -299,9 +294,7 @@ export default {
           let option = {
             title: {
               text: '四大检察',
-              textAlign: 'center',
-              left: '52%',
-              bottom: '0',
+              x: 'center',
               textStyle: {
                 color: '#333',
                 fontSize: 18
@@ -373,9 +366,7 @@ export default {
           let option = {
             title: {
               text: '十大业务',
-              textAlign: 'center',
-              left: '52%',
-              bottom: '0',
+              x: 'center',
               textStyle: {
                 color: '#333',
                 fontSize: 18
@@ -455,10 +446,11 @@ export default {
 <style lang="scss" scoped>
 @import '../search.scss';
 .table-box {
-  margin-top: 70px;
+  margin-top: 30px;
+  min-height: 400px;
 }
 .class-chart-line{
-    width: 100%;
-    height: 372px;
-  }
+  width: 100%;
+  height: 372px;
+}
 </style>

@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-20 18:58:06
+ * @LastEditTime: 2021-08-03 10:33:48
 -->
 <template>
   <div class="real-time content-box">
@@ -224,7 +224,7 @@ export default {
     },
     // 重置
     resetForm () {
-      console.log(this.ruleForm)
+      // console.log(this.ruleForm)
       this.publishTime = []
       this.ruleForm = {
         pageSize: 10,
@@ -264,7 +264,7 @@ export default {
       // this.ruleForm.id = this.$route.query
       this.$http.get(this.$api.allAccount)
         .then(res => {
-          console.log(res.data.data)
+          // console.log(res.data.data)
           this.options = res.data.data
         }).catch(() => { })
     },

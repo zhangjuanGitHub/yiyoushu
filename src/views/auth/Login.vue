@@ -135,6 +135,7 @@ export default {
               this.$store.commit('user/userToken', res.data.data) // 用户信息
               sessionStorage.setItem(`token`, res.data.data)
               this.geUserInfo()
+              // this.menuPermission()
               this.$router.replace({ name: 'Home' })
               this.$message.success('登录成功！')
               this.isLoading = false
@@ -150,6 +151,7 @@ export default {
       this.$http.get(this.$api.getUserInfo)
         .then(res => {
           this.$store.commit('user/userInfo', res.data.data) // 用户详情
+          this.menuPermission()
           // sessionStorage.setItem('userinfo', res.data.data)
         }).catch(() => { })
     },
@@ -211,6 +213,15 @@ export default {
             this.$router.replace({ name: 'Home' })
             this.$message.success('登录成功！')
           }
+        }).catch(() => { })
+    },
+    menuPermission () {
+      this.$http.get(this.$api.menuPermission)
+        .then(res => {
+          // console.log(res.data.data)
+          this.$store.commit('user/menuPermission', res.data.data) // 菜单权限控制
+          sessionStorage.setItem(`menuPermission`, res.data.data)
+          // console.log(this.$store.state.user.menuPermission)
         }).catch(() => { })
     }
   },

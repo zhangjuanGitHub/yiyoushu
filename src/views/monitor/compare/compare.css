@@ -454,3 +454,14 @@
   color: #253046;
   margin: 20px 5px;
 }
+.compare-pop-box {
+  padding: 20px;
+}
+.compare-pop-box .pop-title {
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px dashed #484849;
+}
+.compare-pop-box  .pop-cont {
+  text-indent: 26px;
+}

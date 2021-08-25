@@ -2,8 +2,8 @@
  * @Author: MaiChao
  * @@Description:单位账号
  * @Date: 2021-02-26 10:45:47
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-01 15:58:58
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-15 18:12:43
 -->
 <template>
   <div class="company">
@@ -74,6 +74,9 @@
             <div v-else-if="scope.row.accountType===2">
               微博
             </div>
+            <div v-else-if="scope.row.accountType===3">
+              头条
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="accountName"
@@ -123,6 +126,62 @@
             </div>
             <div v-else-if="scope.row.accountType===2">
               微博
+            </div>
+            <div v-else-if="scope.row.accountType===3">
+              头条
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="accountName"
+                          label="账号名称">
+          <template slot-scope='scope'>
+              <div class="account-infor flex-ali-center">
+                <el-image :src="scope.row.headImage">
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline"></i>
+                  </div>
+                </el-image>
+                <div class="account-name">
+                  <p class="import-name"
+                      v-html='scope.row.accountName'></p>
+                </div>
+              </div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="description"
+                          label="简介"
+                          width="500">
+        </el-table-column>
+        <el-table-column prop="updateTime"
+                          label="添加时间" width="150">
+        </el-table-column>
+        <!-- <el-table-column label="操作" width="200">
+          <template slot-scope='scope'>
+            <div class="click-span" @click="deleteItem(scope.row)">
+              删除
+            </div>
+          </template>
+        </el-table-column> -->
+      </el-table>
+      <el-table :data="tableData"
+                style="width: 100%"
+                class="exportTable"
+                border
+                name="toutiao"
+                v-else-if="type === 3"
+                :cell-style="{ textAlign: 'center' }"
+                :default-sort="{prop: 'date', order: 'descending'}">
+        <el-table-column label="账号类型"
+                          width="180" prop="accountType">
+          <template slot-scope='scope'>
+            <div v-if="scope.row.accountType===1">
+              微信公众号
+            </div>
+            <div v-else-if="scope.row.accountType===2">
+              微博
+            </div>
+            <div v-else-if="scope.row.accountType===3">
+              头条
             </div>
           </template>
         </el-table-column>
@@ -245,7 +304,7 @@ export default {
     }
   },
   watch: {
-    'type'() {
+    'type' () {
       // this.ruleForm.accountType = this.type
       this.getTableData()
     }

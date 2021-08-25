@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-04 14:54:55
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-02 14:26:02
+ * @LastEditTime: 2021-08-03 11:41:32
 -->
 <template>
   <!-- <div class="interaction content-box"> -->
@@ -48,45 +48,14 @@
                   style="width: 100%"
                   id="wx-prescript"
                   border>
-          <!-- <el-table-column label="账号信息"
-                            show-overflow-tooltip>
-            <template slot-scope="scope">
-              <div class="pub-account-msg">
-                <img src="@/assets/images/home/ava.png" alt="">
-                <div class="pub-account-right">
-                  <p v-html="scope.row.name"></p>
-                  <div class="pub-account-detail flex-ali-center">
-                    <p>微信号：<span v-html="scope.row.name"></span></p>
-                    <p class="p-splider">|</p>
-                    <p>地区：<span v-html="scope.row.area"></span></p>
-                    <p class="p-splider">|</p>
-                    <p>单位：<span v-html="scope.row.dep"></span></p>
-                  </div>
-                  <p> {{scope.row.desc}}</p>
-                </div>
-              </div>
-            </template>
-          </el-table-column> -->
           <el-table-column prop="address"
-                           label="账号信息">
+                           label="公众号">
             <template slot-scope='scope'>
-              <!-- <div class="account-msg-box flex-ali-center cursor"
-                   @click="$router.push({ name: 'HistoryTweets' , query: { id: scope.row.id } })">
-                <img :src="scope.row.hd_head_img"
-                     alt="">
-                <div class="account-msg">
-                  <p class="lin-clamp-1"
-                     v-html="scope.row.nickname"></p>
-                  <p class="lin-clamp-1">微信号：<span>{{scope.row.alias}}</span></p>
-                </div>
-              </div> -->
               <div class="account-msg-box flex-ali-center cursor"
                    @click="$router.push({ name: 'HistoryTweets' , query: { id: scope.row.biz } })">
-                <img :src="scope.row.hd_head_img"
-                     alt="">
+                <img :src="scope.row.hd_head_img" alt="">
                 <div class="account-msg">
-                  <p class="lin-clamp-1"
-                     v-html="scope.row.nickname"></p>
+                  <p class="lin-clamp-1" v-html="scope.row.nickname"></p>
                   <p class="lin-clamp-1">微信号：<span>{{scope.row.alias}}</span></p>
                 </div>
               </div>
@@ -119,8 +88,7 @@
           </el-table-column>
           <el-table-column prop="livenessNum"
                            sortable
-                           width="101"
-                           label="活跃度">
+                           width="101">
             <template slot="header">
               <span>活跃度</span>
               <el-tooltip class="item"
@@ -138,11 +106,19 @@
             </template>
           </el-table-column>
           <el-table-column prop="influenceNum"
-                           label="影响力"
                            sortable
-                           width="95">
+                           width="101">
+            <template slot="header">
+              <span>影响力</span>
+              <el-tooltip class="item"
+                          effect="dark"
+                          content="通过文章数和发布次数两个维度以及专家推出的计算公式，得出此公众号影响力“值”。"
+                          placement="top">
+                <i class="el-icon-question"></i>
+              </el-tooltip>
+            </template>
           </el-table-column>
-          <el-table-column width="100"
+          <el-table-column width="95"
                            label="发布情况">
             <template slot-scope="scope">
               <div class="account-pro-box">
@@ -154,8 +130,9 @@
             </template>
           </el-table-column>
           <el-table-column prop="last_pubtime"
-                           label="最后发布时间"
-                           width="105">
+                           :label="'最后 \n 发布时间'"
+                           width="105"
+                           sortable>
             <template slot-scope="scope">
               <p v-html="(scope.row.last_pubtime || '').slice(0, 10)"></p>
             </template>
@@ -305,6 +282,11 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.pub-monitor-cont .el-table th>.cell {
+  white-space: pre-wrap;
+}
+</style>
 <style lang="scss" scoped>
 @import '../monitor.css';
 .pub-monitor-main {

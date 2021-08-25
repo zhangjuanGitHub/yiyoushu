@@ -2,14 +2,15 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-02-23 10:55:52
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-24 10:47:50
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-20 17:24:12
  */
 const state = {
   prevUrlName: null,
   captchaInfo: {}, // 登录信息（验证码、网站名称、是否登陆、token）
   accountMsg: {}, // 微信账号信息 （biz, auth_info, function_type）
   accountWbMsg: {}, // 微信账号信息 （uid）
+  accountToutiaoMsg: {}, // 头条账号信息 （id）
   setWebSiteName: '' // 网站名称
 }
 const mutations = {
@@ -35,6 +36,9 @@ const mutations = {
   },
   getWbAccountInfo (state, val) {
     state.accountWbMsg = val
+  },
+  getToutiaoAccountInfo (state, val) {
+    state.accountToutiaoMsg = val
   }
 }
 export default {

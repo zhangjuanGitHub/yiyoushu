@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-02-03 17:18:48
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-25 15:19:38
+ * @LastEditTime: 2021-07-30 14:55:25
 -->
 <template>
   <div class="home-up-wrap">
@@ -17,13 +17,19 @@
                     text-color="#6B798E">
             <el-menu-item index="wx">公众号</el-menu-item>
             <el-menu-item index="wb">微博号</el-menu-item>
+            <el-menu-item index="toutiao">头条号</el-menu-item>
             <el-menu-item index="dy">抖音号</el-menu-item>
             <el-menu-item index="article">找文章</el-menu-item>
           </el-menu>
         </div>
         <div>
+          <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                    v-model="keyword"
+                    v-if="accountActive === 'article'">
+            <el-button type="primary" slot="append" icon="el-icon-search" @click="submitSearch"></el-button>
+          </el-input>
           <el-autocomplete v-model="keyword"
-                           v-if="accountActive === 'wx' || accountActive === 'wb'"
+                           v-else
                           :fetch-suggestions="querySearch"
                           placeholder="新媒体搜索引擎，你想要的都在这里哦"
                           :trigger-on-focus="historyList.length > 0"
@@ -36,11 +42,6 @@
               </div>
             </template>
           </el-autocomplete>
-          <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
-                    v-model="keyword"
-                    v-else-if="accountActive === 'article'">
-            <el-button type="primary" slot="append" icon="el-icon-search" @click="submitSearch"></el-button>
-          </el-input>
         </div>
       </div>
     </div>
@@ -48,6 +49,7 @@
 </template>
 
 <script>
+const cbApi = new Map().set('wx', 'wxSearchTip').set('wb', 'wbSearchTip').set('toutiao', 'ttAssociation').set('dy', 'dySearchTip')
 export default {
   name: 'homesearch',
   props: { },
@@ -62,38 +64,31 @@ export default {
   methods: {
     handleSelect (type) {
       this.accountActive = type
+      if (type == 'article') {
+        this.$router.push({ name: 'FindArticle', query: { type: this.accountActive } })
+      }
     },
     querySearch (query, cb) {
       if (this.historyList.length > 0 && !this.keyword) { // 历史记录
         cb(this.historyList)
       } else if (this.keyword) {
-        if (this.accountActive === 'wx') {
-          let obj = {
-            searchSource: 1, // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
-            queryText: this.keyword
-          }
-          this.$http.post(this.$api.wxSearchTip, obj)
-            .then(res => {
-              let newRes = res.data.data
-              for (let i = 0; i < newRes.length; i++) {
-                if (newRes[i].url === '') {
-                  newRes[i].url = this.undefinedUrl
-                }
-              }
-              cb(newRes)
-            }).catch(() => {})
-        } else if (this.accountActive === 'wb') {
-          this.$http.post(this.$api.wbSearchTip, { queryText: this.keyword })
-            .then(res => {
-              let newRes = res.data.data
-              for (let i = 0; i < newRes.length; i++) {
-                if (newRes[i].url === '') {
-                  newRes[i].url = this.undefinedUrl
-                }
-              }
-              cb(newRes)
-            }).catch(() => {})
+        let api = cbApi.get(this.accountActive)
+        let obj = {
+          queryText: this.keyword
         }
+        if (this.accountActive === 'wx') {
+          obj.searchSource = 1 // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
+        }
+        this.$http.post(this.$api[api], obj)
+          .then(res => {
+            let newRes = res.data.data
+            for (let i = 0; i < newRes.length; i++) {
+              if (newRes[i].url === '') {
+                newRes[i].url = this.undefinedUrl
+              }
+            }
+            cb(newRes)
+          }).catch(() => {})
       }
     },
     submitSearch () {

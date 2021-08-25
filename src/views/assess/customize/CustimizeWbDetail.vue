@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-18 11:28:06
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-30 14:53:36
+ * @LastEditTime: 2021-07-28 17:55:44
 -->
 <template>
   <div class="contents">
@@ -164,9 +164,9 @@
             <el-table-column prop="attitudesCount"
                              label="点赞数">
             </el-table-column>
-            <el-table-column prop="functionType"
+            <!-- <el-table-column prop="functionType"
                              label="职能">
-            </el-table-column>
+            </el-table-column> -->
             <el-table-column prop="unitName"
                              label="单位名称">
             </el-table-column>

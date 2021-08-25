@@ -2,7 +2,7 @@
  * @Author: zhangjuan
  * @Date: 2021-05-06 14:33:45
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-06 15:22:49
+ * @LastEditTime: 2021-06-28 18:02:04
 -->
 <template>
   <div>
@@ -132,17 +132,12 @@ export default {
   },
   watch: {
     radio (newValue, oldValue) {
-      console.log(newValue)
-      console.log(timeFormat(this.calcDate(newValue === '1' ? 7 : 30)))
-      console.log(timeFormat(this.calcDate(1)))
       // 自定义时间changeDate筛选触发，radio= '' 不让清空右侧值，不然自定义时间赋值不上
       if (newValue) {
         this.time = [] // 清空右侧 自定义时间
       }
       this.params.publishTime[0] = timeFormat(this.calcDate(newValue === '1' ? 7 : 30))
       this.params.publishTime[1] = timeFormat(this.calcDate(1))
-      // this.calcDate(1)
-      // this.calcDate(newValue === '1' ? 7 : 30)
     }
   },
   methods: {
@@ -168,13 +163,10 @@ export default {
     },
     // 开始分析
     startAnalyse () {
-      console.log(this.params.publishTime.length)
-      console.log(this.time.length)
       if (this.params.publishTime.length !== 0 || this.time.length !== 0) {
         if (this.time.length !== 0) {
           this.params.publishTime = this.time
         }
-        console.log(11111)
       } else {
         this.$message.warning('请选择时间范围')
         return

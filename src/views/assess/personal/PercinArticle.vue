@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-28 11:20:40
+ * @LastEditTime: 2021-07-19 14:45:39
 -->
 <template>
   <div class="contents">
@@ -14,12 +14,19 @@
         <span class="tabs-title"
               @click="tabsAll('wb', 2)"
               :class="this.activeTab==='wb'?'isActive':''">微博榜单</span>
+        <span class="tabs-title"
+              @click="tabsAll('toutiao', 3)"
+              :class="this.activeTab==='toutiao'?'isActive':''">头条榜单</span>
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
       <div class="conts-box">
-        <percin-article-wx v-if="this.activeTab==='wx'" @changeTab="tabsAll"></percin-article-wx>
-        <percin-article-wb v-if="this.activeTab==='wb'" @changeTab="tabsAll"></percin-article-wb>
+        <percin-article-wx v-if="this.activeTab==='wx'"
+                           @changeTab="tabsAll"></percin-article-wx>
+        <percin-article-wb v-if="this.activeTab==='wb'"
+                           @changeTab="tabsAll"></percin-article-wb>
+        <percin-article-toutiao v-if="this.activeTab==='toutiao'"
+                                @changeTab="tabsAll"></percin-article-toutiao>
       </div>
     </div>
   </div>
@@ -27,13 +34,15 @@
 <script>
 import percinArticleWx from './PercinArticleWx'
 import percinArticleWb from './PercinArticleWb'
+import percinArticleToutiao from './PercinArticleToutiao'
 import { exportTable } from '@/lib/tools'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 export default {
   components: {
     percinArticleWx,
-    percinArticleWb
+    percinArticleWb,
+    percinArticleToutiao
   },
   data () {
     return {

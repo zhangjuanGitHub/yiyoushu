@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-02-04 13:29:02
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-25 15:22:34
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-13 17:52:12
 -->
 <template>
   <div class="more-hot-wrap">
@@ -20,13 +20,14 @@
                       text-color="#6B798E">
               <el-menu-item index="wx">公众号</el-menu-item>
               <el-menu-item index="wb">微博号</el-menu-item>
-              <el-menu-item index="dy">抖音号</el-menu-item>
+              <!-- <el-menu-item index="dy">抖音号</el-menu-item> -->
+              <el-menu-item index="toutiao">头条</el-menu-item>
               <el-menu-item index="article">找文章</el-menu-item>
             </el-menu>
           </div>
           <div>
             <el-autocomplete v-model="queryText"
-                            v-if="accountActive === 'wx' || accountActive === 'wb'"
+                            v-if="accountActive === 'wx' || accountActive === 'wb'|| accountActive === 'toutiao'"
                             :fetch-suggestions="querySearch"
                             placeholder="新媒体搜索引擎，你想要的都在这里哦"
                             :trigger-on-focus="historyList.length > 0"

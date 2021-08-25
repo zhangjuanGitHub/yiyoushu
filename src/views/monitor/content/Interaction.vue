@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-01 14:14:48
+ * @LastEditTime: 2021-07-19 17:34:32
  * 时间参数修改为type ， 时间类别， 1   一周    2 一个月， 3 半年， 4 ，一年
 -->
 <template>
@@ -19,18 +19,23 @@
       <span class="tabs-title"
             :class="activeTab==='wb'?'isActive':''"
             @click="tabsAll('wb', 2)">微博</span>
+      <span class="tabs-title"
+            :class="activeTab==='toutiao'?'isActive':''"
+            @click="tabsAll('toutiao', 3)">今日头条</span>
 
     </div>
     <div>
       <interaction-wx v-if="this.activeTab==='wx'"
-                       @changeTab="tabsAll"></interaction-wx>
+                      @changeTab="tabsAll"></interaction-wx>
       <interaction-wb v-if="this.activeTab==='wb'"></interaction-wb>
+      <interaction-toutiao v-if="this.activeTab==='toutiao'"></interaction-toutiao>
     </div>
   </div>
 </template>
 <script>
 import interactionWx from './InteractionWx'
 import interactionWb from './InteractionWb'
+import InteractionToutiao from './InteractionToutiao'
 // import echarts from 'echarts'
 const getSort = new Map()
   .set('interUp', 'asc')
@@ -46,7 +51,8 @@ const getSort = new Map()
 export default {
   components: {
     interactionWx,
-    interactionWb
+    interactionWb,
+    InteractionToutiao
   },
   data () {
     return {

@@ -2,7 +2,7 @@
  * @Author: zhangjuan
  * @Date: 2021-05-10 11:14:46
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-27 15:28:38
+ * @LastEditTime: 2021-06-28 17:27:27
 -->
 <template>
   <div class="interaction">
@@ -87,7 +87,7 @@
         <div class="flex-ali-center">
           <p class="search-mater-theme-com">对比数据</p>
           <p>公众号粉丝互动数据（
-            <span v-html="ruleForm.publish === '1' ? '30天': ruleForm.publish === '2' ? '60天' : '90天'"></span>
+            <span v-html="ruleForm.publish === '1' ? '7天': ruleForm.publish === '2' ? '30天' : ruleForm.publish === '3' ? '60天' : '90天'"></span>
             ）
           </p>
           <div class="compare-data-head flex-ali-center">
@@ -102,9 +102,10 @@
         <el-button size="small" @click="returnBack">返回</el-button>
       </div>
       <div class="compare-search-box flex-ali-center">
-        <p :class="ruleForm.publish === '1'?'is-sel-time':''" @click="changeNewTime('1')">近30天</p>
-        <p :class="ruleForm.publish === '2'?'is-sel-time':''" @click="changeNewTime('2')">近60天</p>
-        <p :class="ruleForm.publish === '3'?'is-sel-time':''" @click="changeNewTime('3')">近90天</p>
+        <p :class="ruleForm.publish === '1'?'is-sel-time':''" @click="changeNewTime('1')">近7天</p>
+        <p :class="ruleForm.publish === '2'?'is-sel-time':''" @click="changeNewTime('2')">近30天</p>
+        <p :class="ruleForm.publish === '3'?'is-sel-time':''" @click="changeNewTime('3')">近60天</p>
+        <p :class="ruleForm.publish === '4'?'is-sel-time':''" @click="changeNewTime('4')">近90天</p>
       </div>
       <div class="compare-data-main" v-if="!showEcharts">
         <!-- 头部 -->
@@ -177,7 +178,17 @@
         <div>
           <div class="compare-data-tip"
                style="background: #FDF1EA;">
-            <div class="compare-tip-left"><p>传播力</p></div>
+            <div class="compare-tip-left">
+              <p>
+                <span>传播力</span>
+                <el-popover placement="right" width="260" trigger="hover">
+                  <div class="compare-pop-box">
+                    <p class="pop-cont">【传播力】通过阅读总数、日均阅读数、篇均阅读数、头条阅读总数、日均阅读数、篇均阅读数、多个维度以及专家推出的计算公式，得出此公众号传播力“值”，根据传播力“值”，得出发布文章覆盖范围大小及社会公众的接受程度</p>
+                  </div>
+                  <i slot="reference" class="el-icon-question cursor"></i>
+                </el-popover>
+              </p>
+            </div>
             <div class="compare-tip-right">
               <div class="compare-tip-icon">
                 <el-tooltip class="item" effect="dark" content="收起" placement="top" v-if="showBlock[1]">
@@ -211,7 +222,17 @@
         <div>
           <div class="compare-data-tip"
                style="background: #FBF5FB;">
-            <div class="compare-tip-left"><p>引导力</p></div>
+            <div class="compare-tip-left">
+              <p>
+                <span>引导力</span>
+                <el-popover placement="right" width="280" trigger="hover">
+                  <div class="compare-pop-box">
+                    <p class="pop-cont">【引导力】通过评论总数、回复总数、点赞总数、在看总数、篇均点赞数、篇均在看数多个维度以及专家推出的计算公式，得出此公众号引导力“值”，根据引导力“值”，判断此公众号设置的议程、议题或发布文章对社会公众引导能力是否强大。</p>
+                  </div>
+                  <i slot="reference" class="el-icon-question cursor"></i>
+                </el-popover>
+              </p>
+            </div>
             <div class="compare-tip-right">
               <div class="compare-tip-icon">
                 <el-tooltip class="item" effect="dark" content="收起" placement="top" v-if="showBlock[2]">
@@ -451,12 +472,14 @@ export default {
       this.ruleForm.publish = val
       let end = this.getCalc(1)
       let start = ''
-      if (val === '3') {
+      if (val === '4') {
         start = this.getCalc(90)
-      } else if (val === '2') {
+      } else if (val === '3') {
         start = this.getCalc(60)
-      } else {
+      } else if (val === '2') {
         start = this.getCalc(30)
+      } else {
+        start = this.getCalc(7)
       }
       this.publishTime[0] = timeFormat(start)
       this.publishTime[1] = timeFormat(end)
@@ -606,11 +629,17 @@ export default {
             this.startComparing = true
             this.allData = JSON.parse(JSON.stringify(res.data.data))
             this.infoList = res.data.data.dataList
-            this.compareList = res.data.data.numList
+            this.compareList = JSON.parse(JSON.stringify(res.data.data.numList))
+            let compareArr = JSON.parse(JSON.stringify(res.data.data.numList))
             this.calcWidth = (1/res.data.data.numList.length) * 100
-            for (let i in this.compareList[0]) {
-              if (this.compareList[this.getMaxIndex(this.compareList, i)][i] != 0) {
-                this.compareList[this.getMaxIndex(this.compareList, i)][i] = '<i class="color7">'+this.compareList[this.getMaxIndex(this.compareList, i)][i]+'</i>'
+            for (let m = 0; m < this.compareList.length; m++) {
+              for (let n in this.compareList[m]) {
+                this.compareList[m][n] = '<i class="color8">'+this.compareList[m][n]+'</i>'
+              }
+            }
+            for (let i in compareArr[0]) {
+              if (compareArr[this.getMaxIndex(compareArr, i)][i] != 0) {
+                this.compareList[this.getMaxIndex(compareArr, i)][i] = '<i class="color7">'+compareArr[this.getMaxIndex(compareArr, i)][i]+'</i>'
               }
             }
           }).catch(() => { })

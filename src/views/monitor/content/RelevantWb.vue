@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-01 14:11:21
+ * @LastEditTime: 2021-08-03 13:44:29
  * 其他文章数量改为非涉检文章数量
 -->
 <template>
@@ -225,9 +225,10 @@ export default {
   height: 300px;
 }
 .account-infor img {
-  height: 60px;
-  width: 60px;
-  margin-right: 20px;
+  height: 46px;
+  width: 46px;
+  margin-right: 8px;
+  border-radius: 50%;
 }
 .picture-num i {
   margin-left: 5px;

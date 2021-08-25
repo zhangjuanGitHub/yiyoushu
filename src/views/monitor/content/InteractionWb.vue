@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-01 17:40:57
+ * @LastEditTime: 2021-08-03 11:49:40
  * 时间参数修改为type ， 时间类别， 1   一周    2 一个月， 3 半年， 4 ，一年
 -->
 <template>
@@ -322,9 +322,10 @@ export default {
   margin: 0 auto;
 }
 .account-infor img {
-  height: 60px;
-  width: 60px;
-  margin-right: 20px;
+  height: 46px;
+  width: 46px;
+  border-radius: 50%;
+  margin-right: 8px;
 }
 .ver-img img{
   width: 18px;

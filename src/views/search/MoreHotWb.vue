@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangjuan
  * @Date: 2021-05-18 13:34:31
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-31 10:04:41
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-13 17:55:54
 -->
 <template>
   <div class="more-hot-wrap">
@@ -20,6 +20,7 @@
               <el-menu-item index="wx">公众号</el-menu-item>
               <el-menu-item index="wb">微博号</el-menu-item>
               <el-menu-item index="dy">抖音号</el-menu-item>
+              <!-- <el-menu-item index="toutiao">头条</el-menu-item> -->
               <el-menu-item index="article">找文章</el-menu-item>
             </el-menu>
           </div>

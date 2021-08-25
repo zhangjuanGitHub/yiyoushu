@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-30 14:50:22
+ * @LastEditTime: 2021-08-02 14:17:33
 -->
 <template>
   <div>
@@ -111,37 +111,54 @@
         </el-form>
       </div>
       <div class="quick-click flex-bwt-center">
-        <div class="click-box color1 flex-arr-center cursor"
-             @click="searchType(0)">
+        <!-- <div class="click-box color1 flex-arr-center cursor"
+             @click="searchType('')"
+             :class="{'click-is-sel': ruleForm.unitLevel === 0 }">
           <div class="flex-arr-center">
             <img class="click-image"
                  :src="require('@/assets/images/assess/05.png')">
             <span class="click-name">地方排行榜</span>
           </div>
+        </div> -->
+        <div class="click-box color1 flex-arr-center cursor"
+             @click="searchType(0)"
+             :class="{'click-is-sel': ruleForm.unitLevel === 0 }">
+          <div class="flex-arr-center">
+            <img class="click-image"
+                 :src="require('@/assets/images/assess/05.png')">
+            <span class="click-name">地方排行榜</span>
+          </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.unitLevel === 0 }"></div>
         </div>
         <div class="click-box color2 flex-arr-center cursor"
-             @click="searchType(1)">
+             @click="searchType(1)"
+             :class="{'click-is-sel': ruleForm.unitLevel === 1 }">
           <div class="flex-arr-center">
             <img class="click-image"
                  :src="require('@/assets/images/assess/06.png')">
             <span class="click-name">省级排行榜</span>
           </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.unitLevel === 1 }"></div>
         </div>
         <div class="click-box color3 flex-arr-center cursor"
-             @click="searchType(2)">
+             @click="searchType(2)"
+             :class="{'click-is-sel': ruleForm.unitLevel === 2 }">
           <div class="flex-arr-center">
             <img class="click-image"
                  :src="require('@/assets/images/assess/07.png')">
             <span class="click-name">分州市排行榜</span>
           </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.unitLevel === 2 }"></div>
         </div>
         <div class="click-box color6 flex-arr-center cursor"
-             @click="searchType(3)">
+             @click="searchType(3)"
+             :class="{'click-is-sel': ruleForm.unitLevel === 3 }">
           <div class="flex-arr-center">
             <img class="click-image"
                  :src="require('@/assets/images/assess/08.png')">
             <span class="click-name">区县排行榜</span>
           </div>
+          <div class="click-box-click" :class="{ 'quick_active': ruleForm.unitLevel === 3 }"></div>
         </div>
       </div>
       <div class="table-box">
@@ -451,7 +468,7 @@ export default {
         date: '', // 时间
         functionType: '', // 职能
         districts: [], // 地区
-        unitLevel: '',
+        unitLevel: 0,
         pageNum: 1,
         pageSize: 10
       },
@@ -901,11 +918,24 @@ export default {
   width: 313px;
   height: 115px;
   text-align: center;
+  color: #ffffff;
+  position: relative;
 }
+.quick-click .click-is-sel {
+  // background-color: #F54336;
+}
+.click-box-click {
+  width: 303px;
+  height: 103px;
+  position: absolute;
+}
+.quick_active{
+  border: 2px solid #ffffff;
+}
+
 .click-name {
   font-size: 24px;
   font-weight: 400;
-  color: #ffffff;
   margin-left: 15px;
 }
 .account-infor {

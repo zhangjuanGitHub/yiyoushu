@@ -2,8 +2,8 @@
  * @Author: MaiChao
  * @@Description:公众号收藏
  * @Date: 2021-02-26 10:46:48
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-01 15:59:30
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-15 18:18:42
 -->
 <template>
   <div class="collection">
@@ -74,6 +74,9 @@
             <div v-if="scope.row.type===2">
               微博
             </div>
+            <div v-if="scope.row.type===3">
+              头条
+            </div>
           </template>
         </el-table-column>
         <el-table-column prop="accountName"
@@ -124,6 +127,62 @@
             </div>
             <div v-if="scope.row.type===2">
               微博
+            </div>
+            <div v-if="scope.row.type===3">
+              头条
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="accountName"
+                          label="账号名称">
+            <template slot-scope='scope'>
+              <div class="account-infor flex-ali-center">
+                <el-image :src="scope.row.headImage">
+                  <div slot="error" class="image-slot">
+                    <i class="el-icon-picture-outline"></i>
+                  </div>
+                </el-image>
+                <div class="account-name">
+                  <p class="import-name"
+                      v-html='scope.row.accountName'></p>
+                </div>
+              </div>
+            </template>
+        </el-table-column>
+        <el-table-column label="简介"
+                          width="500" prop="description">
+        </el-table-column>
+        <el-table-column prop="updateTime"
+                          label="添加时间" width="100">
+        </el-table-column>
+        <el-table-column label="操作"
+                          width="150">
+          <template slot-scope='scope'>
+            <div class="click-span delete" @click="deleteItem(scope.row)">
+              删除
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-table :data="tableData"
+                style="width: 100%"
+                class="exportTable"
+                border
+                name="toutiao"
+                v-else-if="type === 3"
+                :cell-style="{ textAlign: 'center' }"
+                :default-sort="{prop: 'date', order: 'descending'}">
+        <el-table-column label="账号类型"
+                          width="120" prop="type">
+          <template slot-scope='scope'>
+            <div v-if="scope.row.type===1">
+              微信公众号
+            </div>
+            <div v-if="scope.row.type===2">
+              微博
+            </div>
+            <div v-if="scope.row.type===3">
+              头条
             </div>
           </template>
         </el-table-column>
@@ -182,7 +241,7 @@ import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
 import { exportTable } from '@/lib/tools'
 export default {
-  props:['type'],
+  props: ['type'],
   data () {
     return {
       total: 100,
@@ -256,7 +315,7 @@ export default {
     }
   },
   watch: {
-    'type'() {
+    'type' () {
       // this.ruleForm.type = this.type
       this.getTableData()
     }

@@ -3,7 +3,7 @@
  * @Description: Home
  * @Date: 2021-01-28 11:10:50
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-26 09:52:37
+ * @LastEditTime: 2021-08-05 11:16:17
 -->
 <template>
   <div class="home-wrap">
@@ -13,9 +13,10 @@
       <swiper ref="mySwiper"
               :options="swiperOptions"
               class="swiper-box">
-        <swiper-slide v-for="(item, index) of swiperList" :key="index">
+        <swiper-slide v-for="(item, index) of swiperList"
+                      :key="index">
           <div class="home-swiper-box"
-              :style="{backgroundImage: 'url(' + require('@/assets/images/home/swiper_'+index+'.png') + ')'}">
+               :style="{backgroundImage: 'url(' + require('@/assets/images/home/swiper_'+index+'.png') + ')'}">
             <div class="home-swiper-meng">
               <div class="home-swiper-des">
                 <p>{{item.title}}</p>
@@ -24,7 +25,8 @@
             </div>
           </div>
         </swiper-slide>
-        <div class="swiper-pagination" slot="pagination"></div>
+        <div class="swiper-pagination"
+             slot="pagination"></div>
       </swiper>
     </div>
     <!-- 热文 -->
@@ -39,6 +41,12 @@
             <span class="right-tab cursor"
                   :class="{ 'hot_active': hotActive === 'wb'}"
                   @click="changeHotActive('wb')">微博</span>
+            <span class="right-tab cursor"
+                  :class="{ 'hot_active': hotActive === 'toutiao'}"
+                  @click="changeHotActive('toutiao')">头条</span>
+            <span class="right-tab cursor"
+                  :class="{ 'hot_active': hotActive === 'dy'}"
+                  @click="changeHotActive('dy')">抖音</span>
           </p>
           <p class="hot-up-right">
             <span class="show-reload cursor"
@@ -47,13 +55,16 @@
                   @click="lookMoreHot">查看更多<i class="el-icon-arrow-right"></i></span>
           </p>
         </div>
-        <div class="hot-down flex-bwt-center" v-if="hotActive === 'wx'">
-          <div v-for="(item, index) of wxHotList" :key="'wx'+index">
-              <el-card shadow="hover"
-                    cursor
-                    :body-style="{ padding: '0px' }">
+        <div class="hot-down flex-bwt-center"
+             v-if="hotActive === 'wx'">
+          <div v-for="(item, index) of wxHotList"
+               :key="'wx'+index">
+            <el-card shadow="hover"
+                     cursor
+                     :body-style="{ padding: '0px' }">
               <img class="hot-down-img cursor"
-                   :src="item.cover" alt=""
+                   :src="item.cover"
+                   alt=""
                    @click="targetHotUrl(item.url)">
               <p class="hot-down-content lin-clamp-2 cursor"
                  @click="targetHotUrl(item.url)">{{item.title}}</p>
@@ -68,23 +79,95 @@
             </el-card>
           </div>
         </div>
-        <div class="hot-down flex-bwt-center" v-else>
-          <div v-for="(item, index) of wbHotList" :key="'wb'+index">
-              <el-card shadow="hover"
-                    cursor
-                    :body-style="{ padding: '0px' }">
-              <div class="hot-down-msg" @click="targetHotUrl(item.url)">
+        <div class="hot-down flex-bwt-center"
+             v-else-if="hotActive === 'wb'">
+          <div v-for="(item, index) of wbHotList"
+               :key="'wb'+index">
+            <el-card shadow="hover"
+                     cursor
+                     :body-style="{ padding: '0px' }">
+              <div class="hot-down-msg"
+                   @click="targetHotUrl(item.url)">
                 <img class="hot-down-wbimg cursor"
-                    :src="item.original_pic" alt="" v-if="item.original_pic">
-                <p class="cursor" v-html="item.raw_text.slice(0, 80) + '...'"></p>
+                     :src="item.original_pic"
+                     alt=""
+                     v-if="item.original_pic">
+                <p class="cursor"
+                   v-html="(item.raw_text || '').slice(0, 80) + '...'"
+                   @click="targetHotUrl(item.url)"></p>
+                <!-- <p class="hot-down-content lin-clamp-2 cursor"></p> -->
               </div>
               <div class="hot-down-info flex-bwt-center">
                 <div class="hot-info-left flex-ali-center">
-                  <el-avatar size="medium" :src="item.profile_image_url"></el-avatar>
+                  <el-avatar size="medium"
+                             :src="item.profile_image_url"></el-avatar>
                   <p>{{item.screen_name}}</p>
                 </div>
                 <p v-html="(item.pubtime || '').slice(0, 10)"></p>
                 <!-- <p>{{item.type}}</p> -->
+              </div>
+            </el-card>
+          </div>
+        </div>
+        <div class="hot-down flex-bwt-center"
+             v-else-if="hotActive === 'toutiao'">
+          <div v-for="(item, index) of toutiaoHotList"
+               :key="'toutiao'+index">
+            <el-card shadow="hover"
+                     cursor
+                     :body-style="{ padding: '0px' }">
+              <img class="hot-down-img cursor"
+                   :src="item.avatar_img"
+                   alt=""
+                   @click="targetHotUrl(item.article_url)">
+              <p class="hot-down-content lin-clamp-2 cursor"
+                 @click="targetHotUrl(item.article_url)">{{item.title}}</p>
+              <div class="hot-down-info flex-bwt-center">
+                <div class="hot-info-left flex-ali-center">
+                  <!-- <el-avatar size="medium" :src="circleUrl"></el-avatar> -->
+                  <p>{{item.screen_name}}</p>
+                </div>
+                <p v-html="(item.publish_time || '').slice(0, 10)"></p>
+                <!-- <p>{{item.type}}</p> -->
+              </div>
+            </el-card>
+          </div>
+        </div>
+        <div class="hot-down-dy flex-bwt-center"
+             v-else-if="hotActive === 'dy'">
+          <div v-for="(item, index) of 6"
+               :key="'dy'+index">
+            <el-card shadow="hover"
+                     cursor
+                     :body-style="{ padding: '0px' }">
+              <div class="hot-dy-box"
+                   :style="{'background': 'url('+require('../assets/images/home/apply_0.jpg')+') center center no-repeat'}">
+                <p class="time">15s</p>
+                <div class="action-box">
+                  <p>2021/07/05 11:22:25</p>
+                  <p class="lin-clamp-1">结婚典礼或热敷化学组多肉哈诶哦好东西哦赔付</p>
+                  <div class="dy-msg flex-arr-center">
+                    <div class="flex-cloumn-all">
+                      <img src="@/assets/images/home/dy_1.png" alt="">
+                      <p>331w</p>
+                    </div>
+                    <div class="flex-cloumn-all">
+                      <img src="@/assets/images/home/dy_2.png" alt="">
+                      <p>20w</p>
+                    </div>
+                    <div class="flex-cloumn-all">
+                      <img src="@/assets/images/home/dy_3.png" alt="">
+                      <p>31w</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="hot-dy-bottom flex-ali-center">
+                <img src="@/assets/images/home/ava.png" alt="">
+                <div class="hot-dy-msg">
+                  <p>珠江新闻</p>
+                  <p>粉丝：<span>20w</span></p>
+                </div>
               </div>
             </el-card>
           </div>
@@ -104,9 +187,11 @@
         <div class="you-down">
           <div class="you-down-ul flex-bwt-center">
             <el-card shadow="hover"
-                    :body-style="{ padding: '0px' }">
+                     :body-style="{ padding: '0px' }">
               <div class="flex-cloumn-cen">
-                <img class="you-down-skew" src="@/assets/images/home/you_1.png" alt="">
+                <img class="you-down-skew"
+                     src="@/assets/images/home/you_1.png"
+                     alt="">
                 <p class="you-down-title">开箱即用的数据产品</p>
                 <p class="you-down-intro">覆盖图文、短视频等多平台数据工具</p>
                 <div class="you-down-btn flex-bwt-center">
@@ -117,9 +202,11 @@
               </div>
             </el-card>
             <el-card shadow="hover"
-                    :body-style="{ padding: '0px' }">
+                     :body-style="{ padding: '0px' }">
               <div class="flex-cloumn-cen">
-                <img class="you-down-skew" src="@/assets/images/home/you_2.png" alt="">
+                <img class="you-down-skew"
+                     src="@/assets/images/home/you_2.png"
+                     alt="">
                 <p class="you-down-title">面向开发的数据集成</p>
                 <p class="you-down-intro">提供深度定制的新媒体数据服务</p>
                 <div class="you-down-btn flex-bwt-center">
@@ -129,9 +216,11 @@
               </div>
             </el-card>
             <el-card shadow="hover"
-                    :body-style="{ padding: '0px' }">
+                     :body-style="{ padding: '0px' }">
               <div class="flex-cloumn-cen">
-                <img class="you-down-skew" src="@/assets/images/home/you_3.png" alt="">
+                <img class="you-down-skew"
+                     src="@/assets/images/home/you_3.png"
+                     alt="">
                 <p class="you-down-title">多领域的权威榜单</p>
                 <p class="you-down-intro">提供多种行业领域的数据榜单</p>
                 <div class="you-down-btn flex-bwt-center">
@@ -172,11 +261,14 @@
           </p>
         </div>
         <div class="hot-down-other flex-bwt-center">
-          <div v-for="(item, i) of funcList" :key="i">
+          <div v-for="(item, i) of funcList"
+               :key="i">
             <el-card shadow="hover"
-                    cursor
-                    :body-style="{ padding: '0px' }">
-              <img class="hot-down-img" :src="require('@/assets/images/home/func_'+ item.imgIndex +'.png')" alt="">
+                     cursor
+                     :body-style="{ padding: '0px' }">
+              <img class="hot-down-img"
+                   :src="require('@/assets/images/home/func_'+ item.imgIndex +'.png')"
+                   alt="">
               <div class="flex-cloumn-cen">
                 <p class="func-title">{{item.title}}</p>
                 <p class="func-msg">{{item.msg}}</p>
@@ -215,25 +307,29 @@
         </div>
         <div class="home-apply-main flex-bwt-center">
           <el-card shadow="hover"
-                  :body-style="{ padding: '0px' }"
-                  v-for="(item, index) of applySence" :key="index"
-                  @mouseover.native="setDisplay(index)"
-                  @mouseleave.native="resetDisplay(index)">
+                   :body-style="{ padding: '0px' }"
+                   v-for="(item, index) of applySence"
+                   :key="index"
+                   @mouseover.native="setDisplay(index)"
+                   @mouseleave.native="resetDisplay(index)">
             <div class="home-apply-box flex-cloumn-cen">
-              <img :src="require('@/assets/images/home/sence_'+index+'.png')" alt="">
+              <img :src="require('@/assets/images/home/sence_'+index+'.png')"
+                   alt="">
               <p>{{item.title}}</p>
             </div>
             <!-- hover -->
             <div class="home-apply-hover">
               <div class="apply-hover-left">
                 <div class="apply-hover-des flex-ali-center">
-                  <img :src="require('@/assets/images/home/sence_'+index+'.png')" alt="">
+                  <img :src="require('@/assets/images/home/sence_'+index+'.png')"
+                       alt="">
                   <p>{{item.title}}</p>
                 </div>
                 <p>{{item.desc}}</p>
               </div>
               <img class="apply-hover-right"
-                   :src="require('@/assets/images/home/apply_'+index+'.jpg')" alt="">
+                   :src="require('@/assets/images/home/apply_'+index+'.jpg')"
+                   alt="">
             </div>
           </el-card>
         </div>
@@ -250,10 +346,12 @@
           <p></p>
         </div>
         <div class="home-footer-main">
-          <div v-for="(item, index) of 20" :key="index">
+          <div v-for="(item, index) of 20"
+               :key="index">
             <el-card shadow="hover"
-                    :body-style="{ padding: '0px' }">
-                <img :src="require('@/assets/images/home/hang_'+index+'.png')" alt="">
+                     :body-style="{ padding: '0px' }">
+              <img :src="require('@/assets/images/home/hang_'+index+'.png')"
+                   alt="">
             </el-card>
           </div>
         </div>
@@ -293,7 +391,7 @@ export default {
   },
   data () {
     return {
-      hotActive: 'wx',
+      hotActive: 'dy',
       funcActive: 'monitor',
       accountActive: '',
       accountkey: '',
@@ -344,6 +442,8 @@ export default {
       ],
       wxHotList: [],
       wbHotList: [], // 微博热文
+      toutiaoHotList: [], // 头条热文
+      dyHotList: [], // 抖音热文
       funcList: [],
       // 产品功能——新媒体监测
       funcListOne: [
@@ -411,6 +511,12 @@ export default {
           case 'wb':
             routeName = 'AccountListWb'
             break
+          case 'dy':
+            routeName = 'AccountListDy'
+            break
+          case 'toutiao':
+            routeName = 'AccountListToutiao'
+            break
           case 'article':
             routeName = 'MoreHotWx'
             break
@@ -426,7 +532,18 @@ export default {
       this.ruleForm.pageNum = 1
       this.wxHotList = []
       this.wbHotList = []
-      tab === 'wx' ? this.getWxHotList() : this.getWbHotList()
+      this.dyHotList = []
+      this.toutiaoHotList = []
+      // tab === 'wx' ? this.getWxHotList() : this.getWbHotList()
+      if (this.hotActive === 'wx') {
+        this.getWxHotList()
+      } else if (this.hotActive === 'wb') {
+        this.getWbHotList()
+      } else if (this.hotActive === 'toutiao') {
+        this.getToutiaoHotList()
+      } else {
+        this.getDyHotList()
+      }
     },
     changeFuncActive (func) {
       this.funcList = func === 'monitor' ? this.funcListOne : this.funcListTwo
@@ -434,8 +551,15 @@ export default {
     },
     // 查看更多热文
     lookMoreHot () {
-      let routeName = this.hotActive === 'wx' ? 'MoreHotWx' : 'MoreHotWb'
-      this.$router.push({ name: routeName } )
+      // let routeName = this.hotActive === 'wx' ? 'MoreHotWx' : 'MoreHotWb'
+      // this.$router.push({ name: routeName })
+      if (this.hotActive === 'wx') {
+        this.$router.push({ name: 'MoreHotWx' })
+      } else if (this.hotActive === 'wb') {
+        this.$router.push({ name: 'MoreHotWb' })
+      } else {
+        this.$router.push({ name: 'MoreHotToutiao' })
+      }
     },
     // 鼠标进入
     setDisplay (index) {
@@ -484,7 +608,16 @@ export default {
       }
       this.ruleForm.pageNum = this.pageCount
       this.wxHotList = []
-      this.hotActive === 'wx' ? this.getWxHotList() : this.getWbHotList()
+      // this.hotActive === 'wx' ? this.getWxHotList() : this.getWbHotList()
+      if (this.hotActive === 'wx') {
+        this.getWxHotList()
+      } else if (this.hotActive === 'wb') {
+        this.getWbHotList()
+      } else if (this.hotActive === 'toutiao') {
+        this.getToutiaoHotList()
+      } else {
+        this.getDyHotList()
+      }
     },
     // 获取微信热文
     getWxHotList () {
@@ -509,8 +642,25 @@ export default {
       this.$http.post(this.$api.getWbHot, obj)
         .then(res => {
           this.wbHotList = res.data.data.data
-        }).catch(() => {})
+        }).catch(() => { })
     },
+    // 获取头条热文
+    getToutiaoHotList () {
+      let obj = {
+        pageBean: {
+          pageNum: (this.ruleForm.pageNum - 1) * this.ruleForm.pageSize + 1,
+          pageSize: this.ruleForm.pageSize
+        },
+        videoOrArticle: 2
+      }
+      this.$http.post(this.$api.ttHotArticles, obj)
+        .then(res => {
+          this.toutiaoHotList = res.data.data.data
+        })
+    },
+    getDyHotList () {
+      console.log(11111)
+    }
   },
   created () {
     var oMeta = document.createElement('meta')

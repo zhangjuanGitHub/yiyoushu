@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-01-29 14:19:45
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-27 11:42:32
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-29 17:46:26
 -->
 <template>
   <div class="search-material-wrap">
@@ -14,7 +14,8 @@
       <p class="search-mater-theme">发布频次</p>
     </div>
     <div class="search-rules-num flex-bwt-center">
-      <div id="myRules" class="search-num-echarts"></div>
+      <div id="myRules"
+           class="search-num-echarts"></div>
       <div class="search-read-about flex-ali-center">
         <span>总推文</span>
         <p>{{releaseFrequency.count}}</p>
@@ -32,14 +33,18 @@
     <div class="search-rules-fenbu">
       <div class="search-fenbu-fang">
         <ul class="flex-all-center">
-          <li v-for="(item, index) of readData" :key="index">
+          <li v-for="(item, index) of readData"
+              :key="index">
             <p> <span>{{item.num}}</span>篇, 阅读数 <span>{{item.range}}</span></p>
-            <p class="search-fang-up" :style="{ background: item.color}"></p>
+            <p class="search-fang-up"
+               :style="{ background: item.color}"></p>
           </li>
         </ul>
         <ul class="search-fang-down flex-all-center">
-          <li v-for="(item, index) of readData" :key="index">
-            <p class="search-fang-icon" :style="{ background: item.color}"></p>
+          <li v-for="(item, index) of readData"
+              :key="index">
+            <p class="search-fang-icon"
+               :style="{ background: item.color}"></p>
             <p>{{item.range}}</p>
           </li>
         </ul>
@@ -47,14 +52,21 @@
       <div class="search-fenbu-list">
         <p>头条阅读数 Top<span v-html="readArticleData.length"></span></p>
         <ul>
-            <li v-for="(item, index) of readArticleData" :key="index">
-              <el-tooltip class="item" effect="light" placement="bottom"
-                          :content="item.title"
-                          v-if="item.title.length > 19">
-                <p v-html="item.title" class="lin-clamp-1" @click="targetUrl(item.id)"></p>
-              </el-tooltip>
-              <p v-else v-html="item.title" @click="targetUrl(item.id)"></p>
-            </li>
+          <li v-for="(item, index) of readArticleData"
+              :key="index">
+            <el-tooltip class="item"
+                        effect="light"
+                        placement="bottom"
+                        :content="item.title"
+                        v-if="item.title.length > 19">
+              <p v-html="item.title"
+                 class="lin-clamp-1"
+                 @click="targetUrl(item.id)"></p>
+            </el-tooltip>
+            <p v-else
+               v-html="item.title"
+               @click="targetUrl(item.id)"></p>
+          </li>
         </ul>
       </div>
     </div>
@@ -68,7 +80,8 @@
           <p>{{original.time}}</p>
         </div>
       </div>
-      <div id="myBar" class="search-point-echarts"></div>
+      <div id="myBar"
+           class="search-point-echarts"></div>
     </div>
     <div class="search-material-up">
       <p class="search-mater-theme">内容创作</p>
@@ -79,10 +92,14 @@
         <p>{{original.originNum}}</p>
       </div>
       <div class="search-cont-pro">
-        <div class="search-pro-tool" :style="{ left: `calc(${original.percentage}% - 92px)`}">原创占比<span>{{original.percentage}}</span>%
+        <div class="search-pro-tool"
+             :style="{ left: `calc(${original.percentage}% - 92px)`}">原创占比<span>{{original.percentage}}</span>%
           <p class="search-pro-tan"></p>
         </div>
-        <el-progress :stroke-width="12" :percentage="original.percentage" :format="format" :show-text="false"></el-progress>
+        <el-progress :stroke-width="12"
+                     :percentage="original.percentage"
+                     :format="format"
+                     :show-text="false"></el-progress>
       </div>
     </div>
     <div class="search-material-up">
@@ -95,7 +112,11 @@
       <p>{{leave.messagesCount}}</p>
       <span>作者回复率</span>
       <p>{{leave.repliesNum}}%</p>
-      <el-progress type="circle" :percentage="leave.repliesNum" :width="30" :stroke-width="2" :show-text="false"></el-progress>
+      <el-progress type="circle"
+                   :percentage="leave.repliesNum"
+                   :width="30"
+                   :stroke-width="2"
+                   :show-text="false"></el-progress>
     </div>
   </div>
 </template>
@@ -146,22 +167,26 @@ export default {
     },
     // 饼图
     drawPie () {
-      this.$http.post(this.$api.getReleasedNum, { biz: this.accountMsg.biz})
+      this.$http.post(this.$api.getReleasedNum, { biz: this.accountMsg.biz })
         .then(res => {
           this.releaseFrequency.count = res.data.data.count
           this.releaseFrequency.averageTweet = res.data.data.averageTweet
           this.releaseFrequency.pushTimes = res.data.data.pushTimes
           this.releaseFrequency.dailyAveragePush = res.data.data.dailyAveragePush
           let datas = res.data.data.releaseFrequency
+          // console.log(datas.length)
+          // if (datas.length > 0) {
           for (let i = 0; i < datas.length; i++) {
             if (datas[i].name === '1') {
               datas[i].name = '头条'
             } else if (datas[i].name === '2') {
               datas[i].name = '次条'
             } else {
-              datas[i].name = i+1 + '条'
+              datas[i].name = i + 1 + '条'
             }
           }
+          // }
+
           // let label = []
           // datas.forEach(i => {label.push(i.name)})
           let myPie = echarts.init(document.getElementById('myRules'))
@@ -177,12 +202,14 @@ export default {
             },
             formatter (name) {
               let str = ''
+              // if (datas.length > 0) {
               for (var i = 0; i < datas.length; i++) {
                 if (datas[i].name == name) {
-                  str = datas[i].value;
+                  str = datas[i].value
                 }
               }
-              return name + ' ' + str + '篇';
+              return name + ' ' + str + '篇'
+              // }
             },
             series: [
               {
@@ -205,11 +232,11 @@ export default {
               }
             ]
           })
-        }).catch(() => {})
+        }).catch(() => { })
     },
     // 发文趋势和内容创作
     drawBar () {
-      this.$http.post(this.$api.getReleaseTrend, { biz: this.accountMsg.biz})
+      this.$http.post(this.$api.getReleaseTrend, { biz: this.accountMsg.biz })
         .then(res => {
           this.original.time = res.data.data.time
           this.original.originNum = res.data.data.originNum
@@ -217,7 +244,7 @@ export default {
           let myBar = echarts.init(document.getElementById('myBar'))
           myBar.setOption({
             xAxis: {
-              data: ['0:00', '1:00', '2:00',  '3:00',  '4:00',  '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+              data: ['0:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
               axisTick: {
                 alignWithLabel: true
               },
@@ -227,7 +254,7 @@ export default {
                   color: '#4A8BFE',
                   width: 2,
                   type: 'solid'
-                },
+                }
               }
             },
             yAxis: {
@@ -249,9 +276,9 @@ export default {
                   color: new echarts.graphic.LinearGradient(
                     0, 0, 0, 1,
                     [
-                      {offset: 0, color: '#83bff6'},
-                      {offset: 0.5, color: '#188df0'},
-                      {offset: 1, color: '#188df0'}
+                      { offset: 0, color: '#83bff6' },
+                      { offset: 0.5, color: '#188df0' },
+                      { offset: 1, color: '#188df0' }
                     ]
                   )
                 },
@@ -259,34 +286,35 @@ export default {
               }
             ]
           })
-      }).catch(() => {})
+        }).catch(() => { })
     },
     // 互动留言
     getLiuYan () {
-      this.$http.post(this.$api.getLeaveMessage, { biz: this.accountMsg.biz})
+      this.$http.post(this.$api.getLeaveMessage, { biz: this.accountMsg.biz })
         .then(res => {
           this.leave.repliesNum = Number(res.data.data.repliesNum)
           this.leave.messagesCount = res.data.data.messagesCount
           this.leave.messagesNum = res.data.data.messagesNum
-        }).catch(() => {})
+        }).catch(() => { })
     },
     // 微信阅读数分布
     getReadArticle () {
-      this.$http.post(this.$api.getReadNumArea, { biz: this.accountMsg.biz})
+      this.$http.post(this.$api.getReadNumArea, { biz: this.accountMsg.biz })
         .then(res => {
-          this.readArticleData = res.data.data.article
-          let range = res.data.data.range
+          // this.readArticleData = res.data.data.article
+          if (res.data.data.article) {
+            this.readArticleData = res.data.data.article
+          }
+          // console.log(this.readArticleData)
+          let range = ['0~1万', '1万~3万', '3万~6万', '6万~10万']
           let value = res.data.data.value
-          let color = ['#98BB5E', '#00BAE5', '#749BB7']
-          range.unshift(0)
-          let newRange = []
-          for (let i = 0; i < range.length - 1; i++) {
-            newRange.push(range[i] + '~' + range[i+1])
+          let color = ['#98BB5E', '#98BAE5', '#00BAE5', '#749BB7']
+          if (value.length > 0) {
+            for (let i = 0; i < value.length; i++) {
+              this.readData.push({ num: value[i], range: range[i], color: color[i] })
+            }
           }
-          for (let i = 0; i < value.length; i++) {
-            this.readData.push({ num: value[i], range: newRange[i], color: color[i] })
-          }
-        }).catch(() => {})
+        }).catch(() => { })
     }
   },
   mounted () {
@@ -297,6 +325,7 @@ export default {
   },
   created () {
     this.accountId = this.$route.query.id
+    // console.log(this.accountId)
   },
   computed: {
     ...mapState({

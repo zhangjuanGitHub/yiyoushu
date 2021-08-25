@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-01-29 14:21:05
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-19 09:55:34
+ * @LastEditTime: 2021-06-29 15:37:32
 -->
 <template>
   <div class="search-material-wrap">
@@ -30,9 +30,17 @@
     <div>
       <el-table :data="basicData"
                 style="width: 100%">
+        <el-table-column label="位置"
+                          width="70">
+          <template slot-scope="scope">
+            <p v-if="scope.$index === 0"><span>头条</span></p>
+            <p v-else-if="scope.$index === 1"><span>次条</span></p>
+            <p v-else><span>{{(scope.$index + 1) + '-N'}}</span>条</p>
+          </template>
+        </el-table-column>
         <el-table-column label="发文数/发文次数"
                           prop="articleNum"
-                          width="190">
+                          width="140">
         </el-table-column>
         <el-table-column label="阅读总数/平均阅读数"
                           width="200">
@@ -108,15 +116,15 @@
             <p @click="toDrawLine(1)"
                class="search-data-operate"
                :class="{ 'search-one-data': isSelect === 1}"
-               v-if="scope.$index === 0"><span>头条</span></p>
+               v-if="scope.$index === 0"><span>查看</span></p>
             <p @click="toDrawLine(2)"
                class="search-data-operate"
                :class="{ 'search-one-data': isSelect === 2}"
-               v-else-if="scope.$index === 1"><span>次条</span></p>
+               v-else-if="scope.$index === 1"><span>查看</span></p>
             <p @click="toDrawLine(3)"
                class="search-data-operate"
                :class="{ 'search-one-data': isSelect === 3}"
-               v-else><span>{{(scope.$index + 1) + '-N'}}</span>条</p>
+               v-else><span>查看</span></p>
           </template>
         </el-table-column>
       </el-table>

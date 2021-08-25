@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangjuan
  * @Date: 2021-05-19 11:39:00
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-31 15:01:41
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-20 17:31:35
 -->
 <template>
   <div class="search-material-wrap">
@@ -141,7 +141,7 @@ export default {
         total: 0,
         originalNumber: 0,
         forwardingNumber: 0
-      },
+      }
     }
   },
   methods: {
@@ -189,7 +189,7 @@ export default {
     },
     // 饼图
     drawPie () {
-      this.$http.post(this.$api.getWbRelease, { uid: this.accountWbMsg.uid})
+      this.$http.post(this.$api.getWbRelease, { uid: this.accountWbMsg.uid })
         .then(res => {
           let datas = res.data.data
           this.releaseTotal = datas[0].value + datas[1].value
@@ -244,7 +244,7 @@ export default {
           let myBar = echarts.init(document.getElementById('myBar'))
           myBar.setOption({
             xAxis: {
-              data: ['0:00', '1:00', '2:00',  '3:00',  '4:00',  '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+              data: ['0:00', '1:00', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
               axisTick: {
                 alignWithLabel: true
               },
@@ -254,7 +254,7 @@ export default {
                   color: '#4A8BFE',
                   width: 2,
                   type: 'solid'
-                },
+                }
               }
             },
             yAxis: {
@@ -276,9 +276,9 @@ export default {
                   color: new echarts.graphic.LinearGradient(
                     0, 0, 0, 1,
                     [
-                      {offset: 0, color: '#83bff6'},
-                      {offset: 0.5, color: '#188df0'},
-                      {offset: 1, color: '#188df0'}
+                      { offset: 0, color: '#83bff6' },
+                      { offset: 0.5, color: '#188df0' },
+                      { offset: 1, color: '#188df0' }
                     ]
                   )
                 },
@@ -286,7 +286,7 @@ export default {
               }
             ]
           })
-      }).catch(() => {})
+        }).catch(() => {})
     },
     // 粉丝趋势
     drawFans () {
@@ -298,7 +298,7 @@ export default {
             title: {},
             tooltip: {
               trigger: 'axis',
-              transitionDuration:0
+              transitionDuration: 0
             },
             legend: {},
             xAxis: {
@@ -332,20 +332,19 @@ export default {
                 },
                 symbolSize: 8, // 拐点大小
                 areaStyle: {
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                        offset: 0,
-                        color: '#FFBF95'
-                    }, {
-                        offset: 1,
-                        color: '#FFF8F4'
-                    }])
+                  color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    offset: 0,
+                    color: '#FFBF95'
+                  }, {
+                    offset: 1,
+                    color: '#FFF8F4'
+                  }])
                 },
                 data: res.data.data.count
               }
             ]
           })
         }).catch(() => {})
-      
     }
   },
   mounted () {

@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-18 11:39:02
+ * @LastEditTime: 2021-06-29 14:38:13
 -->
 <template>
   <div class="content-show article-detail">
@@ -62,7 +62,6 @@ export default {
     getArticle () {
       this.$http.post(this.$api.comparisonContent, this.params)
         .then(res => {
-          console.log(res.data.data)
           this.articleDertail = res.data.data
         }).catch(() => { })
     }

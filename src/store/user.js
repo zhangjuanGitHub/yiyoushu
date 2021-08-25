@@ -1,8 +1,8 @@
 /*
  * @Author: MaiChao
  * @Date: 2021-01-28 11:16:35
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-01 09:56:11
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-01 16:19:33
  */
 const state = {
   userInfo: {}, // 用户信息
@@ -11,7 +11,8 @@ const state = {
   chatMessageList: [], // 站内消息列表（聊天）
   chatMessageNum: 0, // 站内消息条数，控制查看更多显示隐藏
   singleScrollBottom: [], // 单发信息，每次滚动到最底部
-  messageChat: {} // 判断外层列表是否有当前条新消息，有则消息状态改为有消息，没有则新添加一条
+  messageChat: {}, // 判断外层列表是否有当前条新消息，有则消息状态改为有消息，没有则新添加一条
+  menuPermission: []
 }
 const mutations = {
   // 获取token
@@ -29,7 +30,12 @@ const mutations = {
   userSignout (state) {
     state.userInfo = null
     state.token = null
+    state.menuPermission = []
     sessionStorage.clear()
+  },
+  menuPermission (state, val) {
+    // console.log(state)
+    state.menuPermission = val
   }
 }
 const actions = {

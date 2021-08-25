@@ -111,6 +111,7 @@ export default {
   getSensitiveList: '/front/monitor/weixin/findErrorWord', // post 获取错敏监测列表
   getSensPie: '/front/monitor/weixin/findErrorWordNum', // post 获取错敏饼图
   getSensArticle: '/front/monitor/weixin/findErrorArticeContent', // get 获取错敏文章内容
+
   // 内容监测
   getAccountCompanyWb: '/front/monitor/weibo/findWeiBoAccountData', // 发布时效监测,账号检测微博博主
   findInteractivityListWb: '/front/monitor/weibo/findInteractivityList', // 内容监测 -- 互动性监测微博wb
@@ -154,6 +155,8 @@ export default {
   getAccountList: '/front/comparison/weixin/findAccountByDepartment', // post 根据单位查账号信息
   // 趋势查询
   behavioralData: '/front/trendQuery/behavioralData', // 趋势查询
+  trendHotWords: '/front/trendQuery/hotWords', // 评论热词
+  trendHotMessage: '/front/trendQuery/wxMessages', // 热门评论
   // 新账号对比
   newAccCompare: '/front/comparison/findComparison', // post 新账号对比
   getHistory: '/front/comparison/findQueryLogList', // get 查看对比历史
@@ -209,6 +212,7 @@ export default {
   classification: '/front/GlobalInformation/classification', // get 获取登录账号的类别和职能
   accountInformation: '/front/GlobalInformation/accountInformation', // post 获取全局账号信息
   articleInformation: '/front/GlobalInformation/articleInformation', // post 获取全局文章信息
+  sameAccountInformation: '/front/GlobalInformation/accountByAuthInfo', // post 获取全局账号信息 同主体账号
 
   // 账号回溯
   getByUrlsss: '/front/review/wechat/accountUrls',
@@ -257,9 +261,84 @@ export default {
   wbType: '/front/weibo/ranking/type', // get 榜单获取类别
 
   accountUrlsWb: '/front/weibo/ranking/accountUrls', // 自定义添加账号根据url 添加账号
+  // 正义网榜单
+  getInfoWx: '/front/wechat/weight/seeting/getInfo', // get 微信榜单权重
+  getInfoWb: '/front/weibo/weight/seeting/getInfo', // get 微博榜单权重
+  saveInfoWx: '/front/wechat/weight/seeting/save', // 微信权重保存
+  saveInfoWb: '/front/weibo/weight/seeting/save', // 微博权重保存
+  saveRanking: '/front/ranking/weight/save', // 生成榜单
+  rankingList: '/front/ranking/weight/list', // 榜单列表
+  rankingListDelete: 'front/ranking/weight/delete', // get 榜单列表删除
+  getRankingHead: '/front/ranking/weight/get', // get 单个榜单数据获取 表头
+  rankingWxList: '/front/ranking/weight/wechat/score/list', // 正义榜微信榜单列表
+  rankingWbList: '/front/ranking/weight/weibo/score/list', // 正义榜微博榜单列表
+  rankingWxExport: '/front/ranking/weight/wechat/score/export', // 正义榜微信榜单列表导出
+  rankingWbExport: '/front/ranking/weight/weibo/score/export', // 正义榜微博榜单列表导出
+  rankingWxExportInfo: '/front/ranking/weight/wechat/score/exportInfo', // 正义榜微信榜单原始列表导出
+  rankingWbExportInfo: '/front/ranking/weight/weibo/score/exportInfo', // 正义榜微博榜单原始列表导出
+
+  // 菜单控制
+  menuPermission: '/front/menuPermission/query', // 榜单菜单权限控制
 
   // 文章类别新增
   fourProsecution: '/front/HomePage/proportionOfArticleProcuratorial', // 根据biz查询该公众号文章四大检察占比
   tenBusiness: '/front/HomePage/proportionOfArticleBusiness', // 根据biz查询该公众号文章十大业务占
-  checkSubscribe: '/front/wechatActual/checkSubscribe' // 判断账号是否被关注
+  checkSubscribe: '/front/wechatActual/checkSubscribe', // 判断账号是否被关注
+
+  // 头条
+  // 账号监测 头条
+  findAccountData: '/front/monitor/toutiao/findAccountData', // post 获取账号监测, 发布时效监测  level:1 单位
+  findInteractivityListToutiao: '/front/monitor/toutiao/findInteractivityList', // 内容监测 -- 互动性监测
+  toutiaofindAccountPertinence: '/front/monitor/toutiao/findAccountPertinence', // 头条 -- 文章相关性分析 列表
+  findArticlePertinenceListToutiao: '/front/monitor/toutiao/findArticlePertinenceList', // 头条-- 相关性文章列表 （点击相关性列表的数字展示的文章列表）
+  findArticlePertinenceChartToutiao: '/front/monitor/toutiao/findArticlePertinenceChart', // 相关性文章详情 --折线图
+  findArticlePertinencePieChartToutiao: '/front/monitor/toutiao/findArticlePertinencePieChart', // 相关性文章详情 --饼状图
+  // 首页 头条
+  ttHotArticles: '/front/HomePage/ttHotArticles', // 头条热文
+  ttAssociation: '/front/HomePage/ttAssociation', // 头条账号搜索联想词
+  queryTtAccount: '/front/HomePage/queryTtAccount', // 首页头条账号搜索
+  ttTrendOfPublication: '/front/HomePage/ttTrendOfPublication', // 头条-发布规律-发文趋势
+  ttFansTrend: '/front/HomePage/ttFansTrend', // 头条-发布规律-粉丝趋势
+  ttTypeRatio: '/front/HomePage/ttTypeRatio', // 头条-文章类别-文章占比 0 ： 文章  1 视频 2 ：小视频 3 微头条
+  ttDailyNumberOfPapers: '/front/HomePage/ttDailyNumberOfPapers', // 头条-文章类别-发文趋势
+  queryTtArticleByUserIdAndType: '/front/HomePage/queryTtArticleByUserIdAndType', // 头条-文章类别-头条列表  历史推文-历史头条列表
+  ttProportionOfTypes: '/front/HomePage/ttProportionOfTypes', // 头条-文章类别-文章类别数量
+  // queryTtArticleByUserIdAndType: '/front/HomePage/queryTtArticleByUserIdAndType', // 头条-历史推文-历史头条列表
+  ttDetails: '/front/HomePage/ttDetails', // 头条-历史推文-文章详情
+  ttMessage: '/front/HomePage/ttMessage', // 头条-历史推文-留言
+  queryTtDetails: '/front/HomePage/queryTtDetails', // 首页-头条账号详细信息
+  ttBehaviorDataSummary: '/front/HomePage/ttBehaviorDataSummary', // 基础数据服务-数据统计
+  ttReadTrend: '/front/HomePage/ttReadTrend', // 基础数据服务-阅读数统计
+  ttCommentTrend: '/front/HomePage/ttCommentTrend', // 基础数据服务-评论趋势
+  ttForwardTrend: '/front/HomePage/ttForwardTrend', // 基础数据服务-转发趋势
+  ttDiggTrend: '/front/HomePage/ttDiggTrend', // 基础数据服务-点赞趋势
+  searchWeiboArticle: '/front/HomePage/home/searchWeiboArticle', // 微博查询
+  searchToutiaoArticle: '/front/HomePage/home/searchToutiaoArticle', // 头条查询
+  toutiaoNotCollect: 'front/HomePage/toutiaoNotCollect', // 申请采集
+  // 头条榜单
+  keywordToutiao: '/front/toutiao/ranking/account/keyword', // 自定义榜单-添加-账号查找
+  listDataToutiao: '/front/follow/account/listData', // 自定义榜单-添加-收藏列表 isExist ： 标记是否被次榜单收藏 （rankingUserId 不为空 才有值）
+  deleteToutiao: '/front/wechat/ranking/user/item/delete', // get 自定义移除单条公众号
+  delToutiao: '/front/follow/account/del', // get  取消收藏
+  addToutiao: '/front/follow/account/add', // get  收藏
+  getUserToutiaoVideo: '/front/toutiao/article/getUserVideo', // 自定义榜单 视频列表
+  getZFToutiaoVideo: '/front/toutiao/article/getZFToutiaoVideo', // 政府视频列表
+  getZFToutiaoArticle: '/front/toutiao/article/getZFToutiaoArticle', // 政府文章列表
+  getQYToutiaoVideo: '/front/toutiao/article/getQYToutiaoVideo', // 企业视频文章
+  getQYToutiaoArticle: '/front/toutiao/article/getQYtoutiaoArticle', // 企业文章
+  getUserToutiaoArticle: '/front/toutiao/article/getUserArticle', // 自定义榜单 文章
+  userToutiaoListData: '/front/toutiao/ranking/userListData', // 自定义榜单
+  qyToutiaoListData: '/front/toutiao/ranking/qyListData', // 企业榜单
+  zfToutiaoListData: '/front/toutiao/ranking/zfListData', // 政府榜单
+
+  // 头条账号分析
+  findQueryToutiao: '/front/analyse/toutiao/findQueryLogList', // get 账号分析 -- 查询记录
+  addQueryLogToutiao: '/front/analyse/toutiao/addQueryLog', // 账号分析 -- 添加查询记录
+  delQueryLogToutiao: '/front/analyse/toutiao/delQueryLog', // get 账号分析 -- 删除查询记录
+  addAnalyseAccountToutiao: '/front/analyse/toutiao/addAnalyseAccount', // 账号分析 -- 添加任务
+  delAnalyseAccountToutiao: '/front/analyse/toutiao/delAnalyseAccount', // 账号分析 - 批量删除
+  findAnalyseAccountToutiao: '/front/analyse/toutiao/findAnalyseAccount', // 账号分析 -- 任务列表展示
+  findArticleBehavioralDataToutiao: '/front/analyse/toutiao/findArticleBehavioralData', // 分析详情 -- 文章列表 -- 内容分析
+  findArticleBehavioralData3: '/front/analyse/toutiao/findArticleBehavioralData', // 分析详情 -- 文章列表 -- 行为数据分析
+  findAnalyseParticulars: '/front/analyse/toutiao/findAnalyseParticulars' // get 分析详情页面
 }

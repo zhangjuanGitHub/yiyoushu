@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-30 17:11:06
+ * @LastEditTime: 2021-08-03 13:42:56
  * 其他文章数量改为非涉检文章数量
 -->
 <template>
@@ -70,7 +70,7 @@
             </template>
           </el-table-column> -->
           <el-table-column prop="nickname"
-                           label="账号信息">
+                           label="公众号">
             <template slot-scope='scope'>
               <div class="account-infor flex-ali-center cursor" @click="tabsCharts(scope.row)">
                 <img :src="scope.row.hd_head_img"
@@ -183,10 +183,13 @@ export default {
       this.getTableData()
       this.drawLine()
     },
+    // tabsCharts (row) {
+    //   this.ruleForm.bizList = []
+    //   this.ruleForm.bizList.push(row.biz)
+    //   this.drawLine()
+    // },
     tabsCharts (row) {
-      this.ruleForm.bizList = []
-      this.ruleForm.bizList.push(row.biz)
-      this.drawLine()
+      this.$router.push({ name: 'ReleaseRules', query: { id: row.biz } })
     },
     // 折线图
     drawLine () {
@@ -492,9 +495,10 @@ export default {
   height: 300px;
 }
 .account-infor img {
-  height: 60px;
-  width: 60px;
-  margin-right: 20px;
+  height: 46px;
+  width: 46px;
+  margin-right: 8px;
+  border-radius: 50%;
 }
 .picture-num i {
   margin-left: 5px;

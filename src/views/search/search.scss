@@ -71,7 +71,8 @@
 .search-left-action {
   .left-action-up {
     color: #F79406;
-    font-size: 18px;
+    // font-size: 18px;
+    font-size: 16px;
     font-family: Microsoft YaHei;
   }
   .left-action-down {
@@ -480,7 +481,7 @@
       }
     }
     .search-fang-up {
-      width: 230px;
+      width: 190px;
       height: 20px;
     }
     .search-fang-down {
@@ -997,7 +998,7 @@
   }
   .account-list-yizhi p {
     font-size: 34px;
-    // font-weight: bold;
+    cursor: pointer;
     font-family: Microsoft YaHei;
     color: rgba(255,120,0,1);
     margin-right: 10px;

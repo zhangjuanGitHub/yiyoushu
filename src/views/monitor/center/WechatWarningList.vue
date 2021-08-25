@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-07 15:31:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-17 19:20:31
+ * @LastEditTime: 2021-08-03 10:34:48
 -->
 <template>
   <div class="real-time content-box">
@@ -316,9 +316,9 @@ export default {
     getKeywordsList () {
       this.$http.post(this.$api.keyWordsList, this.ruleForm)
         .then(res => {
-          console.log(res)
+          // console.log(res)
           if (res.data.code === 200) {
-            console.log(res.data.data.content.length)
+            // console.log(res.data.data.content.length)
             // if (res.data.data.content <= 0) {
             //   this.dialogVisible = true
             // } else {
@@ -326,7 +326,7 @@ export default {
             this.total = res.data.data.totalElements
             // }
           }
-          console.log(this.tableData)
+          // console.log(this.tableData)
         }).catch(() => { })
     },
     // 展示创建弹框
@@ -344,7 +344,7 @@ export default {
           } else if (this.creadForm.checkTitle == '0' && this.creadForm.checkContent == '0') {
             this.$message.warning('渠道至少选一个!')
           } else {
-            console.log(this.creadForm)
+            // console.log(this.creadForm)
             this.$http.post(this.$api.saveKeyWords, this.creadForm)
               .then(res => {
                 if (res.data.data !== null) {

@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangjuan
  * @Date: 2021-04-29 15:08:54
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-28 15:45:42
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-02 15:00:48
 -->
 <template>
   <div class="account">
@@ -160,14 +160,15 @@
                 <el-table-column label="账号信息"
                                  width="300">
                   <template slot-scope='scope'>
-                    <div class="account-msg-box flex-ali-center cursor"
-                         @click="targetUrl(scope.row.biz)">
+                    <div class="account-msg-box flex-ali-center cursor">
                       <img :src="scope.row.cover || undefinedUrl "
-                           alt="">
+                           alt="" @click="targetUrl(scope.row.biz)">
                       <div class="account-msg">
                         <p class="lin-clamp-1"
-                           v-html="scope.row.nickname"></p>
-                        <p class="lin-clamp-1">微信号：<span>{{scope.row.alias}}</span></p>
+                           v-html="scope.row.nickname" @click="targetUrl(scope.row.biz)"></p>
+                        <p class="lin-clamp-1 wxh" @click="targetUrl(scope.row.biz)">微信号：<span>{{scope.row.alias}}</span></p>
+                        <p v-if="scope.row.auth_info" class="lin-clamp-1 rz" @click="goUrl(scope.row.auth_info)">认证：<img src="@/assets/images/monitor/rz4.png"><span>{{scope.row.auth_info}}</span></p>
+                        <p v-else class="lin-clamp-1">认证：<img src="@/assets/images/monitor/rz4.png"><span>暂无认证主体</span></p>
                       </div>
                     </div>
                   </template>
@@ -390,7 +391,8 @@ export default {
           value: '3',
           label: '昵称'
         }
-      ]
+      ],
+      time: ''// 带到同主体账号的时间
     }
   },
   computed: {
@@ -685,6 +687,7 @@ export default {
     // 全局账号
     getAccountList () {
       // console.log(this.classList)
+      this.time = this.publishTime
       this.noData = false
       if (this.publishTime.length > 0) {
         this.ruleForm.startTime = this.publishTime[0]
@@ -775,6 +778,10 @@ export default {
     // 跳转历史推文
     targetUrl (biz) {
       this.$router.push({ 'name': 'HistoryTweets', query: { id: biz } })
+    },
+    // 认证跳转
+    goUrl (authInfo) {
+      this.$router.push({ 'name': 'WholeAccountDetail', query: { authInfo: authInfo, time1: this.time[0], time2: this.time[1] } })
     }
   },
   components: {
@@ -984,6 +991,25 @@ export default {
   height: 46px;
   border-radius: 50%;
   margin-right: 5px;
+}
+.account-msg-box{
+  margin-bottom:0px;
+}
+.account-msg img{
+  width:18px;
+  height:18px;
+  margin-bottom:-2px;
+}
+.account-msg{
+  .wxh{
+    font-size:13px;
+  }
+  .rz{
+    color:#707277;
+    span{
+      color: #252934;
+    }
+  }
 }
 .table-all {
   width: 100%;

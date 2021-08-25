@@ -2,8 +2,8 @@
  * @Author: MaiChao
  * @Description: 账号管理
  * @Date: 2021-02-26 09:42:59
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-01 16:04:56
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-15 18:16:16
 -->
 <template>
   <div class="manage">
@@ -38,6 +38,10 @@
                  src="@/assets/images/setting/type-1-0.png" alt=""
                  class="cursor" @click="changeType(1)">
             <img v-else-if="!showType[1]" src="@/assets/images/setting/type-1-1.png" alt="">
+            <img v-if="showType[2]"
+                 src="@/assets/images/setting/type-2-0.png" alt=""
+                 class="cursor" @click="changeType(2)">
+            <img v-else-if="!showType[2]" src="@/assets/images/setting/type-2-1.png" alt="">
 
             <!-- <img v-if="showType[2]"
                  src="@/assets/images/setting/type-2-0.png" alt=""
@@ -68,14 +72,14 @@ export default {
     tabsAll (name) {
       // this.type = 1
       this.showType = [true, true, true, true]
-      this.showType[this.type-1] = false
+      this.showType[this.type - 1] = false
       this.$router.push({ name: name })
     },
     changeType (index) {
       this.showType = [true, true, true, true]
       this.showType[index] = false
-      this.type = index+1
-    },
+      this.type = index + 1
+    }
   },
   components: {
     vMenu

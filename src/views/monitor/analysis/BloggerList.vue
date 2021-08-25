@@ -3,7 +3,7 @@
  * @Description:
  * @Date: 2021-03-05 10:06:51
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-01 17:27:28
+ * @LastEditTime: 2021-06-07 18:40:15
 -->
 <template>
   <div class="interaction content-box">
@@ -344,39 +344,10 @@ export default {
           }
         }).catch(() => { })
     },
-    // 搜索账号列表
-    submitSearch () {
-      if (this.queryText) {
-        this.addRecord()
-        this.$refs.child ? this.$refs.child.handleCurrentChange(1) : this.searchQuery()
-      } else {
-        this.$message.warning('请输入搜索内容')
-      }
-      // this.record.push(this.queryText)
-    },
-    // 获取搜索记录
-    getRecord () {
-      this.$http.get(this.$api.findQueryLogList)
-        .then(res => {
-          this.record = res.data.data
-        }).catch(() => { })
-    },
-    // 添加搜索记录
-    addRecord () {
-      this.$http.post(this.$api.addQueryLogWb, { nickname: this.queryText })
-        .then(res => { }).catch(() => { })
-    },
-    // 删除搜索记录
-    deleteRecord () {
-      this.$http.get(this.$api.delQueryLog)
-        .then(res => {
-          this.record = []
-          this.$message.success('删除记录成功！')
-        }).catch(() => { })
-    },
     listenerSubmit (e) {
       if (e.keyCode === 13) {
-        this.submitSearch()
+        // this.submitSearch()
+        this.searchList()
       }
     },
     // 任务列表的
@@ -490,7 +461,7 @@ export default {
     }
   },
   created () {
-    this.getRecord()
+    // this.getRecord()
     this.getTaskList()
     // this.getTime()
     // this.getAccountList()

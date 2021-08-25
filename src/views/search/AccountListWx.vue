@@ -3,46 +3,57 @@
  * @Description:
  * @Date: 2021-02-01 10:31:23
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-10 09:25:43
+ * @LastEditTime: 2021-07-30 15:43:15
 -->
 <template>
   <div class="account-list-wrap">
     <!-- 搜索框 -->
     <div class="home-up-wrap">
       <div class="home-up flex-ali-center">
-        <img src="@/assets/images/login/yys.png" alt="">
+        <img src="@/assets/images/login/yys.png"
+             alt="">
         <div class="home-search-box flex-cloumn">
           <div class="home-search-keyword flex-ali-center">
             <el-menu :default-active="accountActive"
-                      mode="horizontal"
-                      @select="handleSelect"
-                      text-color="#6B798E">
+                     mode="horizontal"
+                     @select="handleSelect"
+                     text-color="#6B798E">
               <el-menu-item index="wx">公众号</el-menu-item>
               <el-menu-item index="wb">微博号</el-menu-item>
+              <el-menu-item index="toutiao">头条号</el-menu-item>
               <el-menu-item index="dy">抖音号</el-menu-item>
               <el-menu-item index="article">找文章</el-menu-item>
             </el-menu>
           </div>
           <div>
+            <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                      v-model="queryText"
+                      v-if="accountActive === 'article'">
+              <el-button type="primary"
+                         slot="append"
+                         icon="el-icon-search"
+                         @click="Searchkeyword"></el-button>
+            </el-input>
             <el-autocomplete v-model="queryText"
-                            v-if="accountActive === 'wx' || accountActive === 'wb'"
-                            :fetch-suggestions="querySearch"
-                            placeholder="新媒体搜索引擎，你想要的都在这里哦"
-                            :trigger-on-focus="historyList.length > 0"
-                            @select="Searchkeyword">
-              <el-button type="primary" slot="append" icon="el-icon-search" @click="Searchkeyword"></el-button>
+                             v-else
+                             :fetch-suggestions="querySearch"
+                             placeholder="新媒体搜索引擎，你想要的都在这里哦"
+                             :trigger-on-focus="historyList.length > 0"
+                             @select="Searchkeyword">
+              <el-button type="primary"
+                         slot="append"
+                         icon="el-icon-search"
+                         @click="Searchkeyword"></el-button>
               <template slot-scope="{ item }">
                 <div class="search-autotip-box flex-ali-center">
-                  <img :src="item.url" alt="" class="search-autotip-img" v-if="item.url">
-                  <p class="search-autotip-p" v-html="item.value"></p>
+                  <img :src="item.url" alt=""
+                       class="search-autotip-img"
+                       v-if="item.url">
+                  <p class="search-autotip-p"
+                     v-html="item.value"></p>
                 </div>
               </template>
             </el-autocomplete>
-            <el-input placeholder="新媒体搜索引擎，你想要的都在这里哦"
-                      v-model="queryText"
-                      v-else-if="accountActive === 'article'">
-              <el-button type="primary" slot="append" icon="el-icon-search" @click="Searchkeyword"></el-button>
-            </el-input>
           </div>
         </div>
       </div>
@@ -73,26 +84,36 @@
             </p> -->
           </div>
           <p class="account-list-key">关键词“<span>{{result}}</span>”<span>{{total.total}}</span>条结果。若无合适结果，请
-            <span class="sort_active cursor" @click="$router.push({ name: 'AddAccount' })">点此收录</span></p>
+            <span class="sort_active cursor"
+                  @click="$router.push({ name: 'AddAccount' })">点此收录</span>
+          </p>
         </div>
         <ul v-if="isSearched">
           <li class="flex-bwt-center account-list-li"
-              v-for="(item, index) of accountList" :key="index">
+              v-for="(item, index) of accountList"
+              :key="index">
             <div class="account-list-box">
               <div class="account-list-des flex-ali-center">
                 <img class="account-list-ava cursor"
-                     :src="item.ori_head_img" alt=""
+                     :src="item.ori_head_img"
+                     alt=""
                      @click="$router.push({ name: 'AccountMaterial' , query: { id: item.biz }})">
                 <div class="flex-cloumn">
                   <div class="flex-ali-center account-list-name">
                     <p @click="$router.push({ name: 'AccountMaterial' , query: { id: item.biz }})"
-                        class="cursor" v-html="item.nickname"></p>
+                       class="cursor"
+                       v-html="item.nickname"></p>
                     <el-popover placement="top"
                                 width="60"
                                 trigger="hover"
-                                 v-if="item.qrcode">
-                      <img class="account-popover" :src="item.qrcode" alt="">
-                      <img slot="reference" class="sao cursor" src="@/assets/images/home/sao.png" alt="">
+                                v-if="item.qrcode">
+                      <img class="account-popover"
+                           :src="item.qrcode"
+                           alt="">
+                      <img slot="reference"
+                           class="sao cursor"
+                           src="@/assets/images/home/sao.png"
+                           alt="">
                     </el-popover>
                     <div class="flex-ali-center cursor">
                       <el-popover placement="top"
@@ -100,18 +121,20 @@
                                   v-if="item.is_follow === 0"
                                   content="点击即可收藏">
                         <img src="@/assets/images/home/collect_1.png"
-                            @click="submitCollect(item, index, 1)"
-                            slot="reference" alt=""
-                            class="sao">
+                             @click="submitCollect(item, index, 1)"
+                             slot="reference"
+                             alt=""
+                             class="sao">
                       </el-popover>
                       <el-popover placement="top"
                                   trigger="hover"
                                   v-if="item.is_follow === 1"
                                   content="取消收藏">
                         <img src="@/assets/images/home/collect_2.png"
-                            @click="submitCollect(item, index, 0)"
-                            slot="reference" alt=""
-                            class="sao">
+                             @click="submitCollect(item, index, 0)"
+                             slot="reference"
+                             alt=""
+                             class="sao">
                       </el-popover>
                     </div>
                     <!-- 特殊关注 添加预警-->
@@ -121,46 +144,58 @@
                                   v-if="item.is_early_warning_account === 0"
                                   content="点击即可添加预警">
                         <img src="@/assets/images/home/special_1.png"
-                            @click="submitWarning(item, index, 1)"
-                            slot="reference" alt=""
-                            class="sao">
+                             @click="submitWarning(item, index, 1)"
+                             slot="reference"
+                             alt=""
+                             class="sao">
                       </el-popover>
                       <el-popover placement="top"
                                   trigger="hover"
                                   v-if="item.is_early_warning_account === 1"
                                   content="取消预警">
                         <img src="@/assets/images/home/special_2.png"
-                            @click="submitWarning(item, index, 0)"
-                            slot="reference" alt=""
-                            class="sao">
+                             @click="submitWarning(item, index, 0)"
+                             slot="reference"
+                             alt=""
+                             class="sao">
                       </el-popover>
                     </div>
                   </div>
-                  <div class="flex-ali-center" style="margin-bottom: 10px">
+                  <div class="flex-ali-center"
+                       style="margin-bottom: 10px">
                     <p class="account-list-num">微信号：<span v-html="item.alias"></span></p>
-                    <p class="account-list-num" v-if="item.auth_info">认证主体：
-                      <i class="el-icon-circle-check"></i><span v-html="item.auth_info"></span></p>
+                    <p class="account-list-num"
+                       v-if="item.auth_info">认证主体：
+                      <i class="el-icon-circle-check"></i><span v-html="item.auth_info"></span>
+                    </p>
                   </div>
-                  <p class="account-list-type" v-html="item.tags"></p>
+                  <p class="account-list-type"
+                     v-html="item.tags"></p>
                 </div>
               </div>
               <p class="account-list-intro">功能介绍：<span v-html="item.introduction"></span></p>
             </div>
             <div class="account-list-yizhi flex-ali-center">
               <!-- <p v-html="item.yizhishu"></p> -->
-              <el-tooltip class="item" effect="dark" content="上周易指数" placement="top">
+              <el-tooltip class="item"
+                          effect="dark"
+                          content="上周易指数"
+                          placement="top">
                 <!-- <i class="el-icon-question cursor"></i> -->
                 <p v-html="item.yizhishu"></p>
               </el-tooltip>
             </div>
           </li>
         </ul>
-        <div v-else class="flex-cloumn-cen account-list-undefined">
-          <img src="@/assets/images/search/undefined.png" alt="">
+        <div v-else
+             class="flex-cloumn-cen account-list-undefined">
+          <img src="@/assets/images/search/undefined.png"
+               alt="">
           <p>抱歉，没有找到关于“<span>{{queryText}}</span>”的结果。</p>
           <el-button plain>换个词试试？您也可以
             <span class="is_red cursor"
-                  @click="$router.push({ name: 'AddAccount' })">添加喜欢的公众号</span></el-button>
+                  @click="$router.push({ name: 'AddAccount' })">添加喜欢的公众号</span>
+          </el-button>
         </div>
         <set-page @pagingChange="pagingChange"
                   :total="total.total"
@@ -174,6 +209,7 @@
 <script>
 const getSearchApi = new Map().set('wx', 'wxSearch').set('wb', 'wbSearch')
 const getcollectApi = new Map().set('concern', 'setCollect').set('cancel', 'cancelCollect')
+const cbApi = new Map().set('wx', 'wxSearchTip').set('wb', 'wbSearchTip').set('toutiao', 'ttAssociation').set('dy', 'dySearchTip')
 export default {
   name: 'accountlist',
   components: {},
@@ -205,6 +241,9 @@ export default {
     },
     handleSelect (type) {
       this.accountActive = type
+      if (type == 'article') {
+        this.$router.push({ name: 'FindArticle', query: { type: this.accountActive } })
+      }
     },
     Searchkeyword () {
       if (this.accountActive === 'wx') {
@@ -221,6 +260,12 @@ export default {
           case 'wb':
             routeName = 'AccountListWb'
             break
+          case 'dy':
+            routeName = 'AccountListDy'
+            break
+          case 'toutiao':
+            routeName = 'AccountListToutiao'
+            break
           case 'article':
             routeName = 'MoreHotWx'
             break
@@ -235,33 +280,23 @@ export default {
       if (this.historyList.length > 0 && !this.queryText) { // 历史记录
         cb(this.historyList)
       } else if (this.queryText) {
-        if (this.accountActive === 'wx') {
-          let obj = {
-            searchSource: 1, // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
-            queryText: this.queryText
-          }
-          this.$http.post(this.$api.wxSearchTip, obj)
-            .then(res => {
-              let newRes = res.data.data
-              for (let i = 0; i < newRes.length; i++) {
-                if (newRes[i].url === '') {
-                  newRes[i].url = this.undefinedUrl
-                }
-              }
-              cb(newRes)
-            }).catch(() => {})
-        } else if (this.accountActive === 'wb') {
-          this.$http.post(this.$api.wbSearchTip, { queryText: this.queryText })
-            .then(res => {
-              let newRes = res.data.data
-              for (let i = 0; i < newRes.length; i++) {
-                if (newRes[i].url === '') {
-                  newRes[i].url = this.undefinedUrl
-                }
-              }
-              cb(newRes)
-            }).catch(() => {})
+        let api = cbApi.get(this.accountActive)
+        let obj = {
+          queryText: this.queryText
         }
+        if (this.accountActive === 'wx') {
+          obj.searchSource = 1 // 搜索源 1:微信 2：微博 3：抖音 4：头条 5：一点资讯
+        }
+        this.$http.post(this.$api[api], obj)
+          .then(res => {
+            let newRes = res.data.data
+            for (let i = 0; i < newRes.length; i++) {
+              if (newRes[i].url === '') {
+                newRes[i].url = this.undefinedUrl
+              }
+            }
+            cb(newRes)
+          }).catch(() => { })
       }
     },
     // 存历史记录
@@ -315,12 +350,10 @@ export default {
           }
           this.total = res.data.data.shift()
           this.getCookie()
-        }).catch(() => {})
+        }).catch(() => { })
     },
     // 收藏和取消收藏
     submitCollect (item, index, isCollect) {
-      // item.is_follow = isCollect
-      // this.$set(this.accountList, index, item)
       let getApi = ''
       let obj = {
         account: item.biz,
@@ -345,14 +378,14 @@ export default {
     },
     // 添加预警
     submitWarning (item, index, isCollect) {
-      item.is_early_warning_account = isCollect
-      this.$set(this.accountList, index, item)
       let obj = {
         biz: item.biz,
         status: item.is_early_warning_account === 0 ? 0 : 1
       }
       this.$http.post(this.$api.accountChange, obj)
         .then(res => {
+          item.is_early_warning_account = isCollect
+          this.$set(this.accountList, index, item)
           if (isCollect === 1) {
             this.$message.success('预警开始！')
           } else {

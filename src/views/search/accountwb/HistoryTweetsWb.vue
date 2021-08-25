@@ -2,7 +2,7 @@
  * @Author: zhangjuan
  * @Date: 2021-05-19 11:40:25
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-04 11:20:01
+ * @LastEditTime: 2021-06-29 15:16:47
 -->
 <template>
   <div class="search-material-wrap">
@@ -108,6 +108,11 @@
         <el-table-column prop="pubtime"
                         label="发布时间"
                         width="160">
+        </el-table-column>
+        <el-table-column prop="play_count"
+                        label="播放次数"
+                        width="100"
+                        v-if="typeActive === 2">
         </el-table-column>
         <el-table-column label="点赞数"
                         width="130">

@@ -8,24 +8,39 @@
       <span class="tabs-title"
             :class="activeTab==='wb'?'isActive':''"
             @click="tabsAll('wb', 2)">微博</span>
+      <span class="tabs-title"
+            :class="activeTab==='toutiao'?'isActive':''"
+            @click="tabsAll('toutiao', 3)">今日头条</span>
+      <!-- <span class="tabs-title"
+            :class="activeTab==='douyin'?'isActive':''"
+            @click="tabsAll('douyin', 4)">抖音</span> -->
     </div>
     <div class="pub-monitor-main">
       <prescription-wx v-if="this.activeTab==='wx'"
                        @changeTab="tabsAll"></prescription-wx>
-      <prescription-wb v-if="this.activeTab==='wb'"></prescription-wb>
+      <prescription-wb v-if="this.activeTab==='wb'"
+                       @changeTab="tabsAll"></prescription-wb>
+      <prescription-toutiao v-if="this.activeTab==='toutiao'"
+                            @changeTab="tabsAll"></prescription-toutiao>
+      <!-- <prescription-douyin v-if="this.activeTab==='douyin'"
+                            @changeTab="tabsAll"></prescription-douyin> -->
     </div>
   </div>
 </template>
 <script>
 import prescriptionWx from './PrescriptionWx'
 import prescriptionWb from './PrescriptionWb'
+import prescriptionToutiao from './PrescriptionToutiao'
+// import prescriptionDouyin from './PrescriptionDouyin'
 // import FileSaver from 'file-saver'
 // import XLSX from 'xlsx'
 // import { exportTable, timeFormat } from '@/lib/tools'
 export default {
   components: {
     prescriptionWx,
-    prescriptionWb
+    prescriptionWb,
+    prescriptionToutiao
+    // prescriptionDouyin
   },
   data () {
     return {

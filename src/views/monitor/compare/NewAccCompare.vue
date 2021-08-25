@@ -2,7 +2,7 @@
  * @Author: zhangjuan
  * @Date: 2021-05-10 11:14:46
  * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-10 14:04:10
+ * @LastEditTime: 2021-06-28 17:26:52
 -->
 <template>
   <div class="interaction">
@@ -86,7 +86,7 @@
         <div class="flex-ali-center">
           <p class="search-mater-theme-com">对比数据</p>
           <p>公众号粉丝互动数据（
-            <span v-html="ruleForm.publish === '1' ? '30天': ruleForm.publish === '2' ? '60天' : '90天'"></span>
+            <span v-html="ruleForm.publish === '1' ? '7天': ruleForm.publish === '2' ? '30天' : ruleForm.publish === '3' ? '60天' : '90天'"></span>
             ）
           </p>
           <div class="compare-data-head flex-ali-center">
@@ -101,9 +101,10 @@
         <el-button size="small" @click="returnBack">返回</el-button>
       </div>
       <div class="compare-search-box flex-ali-center">
-        <p :class="ruleForm.publish === '1'?'is-sel-time':''" @click="changeNewTime('1')">近30天</p>
-        <p :class="ruleForm.publish === '2'?'is-sel-time':''" @click="changeNewTime('2')">近60天</p>
-        <p :class="ruleForm.publish === '3'?'is-sel-time':''" @click="changeNewTime('3')">近90天</p>
+        <p :class="ruleForm.publish === '1'?'is-sel-time':''" @click="changeNewTime('1')">近7天</p>
+        <p :class="ruleForm.publish === '2'?'is-sel-time':''" @click="changeNewTime('2')">近30天</p>
+        <p :class="ruleForm.publish === '3'?'is-sel-time':''" @click="changeNewTime('3')">近60天</p>
+        <p :class="ruleForm.publish === '4'?'is-sel-time':''" @click="changeNewTime('4')">近90天</p>
       </div>
       <div class="compare-data-main" v-if="!showEcharts">
         <!-- 头部 -->
@@ -133,7 +134,16 @@
                       slot="reference" alt="">
                 </el-popover>
               </div>
-              <p v-html="item.sum"></p>
+              <p>
+                <el-popover placement="top" width="260" trigger="hover">
+                  <div class="compare-pop-box">
+                    <p class="pop-title">关于【易指数】</p>
+                    <p class="pop-cont">通过公信力、影响力、传播力、引导力多个维度，以及专家推出的计算公式，得出此公众号易指数“值”，根据此“值”反应众号在此时间段整体热度和发展趋势。</p>
+                  </div>
+                  <i slot="reference" class="el-icon-question cursor"></i>
+                </el-popover>
+                <span v-html="item.sum"></span>
+              </p>
             </div>
           </div>
         </div>
@@ -177,7 +187,17 @@
         <div>
           <div class="compare-data-tip cursor"
                style="background: #ECF0F8;">
-            <div class="compare-tip-left" @click="changeBlock(null, 1)"><p>公信力</p></div>
+            <div class="compare-tip-left" @click="changeBlock(null, 1)">
+              <p>
+                <span>公信力</span>
+                <el-popover placement="right" width="260" trigger="hover">
+                  <div class="compare-pop-box">
+                    <p class="pop-cont">【公信力】通过原创度和专业度两个维度以及专家推出的计算公式，得出此公众号公信力“值”，根据公信力“值”，判断社会公众对此账号的信任度。</p>
+                  </div>
+                  <i slot="reference" class="el-icon-question cursor"></i>
+                </el-popover>
+              </p>
+            </div>
             <div class="compare-tip-right flex-ali-center">
               <div class="compare-data-msg"
                   :style="{width: calcWidth +'%'}"
@@ -213,7 +233,17 @@
         <div>
           <div class="compare-data-tip cursor"
                style="background: #FDF1EA;">
-            <div class="compare-tip-left" @click="changeBlock(null, 2)"><p>影响力</p></div>
+            <div class="compare-tip-left" @click="changeBlock(null, 2)">
+              <p>
+                <span>影响力</span>
+                <el-popover placement="right" width="260" trigger="hover">
+                  <div class="compare-pop-box">
+                    <p class="pop-cont">【影响力】通过文章数和发布次数两个维度以及专家推出的计算公式，得出此公众号影响力“值”，根据影响力“值”，反应此公众号发布文章内容是否符合受众需要，其负载的价值理念是否能够得到受众的认可和赞同。</p>
+                  </div>
+                  <i slot="reference" class="el-icon-question cursor"></i>
+                </el-popover>
+              </p>
+            </div>
             <div class="compare-tip-right flex-ali-center">
               <div class="compare-data-msg"
                   :style="{width: calcWidth +'%'}"
@@ -249,7 +279,17 @@
         <div>
           <div class="compare-data-tip cursor"
                style="background: #F7FAF5;">
-            <div class="compare-tip-left" @click="changeBlock(null, 3)"><p>传播力</p></div>
+            <div class="compare-tip-left" @click="changeBlock(null, 3)">
+              <p>
+                <span>传播力</span>
+                <el-popover placement="right" width="260" trigger="hover">
+                  <div class="compare-pop-box">
+                    <p class="pop-cont">【传播力】通过阅读总数、日均阅读数、篇均阅读数、头条阅读总数、日均阅读数、篇均阅读数、多个维度以及专家推出的计算公式，得出此公众号传播力“值”，根据传播力“值”，得出发布文章覆盖范围大小及社会公众的接受程度</p>
+                  </div>
+                  <i slot="reference" class="el-icon-question cursor"></i>
+                </el-popover>
+              </p>
+            </div>
             <div class="compare-tip-right flex-ali-center">
               <div class="compare-data-msg"
                   :style="{width: calcWidth +'%'}"
@@ -293,7 +333,17 @@
         <div>
           <div class="compare-data-tip cursor"
                style="background: #FBF5FB;">
-            <div class="compare-tip-left" @click="changeBlock(null, 4)"><p>引导力</p></div>
+            <div class="compare-tip-left" @click="changeBlock(null, 4)">
+              <p>
+                <span>引导力</span>
+                <el-popover placement="right" width="280" trigger="hover">
+                  <div class="compare-pop-box">
+                    <p class="pop-cont">【引导力】通过评论总数、回复总数、点赞总数、在看总数、篇均点赞数、篇均在看数多个维度以及专家推出的计算公式，得出此公众号引导力“值”，根据引导力“值”，判断此公众号设置的议程、议题或发布文章对社会公众引导能力是否强大。</p>
+                  </div>
+                  <i slot="reference" class="el-icon-question cursor"></i>
+                </el-popover>
+              </p>
+            </div>
             <div class="compare-tip-right flex-ali-center">
               <div class="compare-data-msg"
                   :style="{width: calcWidth +'%'}"
@@ -359,10 +409,6 @@
         <div class="flex-bwt">
           <div class="show-box">
             <div class="top-line flex-arr-center">查询结果</div>
-            <!-- <div class="flex-arr-center name-box">
-              <p>公众号</p>
-              <p>微信号</p>
-            </div> -->
             <div class="content-box">
               <div class="flex-bwt-center alone cursor"
                     v-for="(item,index) in searchList"
@@ -380,10 +426,6 @@
           </div>
           <div class="show-box">
             <div class="top-line flex-arr-center">已添加公众号</div>
-            <!-- <div class="flex-arr-center name-box">
-              <p>公众号</p>
-              <p>微信号</p>
-            </div> -->
             <div class="content-box">
               <div class="flex-bwt-center alone"
                     v-for="(item,index) in addList"
@@ -517,12 +559,14 @@ export default {
       this.ruleForm.publish = val
       let end = this.getCalc(1)
       let start = ''
-      if (val === '3') {
+      if (val === '4') {
         start = this.getCalc(90)
-      } else if (val === '2') {
+      } else if (val === '3') {
         start = this.getCalc(60)
-      } else {
+      } else if (val === '2') {
         start = this.getCalc(30)
+      } else {
+        start = this.getCalc(7)
       }
       this.publishTime[0] = timeFormat(start)
       this.publishTime[1] = timeFormat(end)
@@ -530,7 +574,6 @@ export default {
     // 收藏和取消收藏
     submitCollect (item, index, isCollect) {
       item.is_follow = isCollect
-      console.log(item)
       this.$set(this.infoList, index, item)
       let getApi = ''
       let obj = {
@@ -653,7 +696,7 @@ export default {
             }
           }
           for (let i in compareArr[0]) {
-            if (this.compareList[this.getMaxIndex(compareArr, i)][i] != 0) {
+            if (compareArr[this.getMaxIndex(compareArr, i)][i] != 0) {
               if (i === 'sum') {
                 this.compareList[this.getMaxIndex(compareArr, i)][i] = '<i class="color7">易指数：'+compareArr[this.getMaxIndex(compareArr, i)][i]+'</i>'
               } else {
@@ -661,7 +704,6 @@ export default {
               }
             }
           }
-          console.log(this.compareList)
           for (let j = 0; j < this.infoList.length; j++) {
             this.infoList[j].sum = this.compareList[j].sum
           }
@@ -733,10 +775,8 @@ export default {
   }
 }
 </script>
-<style>
-</style>
 <style scoped>
-@import '../monitor.css';
+/* @import '../monitor.css'; */
 @import './compare.css';
 .search-box {
   text-align: center;

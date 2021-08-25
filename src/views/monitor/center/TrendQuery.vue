@@ -16,7 +16,7 @@
           <p>关键词趋势查询</p>
           <el-input size="small"
                     v-model="queryText"
-                    maxlength="6"
+                    maxlength="10"
                     :show-word-limit="true"
                     placeholder="请输入关键词"></el-input>
           <el-button size="small" type="primary" @click="submitSearch">搜索</el-button>

@@ -1,8 +1,8 @@
 /*
  * @Author: MaiChao
  * @Date: 2021-01-28 11:16:35
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-05-31 15:35:46
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-08-03 10:01:34
  * @LastEditors: zhangjuan
  * @LastEditTime: 2021-05-25 17:25:52
  */
@@ -30,6 +30,22 @@ module.exports = [
           title: '微博博主'
         },
         component: () => import('@/views/monitor/account/AccountBlogger')
+      },
+      {
+        path: 'toutiao',
+        name: 'AccountToutiao',
+        meta: {
+          title: '头条号'
+        },
+        component: () => import('@/views/monitor/account/AccountToutiao')
+      },
+      {
+        path: 'douyin',
+        name: 'AccountDouyin',
+        meta: {
+          title: '抖音号'
+        },
+        component: () => import('@/views/monitor/account/AccountDouyin')
       },
       {
         path: 'follow',
@@ -198,6 +214,14 @@ module.exports = [
     component: () => import('@/views/monitor/content/RelevantDetailWb')
   },
   {
+    path: '/monitor/content/relevantdetailToutiao',
+    name: 'RelevantDetailToutiao',
+    meta: {
+      title: '相关监测今日头条详情页'
+    },
+    component: () => import('@/views/monitor/content/RelevantDetailToutiao')
+  },
+  {
     path: '/monitor/analysis/',
     name: 'Analysis',
     meta: {
@@ -220,6 +244,14 @@ module.exports = [
           title: '微博分析'
         },
         component: () => import('@/views/monitor/analysis/BloggerAnalysis')
+      },
+      {
+        path: 'toutiaoanalysis',
+        name: 'ToutiaoAnalysis',
+        meta: {
+          title: '头条分析'
+        },
+        component: () => import('@/views/monitor/analysis/ToutiaoAnalysis')
       }
     ]
   },
@@ -246,6 +278,14 @@ module.exports = [
       title: '周-诊断历史-微博'
     },
     component: () => import('@/views/monitor/analysis/WeekDetailWb')
+  },
+  {
+    path: '/monitor/analysis/weekdetailtoutiao',
+    name: 'WeekDetailToutiao',
+    meta: {
+      title: '周-诊断历史-头条'
+    },
+    component: () => import('@/views/monitor/analysis/WeekDetailToutiao')
   },
   {
     path: '/monitor/minute/',
@@ -370,6 +410,24 @@ module.exports = [
       title: '全局账号信息'
     },
     component: () => import('@/views/monitor/Whole')
+    // children: [
+    //   {
+    //     path: 'search',
+    //     name: 'WrongSearch',
+    //     meta: {
+    //       title: '账号搜索'
+    //     },
+    //     component: () => import('@/views/monitor/wrong/WrongSearch')
+    //   }
+    // ]
+  },
+  {
+    path: '/monitor/wholeaccountdetail',
+    name: 'WholeAccountDetail',
+    meta: {
+      title: '同主体账号信息'
+    },
+    component: () => import('@/views/monitor/WholeAccountDetail')
     // children: [
     //   {
     //     path: 'search',

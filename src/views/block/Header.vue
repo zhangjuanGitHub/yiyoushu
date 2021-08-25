@@ -2,11 +2,12 @@
  * @Author: zhangjuan
  * @Description: Header
  * @Date: 2021-01-28 14:21:32
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-07 09:37:29
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-07-13 14:45:29
 -->
 <template>
-  <div class="header-wrap" v-if="routeName != 'Login' & routeName != 'DataExplain'">
+  <div class="header-wrap"
+       v-if="routeName != 'Login' & routeName != 'DataExplain'">
     <div class="header-container">
       <!-- <img class="logo" src="@/assets/images/home/yiyoushu.png" alt=""> -->
       <div class="header-right">
@@ -31,6 +32,8 @@
               <template slot="title">榜单</template>
               <el-menu-item index="personal">行业榜单</el-menu-item>
               <el-menu-item index="official">政法榜单</el-menu-item>
+              <el-menu-item index="justice"
+                            v-if="menuShow">正义网榜单</el-menu-item>
               <el-menu-item index="customize">自定义榜单</el-menu-item>
             </el-submenu>
             <el-menu-item index="openapi">
@@ -43,10 +46,14 @@
         </div>
         <div class="header-msg flex-bwt-center">
           <ul class="flex-bwt-center">
-<!--            <li class="cursor"><i class="el-icon-takeaway-box"></i></li>-->
-<!--            <li class="cursor"><i class="el-icon-search"></i></li>-->
-            <li class="cursor" @click="targetAccountPage">
-              <el-tooltip class="item" effect="light" content="账号收录" placement="top">
+            <!--            <li class="cursor"><i class="el-icon-takeaway-box"></i></li>-->
+            <!--            <li class="cursor"><i class="el-icon-search"></i></li>-->
+            <li class="cursor"
+                @click="targetAccountPage">
+              <el-tooltip class="item"
+                          effect="light"
+                          content="账号收录"
+                          placement="top">
                 <i class="el-icon-folder-add"></i>
               </el-tooltip>
             </li>
@@ -54,32 +61,42 @@
               <el-badge :value="0"
                         :hidden='true'
                         type="warning">
-                <el-tooltip class="item" effect="light" content="消息" placement="top">
-                  <i @click="$router.push({ name: 'MyNews' })" class="el-icon-message-solid"></i>
+                <el-tooltip class="item"
+                            effect="light"
+                            content="消息"
+                            placement="top">
+                  <i @click="$router.push({ name: 'MyNews' })"
+                     class="el-icon-message-solid"></i>
                 </el-tooltip>
               </el-badge>
             </li>
             <li class="cursor">
-              <el-tooltip class="item" effect="light" content="帮助" placement="top">
+              <el-tooltip class="item"
+                          effect="light"
+                          content="帮助"
+                          placement="top">
                 <i class="el-icon-question"></i>
               </el-tooltip>
             </li>
           </ul>
-          <el-dropdown v-if="this.userInfo && this.userInfo.nickName" @command="handleCommand">
+          <el-dropdown v-if="this.userInfo && this.userInfo.nickName"
+                       @command="handleCommand">
             <div class="header-avatar flex-bwt-center cursor">
               <el-avatar size="medium"
-                        :src="this.userInfo.headPicture"></el-avatar>
+                         :src="this.userInfo.headPicture"></el-avatar>
               <span class="el-dropdown-link cursor">{{this.userInfo.nickName}}<i class="el-icon-arrow-down el-icon--right"></i></span>
-            </div >
+            </div>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="Company">个人中心</el-dropdown-item>
               <el-dropdown-item command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <div v-else class="header-avatar flex-bwt-center cursor">
+          <div v-else
+               class="header-avatar flex-bwt-center cursor">
             <el-avatar size="medium"
-                      :src="circleUrl"></el-avatar>
-            <span class="el-dropdown-link cursor" @click="$router.push({ name: 'Login'})">请登录</span>
+                       :src="circleUrl"></el-avatar>
+            <span class="el-dropdown-link cursor"
+                  @click="$router.push({ name: 'Login'})">请登录</span>
           </div>
         </div>
       </div>
@@ -106,9 +123,21 @@ export default {
   data () {
     return {
       // currentPath: '',
+      menuShow: false,
       dialogVisible: false,
       circleUrl: require('@/assets/images/home/avatar.png')
     }
+  },
+  created () {
+    this.getMenuPermission()
+    // console.log(this.menuPermission)
+    // if (this.menuPermission) {
+    //   for (var i = 0; i < this.menuPermission.length; i++) {
+    //     if (this.menuPermission[i] == '2') {
+    //       this.menuShow = true
+    //     }
+    //   }
+    // }
   },
   methods: {
     targetAccountPage () {
@@ -116,6 +145,23 @@ export default {
     },
     isLoginOut () {
       this.dialogVisible = true
+    },
+    getMenuPermission () {
+      // console.log(222)
+      this.$http.get(this.$api.menuPermission)
+        .then(res => {
+          // console.log(res.data.data)
+          this.$store.commit('user/menuPermission', res.data.data) // 菜单权限控制
+          sessionStorage.setItem(`menuPermission`, res.data.data)
+          if (this.menuPermission) {
+            for (var i = 0; i < this.menuPermission.length; i++) {
+              if (this.menuPermission[i] == '2') {
+                this.menuShow = true
+              }
+            }
+          }
+          // console.log(this.$store.state.user.menuPermission)
+        }).catch(() => { })
     },
     // 退出
     logout () {
@@ -152,6 +198,9 @@ export default {
         case 'official':
           this.$router.push({ name: 'Official' })
           break
+        case 'justice':
+          this.$router.push({ name: 'Justice' })
+          break
         case 'customize':
           this.$router.push({ name: 'Customize' })
           break
@@ -166,7 +215,8 @@ export default {
   },
   computed: {
     ...mapState({
-      userInfo: state => state.user.userInfo
+      userInfo: state => state.user.userInfo,
+      menuPermission: state => state.user.menuPermission
     }),
     routeName () {
       return this.$route.name

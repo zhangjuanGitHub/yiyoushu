@@ -13,7 +13,7 @@
               <div class="flex-bwt-center">
                 <p>
                   <span v-html="item.nickname"></span>
-                  <span>{{item.last_pubtime}}</span>
+                  <span>{{item.pubtime}}</span>
                 </p>
                 <div class="flex-ali-center">
                   <img src="@/assets/images/home/icon_1.png" alt="">

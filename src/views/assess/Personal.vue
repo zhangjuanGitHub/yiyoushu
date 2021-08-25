@@ -9,6 +9,9 @@
         <span class="tabs-title"
               @click="tabsAll('wb', 2)"
               :class="this.activeTab==='wb'?'isActive':''">微博榜单</span>
+        <span class="tabs-title"
+              @click="tabsAll('toutiao', 3)"
+              :class="this.activeTab==='toutiao'?'isActive':''">头条榜单</span>
         <!-- <span class="tabs-title"
               @click="tabsAll('wb', 2)"
               :class="this.activeTab==='wb'?'isActive':''">微博榜单</span> -->
@@ -19,6 +22,7 @@
         <personal-wx v-if="this.activeTab==='wx'"
                      @changeTab="tabsAll"></personal-wx>
         <personal-wb v-if="this.activeTab==='wb'"></personal-wb>
+        <personal-toutiao v-if="this.activeTab==='toutiao'"></personal-toutiao>
       </div>
     </div>
   </div>
@@ -26,6 +30,7 @@
 <script>
 import personalWx from './personal/PersonalWx'
 import personalWb from './personal/PersonalWb'
+import personalToutiao from './personal/PersonalToutiao'
 import { exportTable } from '@/lib/tools'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
@@ -33,7 +38,8 @@ import XLSX from 'xlsx'
 export default {
   components: {
     personalWx,
-    personalWb
+    personalWb,
+    personalToutiao
   },
   data () {
     return {

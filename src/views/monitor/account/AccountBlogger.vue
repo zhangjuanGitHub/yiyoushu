@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-05-20 15:39:27
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-04 10:00:24
+ * @LastEditTime: 2021-08-03 11:36:34
  * @LastEditors: MaiChao
  * @LastEditTime: 2021-05-25 10:16:20
 -->
@@ -286,7 +286,6 @@ export default {
       this.$router.push({ name: 'ReleaseRulesWb', query: { id: row.uid } })
     },
     formatterType (row) {
-      console.log(row)
       if (row.function_type == 'other') {
         return '其他'
       } else {
@@ -357,10 +356,10 @@ export default {
   margin: 0 auto;
 }
 .account-infor img {
-  height: 40px;
-  width: 40px;
+  height: 46px;
+  width: 46px;
   margin-right: 8px;
-  border-radius: 20px;
+  border-radius: 50%;
   // position: relative;
 }
 // .head-img {

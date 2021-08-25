@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangjuan
  * @Date: 2021-05-06 15:28:39
- * @LastEditors: MaiChao
- * @LastEditTime: 2021-05-17 19:54:57
+ * @LastEditors: zhangjuan
+ * @LastEditTime: 2021-07-02 17:36:01
 -->
 <template>
   <div class="center-wraper">
@@ -91,39 +91,64 @@
                 <p>{{activeDays || '0'}} / {{days}}</p>
               </template>
             </el-table-column>
-            <!--        <el-table-column width="120"-->
-            <!--                          type="expand">-->
-            <!--          <template slot-scope="scope">-->
-            <!--            <div :ref="10" id="trendChart"></div>-->
-            <!--          </template>-->
-            <!--        </el-table-column>-->
           </el-table>
         </div>
         <div id="trendChart"></div>
         <div class="trend-empty"></div>
-        <ul class="trend-some-box">
-          <li v-for="(item, index) of articleList" :key="index" class="cursor" @click="targetUrl(item.url)">
-            <p class="trend-icon-num flex-all-center">{{index+1}}</p>
-            <div class="trend-content">
-              <p class="lin-clamp-1 title-color" v-html="item.title"></p>
-              <p class="lin-clamp-1 cont-color" v-html="item.content"></p>
-              <div class="flex-bwt-center">
-                <div class="trend-account-msg flex-ali-center">
-                  <p class="title-color font-16" v-html="item.nickname"></p>
-                  <p class="cont-color" v-html="item.last_pubtime"></p>
-                </div>
-                <div class="trend-action-box flex-ali-center">
-                  <img src="@/assets/images/home/icon_1.png" alt="">
-                  <p>阅读数：<span v-html="item.read_num >= 100000 ? '10万+' : item.read_num"></span></p>
-                  <img src="@/assets/images/home/icon_2.png" alt="" style="margin-top: -2px">
-                  <p>点赞数：<span v-html="item.old_like_num"></span></p>
-                  <img src="@/assets/images/home/icon_3.png" alt="">
-                  <p>在看数：<span v-html="item.like_num"></span></p>
+        <div class="trend-some-main">
+          <p class="trend-some-title">最高阅读量</p>
+          <ul class="trend-some-box">
+            <li v-for="(item, index) of articleList" :key="index" class="cursor" @click="targetUrl(item.url)">
+              <p class="trend-icon-num flex-all-center">{{index+1}}</p>
+              <div class="trend-content">
+                <p><span class="title-color" v-html="item.title"></span>
+                  <span class="trend-hot-btn" :class="{'trend-btn-sel': item.sn === articleSn }"
+                        @click.stop="changeHotPing(item.sn)">热门评论</span></p>
+                <p class="lin-clamp-1 cont-color" v-html="item.content"></p>
+                <div class="flex-bwt-center">
+                  <div class="trend-account-msg flex-ali-center">
+                    <p class="title-color font-16" v-html="item.nickname"></p>
+                    <p class="cont-color" v-html="item.last_pubtime"></p>
+                  </div>
+                  <div class="trend-action-box flex-ali-center">
+                    <img src="@/assets/images/home/icon_1.png" alt="">
+                    <p>阅读数：<span v-html="item.read_num >= 100000 ? '10万+' : item.read_num"></span></p>
+                    <img src="@/assets/images/home/icon_2.png" alt="" style="margin-top: -2px">
+                    <p>点赞数：<span v-html="item.old_like_num"></span></p>
+                    <img src="@/assets/images/home/icon_3.png" alt="">
+                    <p>在看数：<span v-html="item.like_num"></span></p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="trend-empty"></div>
+        <div class="trend-some-main flex-bwt">
+          <div class="trend-ping-left">
+            <p class="trend-some-title">热门评论</p>
+            <p class="flex-all-center" v-if="isNotComment" style="height:80%;color:#868686;font-size: 20px;">暂无评论</p>
+            <ul class="trend-hot-ping">
+              <li class="flex" v-for="(item,index) of hotPingList" :key="'h'+index">
+                <img class="trend-hot-ava" :src="item.head_picture" alt="">
+                <div>
+                  <div class="flex trend-hot-cont">
+                    <p>{{item.nickname}}：</p>
+                    <p class="lin-clamp-3">{{item.content}}</p>
+                  </div>
+                  <p style="margin-top: 4px;color:#909399">{{item.reply_date}}</p>
+                </div>
+              </li>
+            </ul>
+            <p class="flex-all-center" v-if="isMore" style="clear:both; padding-top:10px">
+              <span class="primary cursor" @click="getHotPing">点击加载更多</span>
+            </p>
+          </div>
+          <div class="trend-ping-right">
+            <p class="trend-some-title">评论热词</p>
+            <div id="myPing"></div>
+          </div>
+        </div>
       </div>
       <div v-if="dataNull">
         <div class="flex-cloumn-cen account-list-undefined">
@@ -131,31 +156,6 @@
           <p>未查询到 <span class="warning">{{ruleForm.keywords[0]}}</span> 趋势</p>
         </div>
       </div>
-      <!--    <div style="padding:10px 15px;box-shadow: 2px 4px 6px 6px rgba(0, 0, 0, 0.2);border-radius: 4px;">-->
-      <!--      <div style="line-height:10px">-->
-      <!--        <p style="width:10px;height:10px;background:#42A6F5;border-radius:5px;float:left;margin-right:5px"></p>-->
-      <!--        <p style="color: #2196F3;float:left;">11111</p>-->
-      <!--        <p style="color: #F79406;float:right;">阅读数：<span>22222</span></p>-->
-      <!--      </div>-->
-      <!--      <div class="trend-tooltip" style="clear: both;padding:20px 0 10px">-->
-      <!--        <div><p>篇数</p><p>10w+篇数</p><p>原创篇数</p></div>-->
-      <!--        <div><p>333</p><p>444</p><p>555</p></div>-->
-      <!--      </div>-->
-      <!--      <ul>-->
-      <!--        <li style="display:flex;align-items:center;padding:3px 0;">-->
-      <!--          <p style="width:14px;height:14px;line-height:14px;background:#BEBFC2;border-radius:7px;margin-right:5px;color:#fff;text-align:center">1</p>-->
-      <!--          <p style="color:#8A8C92;">关于李某、张某犯罪案件进一步案件进一步</p>-->
-      <!--        </li>-->
-      <!--        <li style="display:flex;align-items:center;padding:3px 0;">-->
-      <!--          <p style="width:14px;height:14px;line-height:14px;background:#BEBFC2;border-radius:7px;margin-right:5px;color:#fff;text-align:center">2</p>-->
-      <!--          <p style="color:#8A8C92;">关于李某、张某犯罪案件进一步案件进一步</p>-->
-      <!--        </li>-->
-      <!--        <li style="display:flex;align-items:center;padding:3px 0;">-->
-      <!--          <p style="width:14px;height:14px;line-height:14px;background:#BEBFC2;border-radius:7px;margin-right:5px;color:#fff;text-align:center">3</p>-->
-      <!--          <p style="color:#8A8C92;">关于李某、张某犯罪案件进一步案件进一步</p>-->
-      <!--        </li>-->
-      <!--      </ul>-->
-      <!--    </div>-->
     </div>
   </div>
 </template>
@@ -169,6 +169,7 @@ require('echarts/lib/chart/line')
 require('echarts/lib/component/tooltip')
 require('echarts/lib/component/title')
 require('echarts/lib/component/legend')
+require('echarts-wordcloud')
 export default {
   data () {
     return {
@@ -202,6 +203,11 @@ export default {
       },
       dataNull: false,
       moreThanTenWTotal: 0, // 10万+
+      articleSn: '', // 文章的sn
+      scrollId: '', // 加载更多标志
+      isMore: false,
+      isNotComment: false,
+      hotPingList: [],
       activeDays: 0, // 活跃天数
       days: 15, // 时间范围天数
       dataSummary: [], // 表头数据
@@ -225,14 +231,9 @@ export default {
     },
     // 选择时间
     changeTrendTime (val) {
-      console.log(val)
       val === null ? this.ruleForm.publishTime = [] : this.ruleForm.publishTime = val
       this.dataSummary = []
       this.getTrendList()
-      // let time1 = Date.parse(new Date(this.ruleForm.publishTime[0]))
-      // let time2 = Date.parse(new Date(this.ruleForm.publishTime[1]))
-      // let setTime = time2 - time1
-      // this.days = (setTime) / (1 * 24 * 60 * 60 * 1000)
     },
     // 展开关闭Echarts
     handledetail (row, expandedRows) {
@@ -257,14 +258,16 @@ export default {
           this.dataSummary.push(resData.dataSummary) // 表头数据
           this.lineChart = resData.lineChart.data // 图表
           this.articleList = resData.articleList // 底部列表
+          this.articleSn = this.articleList[0].sn
           this.activeDays = resData.lineChart.activeDays // 活跃天数
           this.days = resData.lineChart.days // 时间范围天数
           this.moreThanTenWTotal = resData.lineChart.moreThanTenWTotal // 10万+
+          this.getPingLun()
+          this.getHotPing()
           var timeList = [] // 图表时间轴
           this.lineChart.forEach(item => {
             timeList.push(item.time)
           })
-          console.log(resData.articleList.length)
           if (resData.articleList.length <= 0) {
             this.dataNull = true
             return
@@ -275,6 +278,7 @@ export default {
             title: {},
             tooltip: {
               trigger: 'axis',
+              transitionDuration: 0, // 防止鼠标滑入抖动
               enterable: true, // 鼠标可以进入
               backgroundColor: 'rgb(255,255,255)',
               // triggerOn: 'click',
@@ -352,6 +356,87 @@ export default {
     },
     clickTooltip (url) {
       window.open(url)
+    },
+    changeHotPing (sn) {
+      this.articleSn = sn
+      this.scrollId = ''
+      this.hotPingList = []
+      this.isMore = false
+      this.getPingLun()
+      this.getHotPing()
+    },
+    // 评论热词
+    getPingLun () {
+      // let sn = '4ecbba424f5982a2ce2da2d8dcfce0db'
+      this.$http.post(this.$api.trendHotWords, { sn: this.articleSn })
+        .then(res => {
+          if (res.data.data.listData && res.data.data.listData.length > 0) {
+            let myChart2 = echarts.init(document.getElementById('myPing'))
+            let wordOption = {
+              tooltip: {
+                show: true,
+                transitionDuration: 0 // 防止鼠标滑入抖动
+              },
+              series: [{
+                type: 'wordCloud',
+                gridSize: 10, //用来调整词之间的距离
+                sizeRange: [30, 80],
+                rotationRange: [-45, 0, 100, 90],
+                textStyle: {
+                  normal: {
+                    color: function () {
+                      return 'rgb(' +
+                      Math.round(Math.random() * 255) +
+                      ', ' + Math.round(Math.random() * 255) +
+                      ', ' + Math.round(Math.random() * 255) + ')'
+                    }
+                  }
+                },
+                left: 'center',
+                top: 'center',
+                right: null,
+                bottom: null,
+                width: '100%',
+                height: '100%',
+                data: res.data.data.listData
+              }]
+            }
+            myChart2.setOption(wordOption)
+            window.addEventListener('resize', function () {
+              myChart2.resize()
+            })
+          } else {
+            var html = '<div><span style="position: absolute;width:100%;top: 40%;display:block;text-align:center;color:#868686; font-size: 20px;">暂无数据</span></div>'
+            document.getElementById('myPing').innerHTML = html
+            document.getElementById('myPing').removeAttribute('_echarts_instance_')
+          }
+        }).catch(() => {})
+      
+    },
+    // 热门评论
+    getHotPing () {
+      let obj = {
+        sn: this.articleSn,
+        // sn: '4ecbba424f5982a2ce2da2d8dcfce0db',
+        scrollId: this.scrollId
+      }
+      this.$http.post(this.$api.trendHotMessage, obj)
+        .then(res => {
+          if (res.data.data.data.length === 0 && !this.scrollId) {
+            this.isNotComment = true
+          } else {
+            this.isNotComment = false
+            let data = res.data.data.data
+            if (data.length < 8) {
+              this.isMore = false
+            } else {
+              this.isMore = true
+            }
+            this.scrollId = res.data.data.scrollId
+            this.hotPingList.push(...data)
+          }
+        }).catch(() => {})
+      
     }
   },
   created () {
@@ -361,6 +446,8 @@ export default {
   },
   mounted () {
     this.getTrendList()
+    // this.getPingLun()
+    // this.getHotPing()
   }
 }
 </script>
@@ -402,9 +489,17 @@ export default {
     margin-top: 20px;
     background: #EDEFF4;
   }
+  .trend-some-main {
+    padding: 20px;
+  }
+  .trend-some-title {
+    padding: 0px 15px 10px;
+    font-size: 20px;
+    color: #F79406;
+    border-bottom: 1px solid #D7D7D7;
+  }
   .trend-some-box {
     min-height: 370px;
-    margin: 0 20px;
     display: flex;
     flex-wrap: wrap;
   }
@@ -429,10 +524,6 @@ export default {
     margin-right: 2px;
     float: left;
   }
-  /*.trend-content {*/
-  /*  width: calc(100% - 50px);*/
-  /*  float: left;*/
-  /*}*/
   .title-color {
     color: #545454;
   }
@@ -448,9 +539,6 @@ export default {
   }
   .trend-account-msg {
     flex: 1;
-  }
-  .trend-account-msg p:nth-child(1) {
-    /* width: 100px; */
   }
   .trend-account-msg p:nth-child(2) {
     margin-left: 40px;
@@ -477,5 +565,50 @@ export default {
     color: #8A8C92;
     font-size: 12px;
     text-align: center;
+  }
+  .trend-ping-left {
+    width: 45%;
+    min-height: 600px;
+  }
+  .trend-ping-right {
+    width: 52%;
+    height: 600px;
+  }
+  #myPing {
+    width: 100%;
+    /* 600-41 */
+    height: 559px;
+    position: relative;
+  }
+  .trend-hot-ping li {
+    margin: 9px;
+    padding: 5px;
+    background-color: rgb(239, 239, 245);
+  }
+  .trend-hot-ava {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
+  .trend-hot-cont p:nth-child(1) {
+    max-width: 150px;
+    margin-right: 4px;
+    color: #3B81FE;
+  }
+  .trend-hot-cont p:nth-child(2) {
+    flex: 1;
+  }
+  .trend-hot-btn {
+    color: #ffffff;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-left: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #5f96f3;
+  }
+  .trend-content .trend-btn-sel {
+    background-color: #F54336;
   }
 </style>

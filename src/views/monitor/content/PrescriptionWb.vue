@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-04 14:54:55
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-04 10:03:47
+ * @LastEditTime: 2021-08-03 11:44:12
 -->
 <template>
   <!-- <div class="interaction content-box"> -->
@@ -97,17 +97,18 @@
                    v-html='scope.row.screen_name'></p>
                 <!-- <p>{{scope.row.screen_name}}</p> -->
               </div>
-              <div v-if="scope.row.verified" class="ver-img">
-                  <img v-if="scope.row.verified_type === 0 && scope.row.verified_type_ext === 1"
-                       src="@/assets/images/search/v_1.png"
-                       alt="">
-                  <img v-else-if="scope.row.verified_type === 0 && scope.row.verified_type_ext === 0"
-                       src="@/assets/images/search/v_2.png"
-                       alt="">
-                  <img v-else
-                       src="@/assets/images/search/v_3.png"
-                       alt="">
-                </div>
+              <div v-if="scope.row.verified"
+                   class="ver-img">
+                <img v-if="scope.row.verified_type === 0 && scope.row.verified_type_ext === 1"
+                     src="@/assets/images/search/v_1.png"
+                     alt="">
+                <img v-else-if="scope.row.verified_type === 0 && scope.row.verified_type_ext === 0"
+                     src="@/assets/images/search/v_2.png"
+                     alt="">
+                <img v-else
+                     src="@/assets/images/search/v_3.png"
+                     alt="">
+              </div>
             </div>
             <div>
 
@@ -282,13 +283,12 @@ export default {
     getAccountList () {
       this.$http.post(this.$api.getAccountCompanyWb, this.pageBean)
         .then(res => {
-          console.log(res.data.data)
           if (res.data.data.list.length > 0) {
             this.total = Number(res.data.data.count)
             this.tableData = res.data.data.list
-            this.tableData.forEach(item => {
-              item.last_pubtime = item.last_pubtime.slice(0, 10)
-            })
+            // this.tableData.forEach(item => {
+            //   item.last_pubtime = item.last_pubtime.slice(0, 10)
+            // })
           } else {
             let str = this.pageBean.keyword !== '' ? '您还没有关注相关账号' : '您还没有关注账号，请先关注账号'
             this.$message.warning(str)
@@ -307,7 +307,6 @@ export default {
       this.pageBean.publishTime[1] = timeFormat(end)
     },
     getWb (row) {
-      console.log(row)
       // window.open(row.web_url, '_black')
       // window.open(row.web_url)
       this.$router.push({ name: 'ReleaseRulesWb', query: { id: row.uid } })
@@ -383,17 +382,17 @@ export default {
   margin: 0 auto;
 }
 
-.img-all{
-  height: 60px;
-  width: 60px;
+.img-all {
+  height: 46px;
+  width: 46px;
   position: relative;
+  margin-right: 8px;
 }
 .head-img {
-  height: 60px;
-  width: 60px;
-  margin-right: 20px;
-  //  border-radius: 50px;
-
+  height: 46px;
+  width: 46px;
+  // margin-right: 20px;
+  border-radius: 50%;
 }
 .cur {
   cursor: pointer;
@@ -411,10 +410,10 @@ export default {
   bottom: -1px;
 }
 
-.ver-img img{
+.ver-img img {
   width: 18px;
   height: 18px;
   margin-left: 5px;
-  margin-top:5px
+  margin-top: 5px;
 }
 </style>

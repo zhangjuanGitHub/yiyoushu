@@ -2,8 +2,8 @@
  * @Author: zhangjuan
  * @Description:
  * @Date: 2021-03-05 10:06:51
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-06-01 10:44:13
+ * @LastEditors: MaiChao
+ * @LastEditTime: 2021-08-03 11:35:19
 -->
 <template>
   <div class="interaction content-box">
@@ -25,7 +25,7 @@
                   id="wx-monitor"
                   :cell-style="{ textAlign: 'center' }">
           <el-table-column prop="address"
-                           label="账号信息">
+                           label="公众号">
               <template slot-scope='scope'>
               <div class="account-msg-box flex-ali-center cursor"
                    @click="toSearch(scope.row.biz)">

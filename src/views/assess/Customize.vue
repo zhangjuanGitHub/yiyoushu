@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:17:45
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-03 15:06:35
+ * @LastEditTime: 2021-07-26 18:49:10
 -->
 <template>
   <div class="contents">
@@ -37,6 +37,12 @@
                 @click="tabsAll('wb', 2)"
                 :class="activeTab==='wb'?'isActive':''">
             <img :src="wbImg"
+                 alt="">
+          </span>
+          <span class="tabs-button-img"
+                @click="tabsAll('toutiao', 3)"
+                :class="activeTab==='toutiao'?'isActive':''">
+            <img :src="toutiaoImg"
                  alt="">
           </span>
           <span class="click-span first-type"
@@ -117,6 +123,7 @@
                           size="small">
             <el-radio label="1">微信公众号</el-radio>
             <el-radio label="2">微博</el-radio>
+            <el-radio label="3">头条</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="榜单名称"
@@ -536,6 +543,186 @@
         <el-button @click="offAddAccountWb">取消</el-button>
       </span>
     </el-dialog>
+    <!-- 添加头条 -->
+    <el-dialog title="添加账号"
+               :visible.sync="addAccountToutiao"
+               :close-on-click-modal='false'
+               width="960px"
+               center
+               class="cust-add-apply"
+               @close="offAddAccountToutiao">
+      <div>
+        <!-- 添加搜索账号 头条 -->
+        <div class="add-collect-box">
+          <el-tabs v-model="activeNameToutiao"
+                   @tab-click="handleClickToutiao">
+            <el-tab-pane label="搜索添加"
+                         name="firstToutiao">
+              <template>
+                <div class="add-box">
+                  <div class="search-box">
+                    <el-input placeholder="请输入头条号"
+                              v-model="keywordToutiao">
+                    </el-input>
+                    <el-button type="primary"
+                               @click="queryKeywordToutiao">查询</el-button>
+                  </div>
+                  <div class="flex-bwt">
+                    <div class="show-box">
+                      <div class="top-line flex-arr-center">搜索结果</div>
+                      <div class="flex-arr-center name-box">
+                        <p>头条名称</p>
+                        <p>头条号</p>
+                      </div>
+                      <div class="content-box">
+                        <div class="flex-ali-center alone cursor"
+                             v-for="(item,index) in searchListToutiao"
+                             :key="index"
+                             @dblclick="shuttleToutiao(item,index)">
+                          <div class="content-box-avatar flex-ali-center">
+                            <img :src="item.avatar_img"
+                                 alt="">
+                            <p>{{item.screen_name}}</p>
+                          </div>
+                          <p>{{item.user_id}}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="show-box">
+                      <div class="top-line flex-arr-center">已添加头条号</div>
+                      <div class="flex-arr-center name-box">
+                        <p>头条名称</p>
+                        <p>头条号</p>
+                      </div>
+                      <div class="content-box">
+                        <div class="flex-ali-center alone cursor"
+                             v-for="(item,index) in addListToutiao"
+                             :key="index"
+                             @dblclick="unShuttleToutiao(item,index)">
+                          <div class="content-box-avatar flex-ali-center">
+                            <img :src="item.avatar_img"
+                                 alt="">
+                            <p>{{item.screen_name}}</p>
+                          </div>
+                          <p>{{item.user_id}}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-tab-pane>
+            <!-- <el-tab-pane label="链接添加"
+                         name="secondToutiao">
+              <template>
+                <el-form :model="dateFormWb"
+                         ref="dateFormWb"
+                         class="second-add-form"
+                         label-width="90px">
+                  <el-form-item prop="email"
+                                label="链接">
+                    <el-input v-model="dateFormWb.url"
+                              placeholder="请输入一篇文章链接"
+                              :trigger-on-focus="false"></el-input>
+                  </el-form-item>
+                  <el-form-item v-for="(item, index) in dateFormWb.toUrlList"
+                                :label="'新增链接' + (index+1)"
+                                :key="item.key"
+                                :prop="'toUrlList.' + index + '.value'"
+                                :rules="{ required: true, message: '链接不能为空', trigger: 'blur' }">
+                    <el-input v-model="item.value"
+                              placeholder="请输入一篇文章链接"
+                              :trigger-on-focus="false"></el-input>
+                    <el-button type="danger"
+                               @click.prevent="removeItemWb(item)"
+                               class="second-add-del">删除</el-button>
+                  </el-form-item>
+                </el-form>
+                <div class="second-add-btn flex-all-center">
+                  <el-button type="success"
+                             @click="addUrlInputWb"
+                             :disabled="dateFormWb.url.length <= 0">添加链接</el-button>
+                  <el-button type="primary"
+                             @click="queryUrlWb"
+                             :disabled="dateFormWb.url.length <= 0">查询</el-button>
+                  <el-button @click="clearDateFormWb('dateFormWb')">清空</el-button>
+                </div>
+                <div class="flex-ali"
+                     v-if="urlDataWb.length > 0">
+                  <div class="url-box">
+                    <div class="top-line flex-arr-center">搜索结果</div>
+                    <div class="flex-arr-center name-box">
+                      <span>头条名称</span>
+                      <span>头条号</span>
+                    </div>
+                    <div class="url-content-box">
+                      <div class="flex-arr-center alone cursor"
+                           v-for="(item, index) of urlDataWb"
+                           :key="index">
+                        <div class="content-box-avatar flex-ali-center">
+                          <img :src="item.avatarHd"
+                               alt="">
+                          <p>{{item.screenName}}</p>
+                        </div>
+                        <p>{{item.uid}}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </el-tab-pane> -->
+            <el-tab-pane label="根据收藏添加"
+                         name="collectToutiao">
+              <el-table :data="collectDataToutiao"
+                        style="width: 100%"
+                        @selection-change="handleCollectChangeToutiao">
+                <el-table-column type="selection"
+                                 width="55">
+                </el-table-column>
+                <el-table-column prop="accountName"
+                                 label="账号名称"
+                                 width="280">
+                  <template slot-scope='scope'>
+                    <div class="account-infor flex-ali-center">
+                      <el-image style="width: 60px; height: 60px"
+                                :src="scope.row.headImage"
+                                fit="fill">
+                        <div slot="error"
+                             class="image-slot">
+                          <i class="el-icon-picture-outline"></i>
+                        </div>
+                      </el-image>
+                      <div class="account-name">
+                        <p class="import-name"
+                           v-html='scope.row.accountName'></p>
+                      </div>
+                    </div>
+                  </template>
+                </el-table-column>
+                <!-- <el-table-column prop="accountCode"
+                                 label="账号ID">
+                </el-table-column> -->
+                <el-table-column prop="description"
+                                 label="简介">
+                </el-table-column>
+                <el-table-column prop="createTime"
+                                 label="添加时间"
+                                 width="220">
+                </el-table-column>
+              </el-table>
+              <set-page @pagingChange="pagingCollectToutiao"
+                        :total="colTotalToutiao"></set-page>
+            </el-tab-pane>
+          </el-tabs>
+        </div>
+      </div>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button type="primary"
+                   @click="upAddAccountToutiao">确认</el-button>
+        <el-button @click="offAddAccountToutiao">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -545,6 +732,7 @@ export default {
     return {
       wxImg: require('@/assets/images/assess/wx.png'),
       wbImg: require('@/assets/images/assess/wb.png'),
+      toutiaoImg: require('@/assets/images/assess/toutiao.png'),
       dateForm: {
         url: '',
         toUrlList: []
@@ -553,19 +741,29 @@ export default {
         url: '',
         toUrlList: []
       },
+      dateFormToutiao: {
+        url: '',
+        toUrlList: []
+      },
       collectData: [], // 收藏账号列表
       collectDataWb: [], // 收藏账号列表 wb
+      collectDataToutiao: [],
       activeName: 'first',
       activeNameWb: 'firstWb',
+      activeNameToutiao: 'firstToutiao',
       textarea: '', // 链接添加
       urlData: [], // 根据url查询到的列表
       urlDataWb: [], // 根据url查询到的列表 wb
+      urlDataToutiao: [],
       keyword: '', // 根据账号搜索
       keywordWb: '', // 根据账号搜索wb
+      keywordToutiao: '',
       searchList: [], // 根据账号查询到的列表
       searchListWb: [], // 根据账号查询到的列表 wb
+      searchListToutiao: [],
       addList: [], // 根据账号查询添加后的列表
       addListWb: [], // 根据账号查询添加后的列表 wb
+      addListToutiao: [],
       deleteShow: false, // 删除字段
       deleteItem: [], // 删除内容
       selItems: [], // 批量删除内容
@@ -573,8 +771,10 @@ export default {
       modifyVisible: false, // 榜单修改
       addAccount: false, // 添加账号
       addAccountWb: false, // 添加微博账号
+      addAccountToutiao: false, // 添加头条账号
       addId: '', // 要添加账号的榜单ID
       addIdWb: '', // 要添加账号的榜单ID  wb
+      addIdToutiao: '', // 要添加账号的榜单ID  头条
       collectSelect: [], // 已选择的收藏的账号
       collectSelectWb: [], // 已选择的收藏的账号 wb
       ruleForm: {
@@ -595,9 +795,14 @@ export default {
         pageNum: 1,
         pageSize: 10
       },
+      collectFormToutiao: {
+        pageNum: 1,
+        pageSize: 10
+      },
       total: 0,
       colTotal: 0,
       colTotalWb: 0,
+      colTotalToutiao: 0,
       create: false, // 创建弹框字段
       activeTab: 'wx', // 微信/微博字段
       tableData: [] // 表格字段
@@ -619,6 +824,11 @@ export default {
       this.collectFormWb.pageSize = query.size
       this.collectFormWb.pageNum = query.page
       this.getCollectWb()
+    },
+    pagingCollectToutiao (query) {
+      this.collectFormToutiao.pageSize = query.size
+      this.collectFormToutiao.pageNum = query.page
+      this.getCollectToutiao()
     },
     // 展示创建弹框
     creadShow () {
@@ -713,9 +923,12 @@ export default {
       if (this.activeTab === 'wx') {
         this.addId = id
         this.addAccount = true
-      } else {
+      } else if (this.activeTab === 'wb') {
         this.addIdWb = id
         this.addAccountWb = true
+      } else {
+        this.addIdToutiao = id
+        this.addAccountToutiao = true
       }
     },
     // 取消添加公众号
@@ -743,6 +956,20 @@ export default {
       this.collectSelectWb = []
       // this.collectDataWb = []
       // this.colTotalWb = 0
+    },
+    // 取消添加头条
+    offAddAccountToutiao () {
+      this.addAccountToutiao = false
+      this.activeNameToutiao = 'firstToutiao'
+      this.addIdToutiao = ''
+      this.keywordToutiao = ''
+      this.searchListToutiao = []
+      this.addListToutiao = []
+      this.textareaToutiao = ''
+      this.urlDataToutiao = []
+      this.collectSelectToutiao = []
+      // this.collectDataToutiao = []
+      // this.colTotalToutiao = 0
     },
     handleClick (tab) {
       console.log(tab.name)
@@ -773,6 +1000,20 @@ export default {
       this.urlDataWb = []
       this.collectSelectWb = []
     },
+    handleClickToutiao (tab) {
+      console.log(tab.name)
+      if (tab.name === 'collectToutiao') {
+        this.getCollectToutiao()
+      }
+      this.activeNameToutiao = tab.name
+      this.keywordToutiao = ''
+      this.searchListToutiao = []
+      this.addListToutiao = []
+      this.dateFormToutiao.url = ''
+      this.dateFormToutiao.toUrlList = []
+      this.urlDataToutiao = []
+      this.collectSelectToutiao = []
+    },
     // 根据账号搜索
     queryKeyword () {
       if (this.keyword) {
@@ -799,6 +1040,21 @@ export default {
               this.searchListWb = []
             } else {
               this.searchListWb = res.data.data.account
+            }
+          }).catch(() => { })
+      } else {
+        this.$message.warning('请输入微博!')
+      }
+    },
+    queryKeywordToutiao () {
+      if (this.keywordToutiao) {
+        this.$http.post(this.$api.keywordToutiao, { keyword: this.keywordToutiao })
+          .then(res => {
+            if (res.data.data.account.length <= 0) {
+              this.$message.warning('请更换关键词')
+              this.searchListToutiao = []
+            } else {
+              this.searchListToutiao = res.data.data.account
             }
           }).catch(() => { })
       } else {
@@ -974,6 +1230,24 @@ export default {
         this.$message.warning('此账号暂时无法进行排榜，敬请谅解。')
       }
     },
+    // 添加toutiao
+    shuttleToutiao (item, index) {
+      if (Number(item.is_collect) === 1) {
+        if (this.addListToutiao.length > 0) {
+          for (let i = 0; i < this.addListToutiao.length; i++) {
+            if (this.addListToutiao[i].user_id === item.user_id) {
+              console.log(item)
+              this.$message.warning('已经添加过' + item.screen_name)
+              return
+            }
+          }
+        }
+        this.searchListToutiao.splice(index, 1)
+        this.addListToutiao.push(item)
+      } else {
+        this.$message.warning('此账号暂时无法进行排榜，敬请谅解。')
+      }
+    },
     // 取消添加公众号
     unShuttle (item, index) {
       if (this.searchList.length > 0) {
@@ -1000,6 +1274,19 @@ export default {
       this.addListWb.splice(index, 1)
       this.searchListWb.push(item)
     },
+    // 取消添加头条
+    unShuttleToutiao (item, index) {
+      if (this.searchListToutiao.length > 0) {
+        for (let i = 0; i < this.searchListToutiao.length; i++) {
+          if (this.searchListToutiao[i].biz === item.biz) {
+            this.addListToutiao.splice(index, 1)
+            return
+          }
+        }
+      }
+      this.addListWb.splice(index, 1)
+      this.searchListWb.push(item)
+    },
     // 获取选中收藏的公众号
     handleCollectChange (val) {
       console.log(val)
@@ -1009,6 +1296,10 @@ export default {
     handleCollectChangeWb (val) {
       console.log(val)
       this.collectSelectWb = val
+    },
+    handleCollectChangeToutiao (val) {
+      console.log(val)
+      this.collectSelectToutiao = val
     },
     // 确认添加公众号
     upAddAccount () {
@@ -1109,12 +1400,63 @@ export default {
         this.$message.warning('请选择微博!')
       }
     },
+    // 确认添加头条
+    upAddAccountToutiao () {
+      let bizList = []
+      let bizName = []
+      if (this.activeNameToutiao === 'firstToutiao') {
+        for (let i = 0; i < this.addListToutiao.length; i++) {
+          bizList.push(this.addListToutiao[i].user_id)
+          bizName.push(this.addListToutiao[i].screen_name)
+        }
+      } else if (this.activeNameToutiao === 'collectToutiao') {
+        for (let i = 0; i < this.collectSelectToutiao.length; i++) {
+          bizList.push(this.collectSelectToutiao[i].accountCode)
+          bizName.push(this.collectSelectToutiao[i].accountName)
+        }
+      } else if (this.activeNameToutiao === 'secondToutiao') {
+        for (let i = 0; i < this.urlDataToutiao.length; i++) {
+          bizList.push(this.urlDataToutiao[i].uid)
+          bizName.push(this.urlDataToutiao[i].screenName)
+        }
+      }
+      let obj = {
+        bizArray: bizList,
+        bizName: bizName,
+        rankingUserId: this.addIdToutiao
+      }
+      // console.log(obj)
+      if (obj.bizArray.length > 0) {
+        this.$http.post(this.$api.bizAddRanking, obj)
+          .then(res => {
+            console.log(res, res.data.data)
+            console.log(res.data.code, res.data.data.data)
+            if (res.data.code == '200') {
+              if (res.data.data.data) {
+                this.$message.success(res.data.data.data)
+                this.addAccountToutiao = false
+                this.addIdToutiao = ''
+                this.getCustList()
+              } else {
+                this.$message.success('添加成功')
+                this.addAccountToutiao = false
+                this.addIdToutiao = ''
+                this.getCustList()
+              }
+            }
+          }).catch(() => { })
+      } else {
+        this.$message.warning('请选择头条账号!')
+      }
+    },
     routeDetail (row) {
       // this.$router.push({ name: 'CustimizeDetail', query: { id: row.id } })
       if (this.activeTab === 'wx') {
         this.$router.push({ name: 'CustimizeDetail', query: { id: row.id } })
-      } else {
+      } else if (this.activeTab === 'wb') {
         this.$router.push({ name: 'CustimizeWbDetail', query: { id: row.id } })
+      } else {
+        this.$router.push({ name: 'CustimizeToutiaoDetail', query: { id: row.id } })
       }
     },
     // 切换微信微博
@@ -1152,6 +1494,19 @@ export default {
         .then(res => {
           this.collectDataWb = res.data.data.content
           this.colTotalWb = res.data.data.totalElements
+        }).catch(() => { })
+    },
+    getCollectToutiao () {
+      let obj = {
+        type: 3,
+        rankingUserId: this.addIdToutiao,
+        pageNum: this.collectFormToutiao.pageNum,
+        pageSize: this.collectFormToutiao.pageSize
+      }
+      this.$http.post(this.$api.getCollect, obj)
+        .then(res => {
+          this.collectDataToutiao = res.data.data.content
+          this.colTotalToutiao = res.data.data.totalElements
         }).catch(() => { })
     },
     // 获取自定义榜单列表
@@ -1229,7 +1584,7 @@ export default {
   background: #498bfe;
 }
 .operation {
-  width: 300px;
+  width: 360px;
   margin: 25px 0px;
   padding: 10px 10px;
   border: 1px solid #dadada;
