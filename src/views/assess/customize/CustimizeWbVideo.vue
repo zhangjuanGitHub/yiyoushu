@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-18 11:28:06
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-06-02 18:39:50
+ * @LastEditTime: 2021-08-03 16:25:18
 -->
 <template>
   <div class="contents">
@@ -504,7 +504,7 @@ export default {
     // },
     // 导出
     exportBox () {
-      let fileName = '自定义榜单' + this.fileName + '文章总榜'
+      let fileName = '自定义榜单' + this.fileName + '视频总榜'
       var table = XLSX.utils.table_to_book(document.querySelector('#wx-monitor'))
       exportTable(XLSX, FileSaver, table, fileName)
     },

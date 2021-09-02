@@ -3,13 +3,15 @@
  * @Description:
  * @Date: 2021-03-05 10:06:51
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-08-03 11:35:19
+ * @LastEditTime: 2021-08-03 14:38:56
 -->
 <template>
   <div class="interaction content-box">
     <div class="tabs-header">
       <!-- <span class="tabs-title" @click="tabsAll('company', 1)" :class="this.activeTab==='company'?'isActive':''">单位账户</span> -->
-      <span class="tabs-title" @click="tabsAll('follow', 2)"  :class="this.activeTab==='follow'?'isActive':''">关注的账号</span>
+      <span class="tabs-title"
+            @click="tabsAll('follow', 2)"
+            :class="this.activeTab==='follow'?'isActive':''">关注的账号</span>
     </div>
     <div class="wx-warp-box">
       <v-search :showImport="showImport"
@@ -26,12 +28,14 @@
                   :cell-style="{ textAlign: 'center' }">
           <el-table-column prop="address"
                            label="公众号">
-              <template slot-scope='scope'>
+            <template slot-scope='scope'>
               <div class="account-msg-box flex-ali-center cursor"
                    @click="toSearch(scope.row.biz)">
-                <img :src="scope.row.hd_head_img" alt="">
+                <img :src="scope.row.hd_head_img"
+                     alt="">
                 <div class="account-msg">
-                  <p class="lin-clamp-1" v-html="scope.row.nickname"></p>
+                  <p class="lin-clamp-1"
+                     v-html="scope.row.nickname"></p>
                   <p class="lin-clamp-1">微信号：<span>{{scope.row.alias}}</span></p>
                 </div>
               </div>
@@ -68,7 +72,10 @@
                            label="活跃度">
             <template slot="header">
               <span>活跃度</span>
-              <el-tooltip class="item" effect="dark" content="根据月发文次数和发布情况计算得出活跃度" placement="top">
+              <el-tooltip class="item"
+                          effect="dark"
+                          content="根据月发文次数和发布情况计算得出活跃度"
+                          placement="top">
                 <i class="el-icon-question"></i>
               </el-tooltip>
             </template>
@@ -180,7 +187,7 @@ export default {
           value = '#F56C6C'
         }
         return value
-      // Number(scope.row.dayNum) < 3 ? '#67C23A' : (Number(scope.row.dayNum) < 6 ? '#E6A23C' : '#F56C6C')
+        // Number(scope.row.dayNum) < 3 ? '#67C23A' : (Number(scope.row.dayNum) < 6 ? '#E6A23C' : '#F56C6C')
       }
     }
   },
@@ -292,7 +299,7 @@ export default {
 .wx-warp-content {
   padding: 0 20px;
 }
-#line-charts{
+#line-charts {
   height: 300px;
 }
 .account-msg-box img {
@@ -308,7 +315,7 @@ export default {
   color: #252934;
 }
 .account-msg p:nth-child(2) {
-  color: #6C6D6E;
+  color: #6c6d6e;
 }
 .account-pro-box .el-progress-bar {
   padding-right: 0;

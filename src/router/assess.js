@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-09 18:59:16
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-07-27 10:01:04
+ * @LastEditTime: 2021-08-03 16:08:30
  */
 module.exports = [
   {
@@ -150,6 +150,14 @@ module.exports = [
     component: () => import('@/views/assess/customize/CustimizeToutiaoDetail')
   },
   {
+    path: '/assess/customize/custimizedouyindetail',
+    name: 'CustimizeDouyinDetail',
+    meta: {
+      title: '我的榜单详情-抖音'
+    },
+    component: () => import('@/views/assess/customize/CustimizeDouyinDetail')
+  },
+  {
     path: '/assess/customize/custimizearticle',
     name: 'CustimizeArticle',
     meta: {
@@ -196,5 +204,13 @@ module.exports = [
       title: '我的榜单详情-视频-头条'
     },
     component: () => import('@/views/assess/customize/CustimizeToutiaoVideo')
+  },
+  {
+    path: '/assess/customize/custimizedouyinvideo',
+    name: 'CustimizeDouyinVideo',
+    meta: {
+      title: '我的榜单详情-视频-抖音'
+    },
+    component: () => import('@/views/assess/customize/CustimizeDouyinVideo')
   }
 ]

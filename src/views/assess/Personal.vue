@@ -12,9 +12,9 @@
         <span class="tabs-title"
               @click="tabsAll('toutiao', 3)"
               :class="this.activeTab==='toutiao'?'isActive':''">头条榜单</span>
-        <!-- <span class="tabs-title"
-              @click="tabsAll('wb', 2)"
-              :class="this.activeTab==='wb'?'isActive':''">微博榜单</span> -->
+        <span class="tabs-title"
+              @click="tabsAll('douyin', 4)"
+              :class="this.activeTab==='douyin'?'isActive':''">抖音榜单</span>
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
@@ -23,6 +23,7 @@
                      @changeTab="tabsAll"></personal-wx>
         <personal-wb v-if="this.activeTab==='wb'"></personal-wb>
         <personal-toutiao v-if="this.activeTab==='toutiao'"></personal-toutiao>
+        <personal-douyin v-if="this.activeTab==='douyin'"></personal-douyin>
       </div>
     </div>
   </div>
@@ -31,6 +32,7 @@
 import personalWx from './personal/PersonalWx'
 import personalWb from './personal/PersonalWb'
 import personalToutiao from './personal/PersonalToutiao'
+import personalDouyin from './personal/PersonalDouyin'
 import { exportTable } from '@/lib/tools'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
@@ -39,7 +41,8 @@ export default {
   components: {
     personalWx,
     personalWb,
-    personalToutiao
+    personalToutiao,
+    personalDouyin
   },
   data () {
     return {
@@ -415,7 +418,7 @@ export default {
   created () {
     // this.getNewDate()
     // this.rankType()
-    console.log(this.$route.query)
+    // console.log(this.$route.query)
     if (this.$route.query.active) {
       this.activeTab = this.$route.query.active
     }

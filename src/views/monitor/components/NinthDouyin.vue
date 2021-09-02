@@ -2,16 +2,16 @@
  * @Author: MaiChao
  * @Date: 2021-02-23 15:01:05
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-08-04 17:52:52
+ * @LastEditTime: 2021-08-04 17:46:40
 -->
 <template>
   <div class="">
     <div class="pie-left">
-      <div class="title">阅读数分布</div>
+      <div class="title">点赞数分布</div>
       <div id="article-word"></div>
     </div>
     <div class="pie-right">
-      <div class="title">头条内容占比</div>
+      <div class="title">视频时长分析</div>
       <div id="article-type"
            class="article-type"></div>
       <div class="table">
@@ -115,7 +115,7 @@ export default {
           color: ['#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272'],
           series: [
             {
-              name: '阅读数',
+              name: '点赞数',
               type: 'pie',
               radius: ['50%', '70%'],
               avoidLabelOverlap: false,

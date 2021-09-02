@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-07-19 14:56:05
+ * @LastEditTime: 2021-08-03 15:23:32
 -->
 <template>
   <div class="contents">
@@ -17,6 +17,9 @@
         <span class="tabs-title"
               @click="tabsAll('toutiao', 3)"
               :class="this.activeTab==='toutiao'?'isActive':''">头条榜单</span>
+        <span class="tabs-title"
+              @click="tabsAll('douyin', 4)"
+              :class="this.activeTab==='douyin'?'isActive':''">抖音榜单</span>
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
@@ -25,6 +28,7 @@
                      @changeTab="tabsAll"></official-wx>
         <official-wb v-if="this.activeTab==='wb'"></official-wb>
         <official-toutiao v-if="this.activeTab==='toutiao'"></official-toutiao>
+        <official-douyin v-if="this.activeTab==='douyin'"></official-douyin>
       </div>
     </div>
   </div>
@@ -33,6 +37,7 @@
 import officialWb from './official/OffcialWb'
 import officialWx from './official/OffcialWx'
 import officialToutiao from './official/OffcialToutiao'
+import officialDouyin from './official/OffcialDouyin'
 // import { exportTable } from '@/lib/tools'
 // import FileSaver from 'file-saver'
 // import XLSX from 'xlsx'
@@ -40,7 +45,8 @@ export default {
   components: {
     officialWb,
     officialWx,
-    officialToutiao
+    officialToutiao,
+    officialDouyin
   },
   data () {
     return {

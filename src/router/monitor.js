@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-01-28 11:16:35
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-08-03 10:01:34
+ * @LastEditTime: 2021-08-04 09:46:52
  * @LastEditors: zhangjuan
  * @LastEditTime: 2021-05-25 17:25:52
  */
@@ -252,6 +252,14 @@ module.exports = [
           title: '头条分析'
         },
         component: () => import('@/views/monitor/analysis/ToutiaoAnalysis')
+      },
+      {
+        path: 'douyinanalysis',
+        name: 'DouyinAnalysis',
+        meta: {
+          title: '抖音号分析'
+        },
+        component: () => import('@/views/monitor/analysis/DouyinAnalysis')
       }
     ]
   },
@@ -286,6 +294,14 @@ module.exports = [
       title: '周-诊断历史-头条'
     },
     component: () => import('@/views/monitor/analysis/WeekDetailToutiao')
+  },
+  {
+    path: '/monitor/analysis/weekdetaildouyin',
+    name: 'WeekDetailDouyin',
+    meta: {
+      title: '周-诊断历史-抖音号'
+    },
+    component: () => import('@/views/monitor/analysis/WeekDetailDouyin')
   },
   {
     path: '/monitor/minute/',

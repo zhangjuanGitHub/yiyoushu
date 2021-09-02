@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:16:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-07-19 14:46:54
+ * @LastEditTime: 2021-08-03 14:33:48
 -->
 <template>
   <div class="contents">
@@ -14,16 +14,24 @@
         <span class="tabs-title"
               @click="tabsAll('wb', 2)"
               :class="this.activeTab==='wb'?'isActive':''">微博榜单</span>
-              <span class="tabs-title"
-              @click="tabsAll('toutiao', 2)"
+        <span class="tabs-title"
+              @click="tabsAll('toutiao', 3)"
               :class="this.activeTab==='toutiao'?'isActive':''">头条榜单</span>
+        <span class="tabs-title"
+              @click="tabsAll('douyin', 4)"
+              :class="this.activeTab==='douyin'?'isActive':''">抖音榜单</span>
         <span class="right-btn cursor"
               @click="openCust"><i class="el-icon-s-data"></i>自定义榜单</span>
       </div>
       <div class="conts-box">
-        <percin-video-wx v-if="this.activeTab==='wx'" @changeTab="tabsAll"></percin-video-wx>
-        <percin-video-wb v-if="this.activeTab==='wb'" @changeTab="tabsAll"></percin-video-wb>
-        <percin-video-toutiao v-if="this.activeTab==='toutiao'" @changeTab="tabsAll"></percin-video-toutiao>
+        <percin-video-wx v-if="this.activeTab==='wx'"
+                         @changeTab="tabsAll"></percin-video-wx>
+        <percin-video-wb v-if="this.activeTab==='wb'"
+                         @changeTab="tabsAll"></percin-video-wb>
+        <percin-video-toutiao v-if="this.activeTab==='toutiao'"
+                              @changeTab="tabsAll"></percin-video-toutiao>
+        <percin-video-douyin v-if="this.activeTab==='douyin'"
+                             @changeTab="tabsAll"></percin-video-douyin>
       </div>
     </div>
   </div>
@@ -32,6 +40,7 @@
 import percinVideoWx from './PercinVideoWx'
 import percinVideoWb from './PercinVideoWb'
 import percinVideoToutiao from './PercinVideoToutiao'
+import percinVideoDouyin from './PercinVideoDouyin'
 import { exportTable } from '@/lib/tools'
 import FileSaver from 'file-saver'
 import XLSX from 'xlsx'
@@ -39,7 +48,8 @@ export default {
   components: {
     percinVideoWx,
     percinVideoWb,
-    percinVideoToutiao
+    percinVideoToutiao,
+    percinVideoDouyin
   },
   data () {
     return {
@@ -63,7 +73,7 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.query)
+    // console.log(this.$route.query)
     if (this.$route.query.active) {
       this.activeTab = this.$route.query.active
     }

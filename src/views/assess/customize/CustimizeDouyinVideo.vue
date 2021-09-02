@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-18 11:28:06
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-08-03 16:24:53
+ * @LastEditTime: 2021-08-03 16:24:13
 -->
 <template>
   <div class="contents">
@@ -11,7 +11,7 @@
         <span class="list-title"
               @click="openMylist">我的榜单</span>
         <span class="list-title el-icon-arrow-right"></span>
-        <span class="list-title">头条榜单详情</span>
+        <span class="list-title">抖音榜单详情</span>
       </div>
       <div class="conts-box">
         <div class="title-time">自定义榜单 <span>{{fileName}}</span> 视频总榜</div>
@@ -24,8 +24,8 @@
                 <el-radio-group v-model="ruleForm.types"
                                 size='small'
                                 @change="openOther(ruleForm.types)">
-                  <el-radio-button label="1">头条</el-radio-button>
-                  <el-radio-button label="2">文章</el-radio-button>
+                  <el-radio-button label="1">抖音号</el-radio-button>
+                  <!-- <el-radio-button label="2">文章</el-radio-button> -->
                   <el-radio-button label="3">视频</el-radio-button>
                 </el-radio-group>
               </el-form-item>
@@ -123,8 +123,8 @@
               </template>
             </el-table-column>
             <el-table-column prop="status_title"
-                             label="文章标题"
-                             width="300">
+                             label="视频内容"
+                             width="260">
               <template slot-scope='scope'>
                 <div class="account-infor flex-ali-center"
                      @click="openWeb(scope.row)">
@@ -138,36 +138,35 @@
               </template>
             </el-table-column>
             <el-table-column prop="screen_name"
-                             label="头条名称"
-                             width="140">
-            </el-table-column>
+                           label="抖音昵称">
+            <template slot-scope='scope'>
+              <div class="account-msg-box flex-ali-center cursor"
+                   @click="toSearch(scope.row.id)">
+                <img :src="scope.row.avatar_url"
+                     alt="">
+                <div class="account-msg">
+                  <p class="lin-clamp-1"
+                     v-html="scope.row.screen_name"></p>
+                  <p class="lin-clamp-1">抖音号：<span>{{scope.row.id}}</span></p>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
             <el-table-column prop="forward_count"
-                             label="转发数">
-              <template slot-scope='scope'>
-                <div v-if="scope.row.forward_count>100000">
-                  10w+
-                </div>
-                <div v-else>{{scope.row.forward_count}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="comment_count"
-                             label="评论数">
-              <template slot-scope='scope'>
-                <div v-if="scope.row.comment_count>100000">
-                  10w+
-                </div>
-                <div v-else>{{scope.row.comment_count}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="digg_count"
-                             label="点赞数">
-              <template slot-scope='scope'>
-                <div v-if="scope.row.digg_count>100000">
-                  10w+
-                </div>
-                <div v-else>{{scope.row.digg_count}}</div>
-              </template>
-            </el-table-column>
+                           label="粉丝总量" width="110">
+          </el-table-column>
+          <el-table-column prop="digg_count"
+                           label="点赞总量" width="110">
+          </el-table-column>
+          <el-table-column prop="comment_count"
+                           label="评论总量" width="110">
+          </el-table-column>
+          <el-table-column prop="comment_count"
+                           label="单位名称" width="110">
+          </el-table-column>
+          <el-table-column prop="comment_count"
+                           label="总分" width="110">
+          </el-table-column>
             <!-- <el-table-column prop="unit_name"
                              label="单位名称"
                              width="150">
@@ -232,8 +231,8 @@
                     <div class="result show-box">
                       <div class="top-line flex-arr-center">搜索结果</div>
                       <div class="flex-arr-center name-box">
-                        <span>头条号</span>
-                        <span>头条号</span>
+                        <span>抖音昵称</span>
+                        <span>抖音号</span>
                       </div>
                       <div class="content-box">
                         <div class="flex-arr-center alone cursor"
@@ -246,10 +245,10 @@
                       </div>
                     </div>
                     <div class="choice show-box">
-                      <div class="top-line flex-arr-center">已添加头条号</div>
+                      <div class="top-line flex-arr-center">已添加抖音号</div>
                       <div class="flex-arr-center name-box">
-                        <span>头条号</span>
-                        <span>头条号</span>
+                        <span>抖音昵称</span>
+                        <span>抖音号</span>
                       </div>
                       <div class="content-box">
                         <div class="flex-arr-center alone cursor"
@@ -274,7 +273,7 @@
                             placeholder="请输入文章链接,每行一个链接"
                             v-model="textarea">
                   </el-input>
-                  <span class="tip-span">每行输入一个头条号的单篇文章链接，多个链接请换行隔开，否则可能导致添加账号不成功</span>
+                  <span class="tip-span">每行输入一个抖音号的单篇文章链接，多个链接请换行隔开，否则可能导致添加账号不成功</span>
                 </div>
               </template>
             </el-tab-pane>
@@ -324,7 +323,7 @@ export default {
       activeName: 'first', // 搜索公众号标识
       addApply: false, // 搜索公众号弹框
       collect: false, // 搜藏公众号弹框
-      activeTab: 'toutiao',
+      activeTab: 'douyin',
       options: [],
       optionArea: [], // 地区
       ruleForm: {
@@ -510,7 +509,7 @@ export default {
     },
     // 切换日/周/月榜单
     openOther (type) {
-      let url = type === '1' ? 'CustimizeToutiaoDetail' : type === '2' ? 'CustimizeToutiaoArticle' : 'CustimizeToutiaoVideo'
+      let url = type === '1' ? 'CustimizeDouyinDetail' : type === '2' ? 'CustimizeDouyinArticle' : 'CustimizeDouyinVideo'
       this.$router.push({ name: url, query: { id: this.ruleForm.rankingUserId } })
     },
     // 返回榜单添加列表

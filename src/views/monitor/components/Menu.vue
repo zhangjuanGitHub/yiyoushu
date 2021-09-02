@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-02-04 09:41:36
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-08-03 11:24:48
+ * @LastEditTime: 2021-08-04 09:45:34
 -->
 <template>
   <div class="monitor-menu">
@@ -86,6 +86,9 @@
         </el-menu-item>
         <el-menu-item index="ToutiaoAnalysis">
           <div class="padding50">头条分析</div>
+        </el-menu-item>
+        <el-menu-item index="DouyinAnalysis">
+          <div class="padding50">抖音号分析</div>
         </el-menu-item>
       </el-submenu>
       <el-submenu index="Minute">

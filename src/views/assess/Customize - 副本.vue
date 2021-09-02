@@ -2,7 +2,7 @@
  * @Author: MaiChao
  * @Date: 2021-03-15 16:17:45
  * @LastEditors: MaiChao
- * @LastEditTime: 2021-08-03 16:48:53
+ * @LastEditTime: 2021-08-03 16:36:30
 -->
 <template>
   <div class="contents">
@@ -730,127 +730,6 @@
         <el-button @click="offAddAccountToutiao">取消</el-button>
       </span>
     </el-dialog>
-    <!-- 抖音 -->
-    <el-dialog title="添加账号"
-               :visible.sync="addAccountDouyin"
-               :close-on-click-modal='false'
-               width="960px"
-               center
-               class="cust-add-apply"
-               @close="offAddAccountDouyin">
-      <div>
-        <!-- 添加搜索账号 抖音 -->
-        <div class="add-collect-box">
-          <el-tabs v-model="activeNameDouyin"
-                   @tab-click="handleClickDouyin">
-            <el-tab-pane label="搜索添加"
-                         name="firstDouyin">
-              <template>
-                <div class="add-box">
-                  <div class="search-box">
-                    <el-input placeholder="请输入抖音号"
-                              v-model="keywordDouyin">
-                    </el-input>
-                    <el-button type="primary"
-                               @click="queryKeywordDouyin">查询</el-button>
-                  </div>
-                  <div class="flex-bwt">
-                    <div class="show-box">
-                      <div class="top-line flex-arr-center">搜索结果</div>
-                      <div class="flex-arr-center name-box">
-                        <p>抖音昵称</p>
-                        <p>抖音号</p>
-                      </div>
-                      <div class="content-box">
-                        <div class="flex-ali-center alone cursor"
-                             v-for="(item,index) in searchListDouyin"
-                             :key="index"
-                             @dblclick="shuttleDouyin(item,index)">
-                          <div class="content-box-avatar flex-ali-center">
-                            <img :src="item.avatar_img"
-                                 alt="">
-                            <p>{{item.screen_name}}</p>
-                          </div>
-                          <p>{{item.user_id}}</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="show-box">
-                      <div class="top-line flex-arr-center">已添加抖音号</div>
-                      <div class="flex-arr-center name-box">
-                        <p>抖音昵称</p>
-                        <p>抖音号</p>
-                      </div>
-                      <div class="content-box">
-                        <div class="flex-ali-center alone cursor"
-                             v-for="(item,index) in addListDouyin"
-                             :key="index"
-                             @dblclick="unShuttleDouyin(item,index)">
-                          <div class="content-box-avatar flex-ali-center">
-                            <img :src="item.avatar_img"
-                                 alt="">
-                            <p>{{item.screen_name}}</p>
-                          </div>
-                          <p>{{item.user_id}}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </template>
-            </el-tab-pane>
-            <el-tab-pane label="根据收藏添加"
-                         name="collectDouyin">
-              <el-table :data="collectDataDouyin"
-                        style="width: 100%"
-                        @selection-change="handleCollectChangeDouyin">
-                <el-table-column type="selection"
-                                 width="55">
-                </el-table-column>
-                <el-table-column prop="accountName"
-                                 label="账号名称"
-                                 width="280">
-                  <template slot-scope='scope'>
-                    <div class="account-infor flex-ali-center">
-                      <el-image style="width: 60px; height: 60px"
-                                :src="scope.row.headImage"
-                                fit="fill">
-                        <div slot="error"
-                             class="image-slot">
-                          <i class="el-icon-picture-outline"></i>
-                        </div>
-                      </el-image>
-                      <div class="account-name">
-                        <p class="import-name"
-                           v-html='scope.row.accountName'></p>
-                      </div>
-                    </div>
-                  </template>
-                </el-table-column>
-                <!-- <el-table-column prop="accountCode"
-                                 label="账号ID">
-                </el-table-column> -->
-                <el-table-column prop="description"
-                                 label="简介">
-                </el-table-column>
-                <el-table-column prop="createTime"
-                                 label="添加时间"
-                                 width="220">
-                </el-table-column>
-              </el-table>
-              <set-page @pagingChange="pagingCollectDouyin"
-                        :total="colTotalDouyin"></set-page>
-            </el-tab-pane>
-          </el-tabs>
-        </div>
-      </div>
-      <span slot="footer"
-            class="dialog-footer">
-        <el-button type="primary"
-                   @click="upAddAccountDouyin">确认</el-button>
-        <el-button @click="offAddAccountDouyin">取消</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -976,11 +855,6 @@ export default {
       this.collectFormToutiao.pageSize = query.size
       this.collectFormToutiao.pageNum = query.page
       this.getCollectToutiao()
-    },
-    pagingCollectDouyin (query) {
-      this.collectFormDouyin.pageSize = query.size
-      this.collectFormDouyin.pageNum = query.page
-      this.getCollectDouyin()
     },
     // 展示创建弹框
     creadShow () {
@@ -1126,19 +1000,6 @@ export default {
       // this.collectDataToutiao = []
       // this.colTotalToutiao = 0
     },
-    offAddAccountDouyin () {
-      this.addAccountDouyin = false
-      this.activeNameDouyin = 'firstDouyin'
-      this.addIdDouyin = ''
-      this.keywordDouyin = ''
-      this.searchListDouyin = []
-      this.addListDouyin = []
-      this.textareaDouyin = ''
-      this.urlDataDouyin = []
-      this.collectSelectDouyin = []
-      // this.collectDataDouyin = []
-      // this.colTotalDouyin = 0
-    },
     handleClick (tab) {
       console.log(tab.name)
       if (tab.name === 'collect') {
@@ -1181,20 +1042,6 @@ export default {
       this.dateFormToutiao.toUrlList = []
       this.urlDataToutiao = []
       this.collectSelectToutiao = []
-    },
-    handleClickDouyin (tab) {
-      console.log(tab.name)
-      if (tab.name === 'collectDouyin') {
-        this.getCollectDouyin()
-      }
-      this.activeNameDouyin = tab.name
-      this.keywordDouyin = ''
-      this.searchListDouyin = []
-      this.addListDouyin = []
-      this.dateFormDouyin.url = ''
-      this.dateFormDouyin.toUrlList = []
-      this.urlDataDouyin = []
-      this.collectSelectDouyin = []
     },
     // 根据账号搜索
     queryKeyword () {
@@ -1240,22 +1087,7 @@ export default {
             }
           }).catch(() => { })
       } else {
-        this.$message.warning('请输入头条!')
-      }
-    },
-    queryKeywordDouyin () {
-      if (this.keywordDouyin) {
-        this.$http.post(this.$api.keywordDouyin, { keyword: this.keywordDouyin })
-          .then(res => {
-            if (res.data.data.account.length <= 0) {
-              this.$message.warning('请更换关键词')
-              this.searchListDouyin = []
-            } else {
-              this.searchListDouyin = res.data.data.account
-            }
-          }).catch(() => { })
-      } else {
-        this.$message.warning('请输入抖音!')
+        this.$message.warning('请输入微博!')
       }
     },
     // 增加链接
@@ -1445,23 +1277,6 @@ export default {
         this.$message.warning('此账号暂时无法进行排榜，敬请谅解。')
       }
     },
-    shuttleDouyin (item, index) {
-      if (Number(item.is_collect) === 1) {
-        if (this.addListDouyin.length > 0) {
-          for (let i = 0; i < this.addListDouyin.length; i++) {
-            if (this.addListDouyin[i].user_id === item.user_id) {
-              console.log(item)
-              this.$message.warning('已经添加过' + item.screen_name)
-              return
-            }
-          }
-        }
-        this.searchListDouyin.splice(index, 1)
-        this.addListDouyin.push(item)
-      } else {
-        this.$message.warning('此账号暂时无法进行排榜，敬请谅解。')
-      }
-    },
     // 取消添加公众号
     unShuttle (item, index) {
       if (this.searchList.length > 0) {
@@ -1498,20 +1313,8 @@ export default {
           }
         }
       }
-      this.addListToutiao.splice(index, 1)
-      this.searchListToutiao.push(item)
-    },
-    unShuttleDouyin (item, index) {
-      if (this.searchListDouyin.length > 0) {
-        for (let i = 0; i < this.searchListDouyin.length; i++) {
-          if (this.searchListDouyin[i].biz === item.biz) {
-            this.addListDouyin.splice(index, 1)
-            return
-          }
-        }
-      }
-      this.addListDouyin.splice(index, 1)
-      this.searchListDouyin.push(item)
+      this.addListWb.splice(index, 1)
+      this.searchListWb.push(item)
     },
     // 获取选中收藏的公众号
     handleCollectChange (val) {
@@ -1526,10 +1329,6 @@ export default {
     handleCollectChangeToutiao (val) {
       console.log(val)
       this.collectSelectToutiao = val
-    },
-    handleCollectChangeDouyin (val) {
-      console.log(val)
-      this.collectSelectDouyin = val
     },
     // 确认添加公众号
     upAddAccount () {
@@ -1679,54 +1478,6 @@ export default {
         this.$message.warning('请选择头条账号!')
       }
     },
-    upAddAccountDouyin () {
-      let bizList = []
-      let bizName = []
-      if (this.activeNameDouyin === 'firstDouyin') {
-        for (let i = 0; i < this.addListDouyin.length; i++) {
-          bizList.push(this.addListDouyin[i].user_id)
-          bizName.push(this.addListDouyin[i].screen_name)
-        }
-      } else if (this.activeNameDouyin === 'collectDouyin') {
-        for (let i = 0; i < this.collectSelectDouyin.length; i++) {
-          bizList.push(this.collectSelectDouyin[i].accountCode)
-          bizName.push(this.collectSelectDouyin[i].accountName)
-        }
-      } else if (this.activeNameDouyin === 'secondDouyin') {
-        for (let i = 0; i < this.urlDataDouyin.length; i++) {
-          bizList.push(this.urlDataDouyin[i].uid)
-          bizName.push(this.urlDataDouyin[i].screenName)
-        }
-      }
-      let obj = {
-        bizArray: bizList,
-        bizName: bizName,
-        rankingUserId: this.addIdDouyin
-      }
-      // console.log(obj)
-      if (obj.bizArray.length > 0) {
-        this.$http.post(this.$api.bizAddRanking, obj)
-          .then(res => {
-            console.log(res, res.data.data)
-            console.log(res.data.code, res.data.data.data)
-            if (res.data.code == '200') {
-              if (res.data.data.data) {
-                this.$message.success(res.data.data.data)
-                this.addAccountDouyin = false
-                this.addIdDouyin = ''
-                this.getCustList()
-              } else {
-                this.$message.success('添加成功')
-                this.addAccountDouyin = false
-                this.addIdDouyin = ''
-                this.getCustList()
-              }
-            }
-          }).catch(() => { })
-      } else {
-        this.$message.warning('请选择抖音账号!')
-      }
-    },
     routeDetail (row) {
       // this.$router.push({ name: 'CustimizeDetail', query: { id: row.id } })
       if (this.activeTab === 'wx') {
@@ -1787,19 +1538,6 @@ export default {
         .then(res => {
           this.collectDataToutiao = res.data.data.content
           this.colTotalToutiao = res.data.data.totalElements
-        }).catch(() => { })
-    },
-    getCollectDouyin () {
-      let obj = {
-        type: 4,
-        rankingUserId: this.addIdDouyin,
-        pageNum: this.collectFormDouyin.pageNum,
-        pageSize: this.collectFormDouyin.pageSize
-      }
-      this.$http.post(this.$api.getCollect, obj)
-        .then(res => {
-          this.collectDataDouyin = res.data.data.content
-          this.colTotalDouyin = res.data.data.totalElements
         }).catch(() => { })
     },
     // 获取自定义榜单列表
