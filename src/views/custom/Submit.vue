@@ -1,8 +1,8 @@
 <!--
  * @Author: zhangjuan
  * @Date: 2021-04-20 17:20:52
- * @LastEditors: zhangjuan
- * @LastEditTime: 2021-04-21 16:28:25
+ * @LastEditors: ZhangJuan
+ * @LastEditTime: 2021-11-02 14:28:54
 -->
 <template>
   <div class="custom">
@@ -122,7 +122,7 @@ export default {
       ruleForm: {
         platformTypeList: [], //  1微信 2微博 3抖音，4头条 0其他
         explain: '', // 详细说明
-        linkman: '',  // 联系人
+        linkman: '', // 联系人
         linkmanSex: '1',
         phone: '',
         smsCode: '', // 输入的验证码
@@ -141,17 +141,18 @@ export default {
         phone: [
           { required: true, message: '请输入手机号', trigger: 'blur' },
           { validator: (rule, value, callback) => {
-                        if (value) {
-                          var reg = /^1(3[0-9]|4[579]|5[0-35-9]|6[567]|7[0135678]|8[0-9]|9[89])\d{8}$/
-                          if (!reg.test(value)) {
-                            callback(new Error('请输入正确的手机号'))
-                          } else {
-                            callback()
-                          }
-                        } else {
-                          callback(new Error('请输入手机号'))
-                        }
-                      }, trigger: 'blur' }
+            if (value) {
+              var reg = /^1(3[0-9]|4[579]|5[0-35-9]|6[567]|7[0135678]|8[0-9]|9[89])\d{8}$/
+              if (!reg.test(value)) {
+                callback(new Error('请输入正确的手机号'))
+              } else {
+                callback()
+              }
+            } else {
+              callback(new Error('请输入手机号'))
+            }
+          },
+          trigger: 'blur' }
         ]
       }
     }
@@ -161,10 +162,10 @@ export default {
       this.$refs[form].validate((valid) => {
         if (valid) {
           this.$http.post(this.$api.addCustom, this.ruleForm)
-          .then(res => {
-            this.$message.success('提交成功，请等候回复')
-            this.$refs[form].resetFields()
-          }).catch(() => { })
+            .then(res => {
+              this.$message.success('提交成功，请等候回复')
+              this.$refs[form].resetFields()
+            }).catch(() => { })
         }
       })
     },
@@ -187,4 +188,3 @@ export default {
 <style scoped>
 @import './custom.css';
 </style>
-
